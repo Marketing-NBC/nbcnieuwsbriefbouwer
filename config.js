@@ -17,5 +17,5 @@
 
 window.NBC_CONFIG = {
   url: 'https://uqgpcvuhwfvyhvxokptn.supabase.co',
-  key: ''   // <-- plak hier de anon / publishable key uit Supabase → Settings → API
+  key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxZ3BjdnVod2Z2eWh2eG9rcHRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzNDQwMzAsImV4cCI6MjEwMTkyMDAzMH0.SpLJjOe6MM4flM0eTXAbdWT95NQSUVfwj4CBmx1SeTg'   // <-- plak hier de anon / publishable key uit Supabase → Settings → API
 };
