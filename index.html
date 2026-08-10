@@ -80,6 +80,8 @@
   .btn-primary{background:#fff;color:#0e0e0e;}
   .btn-teal{background:var(--teal);color:#fff;}
   .btn-ghost{background:transparent;color:#fff;border:1px solid #3a4448;}
+  .btn-icon{padding:9px 13px;font-size:16px;line-height:1;}
+  .btn:disabled{opacity:.35;cursor:default;}
   main{flex:1;display:flex;min-height:0;}
   /* palette */
   aside{flex:none;width:290px;background:#fff;border-right:1px solid var(--line);overflow-y:auto;padding:16px;}
@@ -113,34 +115,30 @@
     font-family:inherit;font-size:12px;font-weight:700;line-height:1;white-space:nowrap;
     cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3);transition:background .15s;}
   .photo-act:hover{background:var(--teal);}
-  .photo-edit-btn{left:8px;bottom:8px;}
-  .photo-url-btn{right:8px;bottom:8px;}
+  /* De knoppen zitten in een balk, zodat ze nooit over elkaar of buiten een
+     smalle afbeelding vallen. */
+  .photo-acts{position:absolute;left:8px;right:8px;bottom:8px;z-index:6;
+    display:flex;flex-wrap:wrap;gap:6px;pointer-events:none;}
+  .photo-acts .photo-act{position:static;pointer-events:auto;}
   .photo-act .dot{width:7px;height:7px;border-radius:999px;background:var(--gold);}
   .photo-act.filled .dot{background:var(--teal);}
   /* Kleine beelden (social-iconen, footerlogo) zijn zelf maar ~32px. Een knop
-     eroverheen maakt ze onherkenbaar, dus die hangt net buiten de afbeelding
-     en verschijnt pas bij hover — diagonaal uit elkaar zodat de webadres-knop
-     en de link-badge elkaar niet overlappen. */
-  .photo-act.compact{padding:0;width:24px;height:24px;justify-content:center;font-size:11px;
-    left:auto;right:-10px;bottom:-10px;}
-  .photo-wrap:hover .photo-act:hover{background:var(--teal);}
-  /* Link-badge: bij tekstlinks inline achter de link, bij afbeeldingen als
-     overlay linksonder — anders duwt hij de opmaak uit elkaar. */
+     eroverheen maakt ze onherkenbaar, dus de balk hangt net buiten de
+     afbeelding en verschijnt pas bij hover. */
+  .photo-act.compact{padding:0;width:24px;height:24px;justify-content:center;font-size:11px;}
+  .photo-acts.compact{left:auto;right:-10px;bottom:-10px;gap:4px;}
+  .photo-wrap-klein .photo-acts{opacity:0;transition:opacity .12s;}
+  .photo-wrap-klein:hover .photo-acts{opacity:1;}
+  /* Link-badge: inline achter een tekstlink. Afbeeldingen hebben hun eigen
+     link-knop en krijgen dus geen badge. */
   .link-badge{display:inline-block;margin-left:5px;font-size:11px;line-height:1;cursor:pointer;
     opacity:.5;vertical-align:middle;transition:opacity .15s;}
   .link-badge:hover{opacity:1;}
   .link-badge-set{opacity:1;}
-  .link-badge.link-badge-img{position:absolute;left:8px;bottom:8px;z-index:6;margin:0;
-    padding:5px 7px;border-radius:999px;background:rgba(5,6,6,.88);opacity:1;font-size:11px;}
-  .link-badge.link-badge-img:hover{background:var(--teal);}
-  /* Overlays op kleine beelden pas bij hover, en diagonaal net buiten de
-     afbeelding, zodat het icoon zelf herkenbaar blijft. Deze regels moeten ná
-     de losse .link-badge-regels staan om te winnen. */
-  .photo-wrap-klein .photo-act,
-  .photo-wrap-klein .link-badge.link-badge-img{opacity:0;pointer-events:none;transition:opacity .12s;}
-  .photo-wrap-klein:hover .photo-act,
-  .photo-wrap-klein:hover .link-badge.link-badge-img{opacity:1;pointer-events:auto;}
-  .photo-wrap-klein .link-badge.link-badge-img{left:-10px;top:-10px;bottom:auto;}
+  /* Knoppen op kleine beelden pas bij hover, en net buiten de afbeelding,
+     zodat het icoon zelf herkenbaar blijft. */
+  .photo-wrap-klein .photo-act{opacity:0;pointer-events:none;transition:opacity .12s;}
+  .photo-wrap-klein:hover .photo-act{opacity:1;pointer-events:auto;}
   /* briefing modal */
   .overlay{position:fixed;inset:0;background:rgba(5,6,6,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:24px;}
   .overlay.on{display:flex;}
@@ -174,6 +172,8 @@
     <button class="btn btn-ghost" onclick="openHelp()">? Uitleg</button>
     <button class="btn btn-ghost" onclick="openMobilePreview()">📱 Mobiel</button>
     <button class="btn btn-ghost" onclick="openBriefing()">Briefing</button>
+    <button class="btn btn-ghost btn-icon" id="undoBtn" onclick="undo()" title="Ongedaan maken" disabled>&#8630;</button>
+    <button class="btn btn-ghost btn-icon" id="redoBtn" onclick="redo()" title="Opnieuw uitvoeren" disabled>&#8631;</button>
     <button class="btn btn-ghost" onclick="resetStage()">Leegmaken</button>
     <button class="btn btn-ghost" onclick="openConfig()" title="Cloud-instellingen">⚙</button>
     <button class="btn btn-primary" onclick="openExport()">HTML voor Mailchimp</button>
@@ -195,7 +195,9 @@
         <li style="margin-bottom:10px;"><b>Kies blokken.</b> Klik links op een blok (A–R). Het verschijnt rechts in het live voorbeeld. Start met <b>A&nbsp;Webversie-balk</b> + <b>B&nbsp;Header</b>, eindig met <b>R&nbsp;Donkere footer</b>.</li>
         <li style="margin-bottom:10px;"><b>Bepaal de volgorde.</b> Zweef over een blok en gebruik de knopjes rechtsboven: <b>▲▼</b> verplaatsen, <b>⧉</b> dupliceren, <b>✕</b> verwijderen.</li>
         <li style="margin-bottom:10px;"><b>Typ de teksten.</b> Klik direct op een kop of alinea in het voorbeeld en typ jouw tekst.</li>
-        <li style="margin-bottom:10px;"><b>Foto's.</b> Klik op een fotoplek, kies je foto en snijd hem bij. Hij wordt meteen online gezet, dus je hoeft niets los mee te sturen. Staat de afbeelding al ergens online? Klik dan op <b>🔗 Webadres</b> en plak het adres — dat kan bij élke afbeelding, ook bij het logo en de social-iconen (die verschijnen als je er met de muis overheen gaat).</li>
+        <li style="margin-bottom:10px;"><b>Foto's.</b> Klik op een fotoplek op <b>Foto</b>, kies je foto en snijd hem bij. Hij wordt meteen online gezet, dus je hoeft niets los mee te sturen.</li>
+        <li style="margin-bottom:10px;"><b>Afbeelding klikbaar maken.</b> Klik op <b>Link</b> bij een afbeelding en vul in waar hij naartoe moet — net als bij een knop. Dat kan bij élke afbeelding, ook bij het logo en de social-iconen; daar verschijnen de knopjes als je er met de muis overheen gaat. Leeg laten haalt de link er weer af.</li>
+        <li style="margin-bottom:10px;"><b>Vergissing?</b> <b>Ctrl+Z</b> (op een Mac <b>Cmd+Z</b>) draait je laatste stap terug, of gebruik de pijltjes bovenin. <b>Ctrl+Shift+Z</b> voert hem weer opnieuw uit.</li>
         <li style="margin-bottom:10px;"><b>Geef hem een naam.</b> Klik bovenin op <b>Opslaan als…</b> en typ een naam. Vanaf dan wordt elke wijziging automatisch bewaard en kun je er vanaf elke computer bij. In dat overzicht kun je een nieuwsbrief ook <b>openen</b>, <b>dupliceren</b> als startpunt voor volgende maand, of naar de <b>prullenbak</b> doen.</li>
         <li style="margin-bottom:0;"><b>Klaar?</b> Klik <b style="color:#0e0e0e;">HTML voor Mailchimp</b> en daarna <b>HTML kopiëren</b>. In Mailchimp: <b>Create → Email → Code your own → Paste in code</b>, plakken, klaar.</li>
       </ol>
@@ -424,18 +426,12 @@ function makeEditable(node){
     /* De badge zit soms in een bewerkbare link; zo kan hij niet per ongeluk
        meegetypt of weggehaald worden. */
     badge.setAttribute('contenteditable','false');
-    var img=a.querySelector('img');
+    /* Links rond een afbeelding krijgen g\u00E9\u00E9n badge: die afbeelding heeft zelf
+       al een link-knop. Twee bedieningen voor hetzelfde is verwarrend, en de
+       badge duwde de opmaak bovendien uit elkaar. */
+    if(a.querySelector('img')) return;
     badge.onclick=function(ev){ ev.stopPropagation(); editLink(a,badge); };
-    if(img){
-      /* Bij een afbeelding komt de badge als overlay \u00EDn de link te liggen.
-         Stond hij erachter, dan telde hij mee in de opmaak en schoof het
-         beeld opzij. De badge wordt bij het exporteren verwijderd. */
-      badge.classList.add('link-badge-img');
-      badge.setAttribute('data-link-label', img.getAttribute('alt')||'deze afbeelding');
-      a.appendChild(badge);
-    } else {
-      a.insertAdjacentElement('afterend', badge);
-    }
+    a.insertAdjacentElement('afterend', badge);
   });
 }
 function editLink(a,badge){
@@ -512,8 +508,8 @@ function resetStage(){
 }
 
 /* Elke afbeelding krijgt knoppen. De grote fotoplekken (class "fluid") houden
-   hun nummer en de upload-knop; kleine vaste beelden zoals het logo en de
-   social-iconen krijgen alleen een compacte URL-knop. */
+   hun nummer en de upload-knop; elke afbeelding — ook het logo en de
+   social-iconen — kan daarnaast een link krijgen. */
 function decorateImage(im, num){
   var p=im.parentElement;
   if(getComputedStyle(p).position==='static'){
@@ -521,12 +517,12 @@ function decorateImage(im, num){
     p.setAttribute('data-pos-injected','1');
   }
   p.classList.add('photo-wrap');
-  /* Het oorspronkelijke adres onthouden, zodat een leeg URL-veld de
-     placeholder terugzet. */
-  if(!im.hasAttribute('data-orig-src')) im.setAttribute('data-orig-src', im.getAttribute('src')||'');
 
+  /* Onder ~200px is er geen ruimte voor knoppen met tekst zonder de afbeelding
+     te bedekken: logo, footermerk en social-iconen krijgen daarom compacte
+     icoonknoppen die pas bij hover verschijnen. */
   var breed = parseInt(im.getAttribute('width'),10) || im.offsetWidth || 0;
-  var klein = !!(breed && breed < 120);
+  var klein = !!(breed && breed < 200);
   if(klein) p.classList.add('photo-wrap-klein');
   var filled = im.getAttribute('data-photo-filled')==='1';
 
@@ -538,62 +534,98 @@ function decorateImage(im, num){
     im.setAttribute('data-photo',num);
   }
   /* Bijsnijden is voor de fotoplekken. Vaste beelden als het logo en de
-     social-iconen laat je alleen via een webadres wisselen — die wil je niet
-     door een fotocropper halen. */
+     social-iconen wil je niet door een fotocropper halen. */
+  /* Korte labels: een knop mag nooit breder zijn dan de afbeelding eronder.
+     De stip toont de stand, de tooltip geeft de uitleg. */
+  var bar=document.createElement('div');
+  bar.className='photo-acts'+(klein?' compact':'');
+  bar.setAttribute('contenteditable','false');
   if(num){
     var eb=document.createElement('button');
     eb.type='button';
-    eb.className='photo-act photo-edit-btn'+(filled?' filled':'');
-    eb.innerHTML='<span class="dot"></span>'+(filled?'Foto wijzigen':'Foto uploaden');
+    eb.className='photo-act photo-edit-btn'+(klein?' compact':'')+(filled?' filled':'');
+    eb.title=filled?'Andere foto kiezen of opnieuw bijsnijden':'Foto uploaden en bijsnijden';
+    eb.innerHTML=klein?'🖼':'<span class="dot"></span>Foto';
     eb.setAttribute('contenteditable','false');
     eb.onclick=function(ev){ ev.stopPropagation(); openCropper(im); };
-    p.appendChild(eb);
+    bar.appendChild(eb);
   }
-  var ub=document.createElement('button');
-  ub.type='button';
-  ub.className='photo-act photo-url-btn'+(klein?' compact':'');
-  ub.title='Webadres van deze afbeelding instellen';
-  ub.innerHTML=klein?'🔗':'🔗 Webadres';
-  ub.setAttribute('contenteditable','false');
-  ub.onclick=function(ev){ ev.stopPropagation(); editImageUrl(im); };
-  p.appendChild(ub);
+  var huidige=imageLinkHref(im);
+  var lb=document.createElement('button');
+  lb.type='button';
+  lb.className='photo-act photo-link-btn'+(klein?' compact':'')+(huidige?' filled':'');
+  lb.title=huidige?('Klikt door naar '+huidige):'Deze afbeelding klikbaar maken';
+  lb.innerHTML=klein?'🔗':'<span class="dot"></span>Link';
+  lb.setAttribute('contenteditable','false');
+  lb.onclick=function(ev){ ev.stopPropagation(); editImageLink(im); };
+  bar.appendChild(lb);
+  p.appendChild(bar);
 }
 
-/* Een afbeelding via een webadres instellen. Zo'n adres hoeft niet meer
-   geupload te worden en gaat ongewijzigd mee in de export. */
-function editImageUrl(im){
-  var cur=im.getAttribute('src')||'';
-  if(/^data:/i.test(cur)) cur='';
-  var orig=im.getAttribute('data-orig-src')||'';
+/* Zit de afbeelding al in een link, dan is dat de bestemming. */
+function imageLinkWrapper(im){
+  var p=im.parentElement;
+  return (p && p.tagName==='A') ? p : null;
+}
+function imageLinkHref(im){
+  var a=imageLinkWrapper(im);
+  return a ? (a.getAttribute('href')||'') : '';
+}
+
+/* Een adres bruikbaar maken als linkbestemming. Zonder protocol wordt een
+   adres relatief aan de bouwer opgelost en klopt het niet in een mail.
+   mailto:, tel: en Mailchimp-merge-tags blijven zoals ze zijn. */
+function normalizeLinkUrl(url){
+  if(/^(https?:\/\/|mailto:|tel:)/i.test(url)) return url;
+  if(/^\*\|/.test(url)) return url;
+  if(/^\/\//.test(url)) return 'https:'+url;
+  if(/^[a-z][a-z0-9+.-]*:/i.test(url)) return null;
+  return 'https://'+url.replace(/^\/+/,'');
+}
+
+/* De afbeelding klikbaar maken, zoals een knop. De afbeelding wordt in een
+   link gezet; leeg laten haalt de link er weer af. */
+function editImageLink(im){
+  var a=imageLinkWrapper(im);
+  var cur=a?(a.getAttribute('href')||''):'';
   var lbl=im.getAttribute('alt')||'deze afbeelding';
   askDialog({
-    title:'Afbeelding via webadres',
-    text:'Plak het volledige webadres van de afbeelding voor <b>'+esc(lbl)+'</b>.<br>'+
-         'Laat het veld leeg om terug te gaan naar de standaardafbeelding.',
+    title:'Link op de afbeelding',
+    text:'Waar moet <b>'+esc(lbl)+'</b> naartoe gaan als iemand erop klikt?<br>'+
+         'Laat het veld leeg om de link weg te halen.',
     value:cur, okLabel:'Instellen'
   }).then(function(v){
     if(v===null) return;
-    var url=String(v).trim();
-    if(!url){
-      im.setAttribute('src',orig);
-      im.removeAttribute('data-photo-filled');
-      cropOriginals.delete(im);
+    var raw=String(v).trim();
+    if(!raw){
+      if(a){
+        /* Alleen de afbeelding houden; de knoppen die in de link hangen
+           worden door renumber opnieuw gezet. */
+        a.parentNode.insertBefore(im,a);
+        a.remove();
+      }
       renumber();
       return;
     }
-    /* Zonder protocol wordt het adres relatief aan de bouwer opgelost en
-       werkt het niet in een mail. */
-    if(!/^https?:\/\//i.test(url)){
-      if(/^\/\//.test(url)) url='https:'+url;
-      else if(/^[a-z][a-z0-9+.-]*:/i.test(url)){
-        notify('Dat adres kan niet','Gebruik een adres dat begint met <b>https://</b>.');
-        return;
-      }
-      else url='https://'+url.replace(/^\/+/,'');
+    var url=normalizeLinkUrl(raw);
+    if(!url){
+      notify('Dat adres kan niet','Gebruik een adres dat begint met <b>https://</b>, of een <b>mailto:</b>- of <b>tel:</b>-adres.');
+      return;
     }
-    im.setAttribute('src',url);
-    if(im.hasAttribute('data-photo')) im.setAttribute('data-photo-filled','1');
-    cropOriginals.delete(im);
+    if(a){
+      a.setAttribute('href',url);
+      a.setAttribute('target','_blank');
+    } else {
+      var na=document.createElement('a');
+      na.setAttribute('href',url);
+      na.setAttribute('target','_blank');
+      na.setAttribute('style','text-decoration:none;');
+      /* Zodat de briefing de link meeneemt. */
+      na.setAttribute('data-link-editable','1');
+      na.setAttribute('data-default-href','');
+      im.parentNode.insertBefore(na,im);
+      na.appendChild(im);
+    }
     renumber();
   });
 }
@@ -601,7 +633,7 @@ function editImageUrl(im){
 function renumber(){
   hint.style.display = stage.children.length? 'none':'block';
   // clear old badges
-  stage.querySelectorAll('.photo-badge,.photo-act').forEach(function(x){x.remove();});
+  stage.querySelectorAll('.photo-badge,.photo-acts').forEach(function(x){x.remove();});
   var n=0;
   stage.querySelectorAll('img').forEach(function(im){
     var genummerd = im.classList.contains('fluid');
@@ -908,7 +940,7 @@ function serializeStage(){
   var blocks=[];
   Array.prototype.forEach.call(stage.children,function(w){
     var c=w.cloneNode(true);
-    c.querySelectorAll('.pv-tag,.pv-tools,.photo-badge,.photo-act,.link-badge,.gap-indicator').forEach(function(x){x.remove();});
+    c.querySelectorAll('.pv-tag,.pv-tools,.photo-badge,.photo-acts,.link-badge,.gap-indicator').forEach(function(x){x.remove();});
     stripInjectedPosition(c);
     c.querySelectorAll('[contenteditable]').forEach(function(el){ el.removeAttribute('contenteditable'); el.removeAttribute('spellcheck'); });
     c.querySelectorAll('.photo-wrap').forEach(function(el){ el.classList.remove('photo-wrap','photo-wrap-klein'); if(!el.getAttribute('class')) el.removeAttribute('class'); });
@@ -950,7 +982,80 @@ function scheduleSave(){
   clearTimeout(saveTimer);
   saveTimer=setTimeout(doSave,700);
 }
-new MutationObserver(scheduleSave).observe(stage,{childList:true,subtree:true,attributes:true,characterData:true});
+/* ---- Ongedaan maken (Ctrl+Z / Cmd+Z) ----
+   De geschiedenis bewaart momentopnamen van de hele opzet, dezelfde vorm als
+   waarmee we opslaan. Wijzigingen worden even verzameld voordat er een stap
+   wordt vastgelegd, zodat doortypen niet één stap per letter oplevert. */
+var UNDO_MAX=80;
+var undoStack=[], redoStack=[], histTimer=null, histNu=null, histBezig=false;
+
+function histSnapshot(){ return JSON.stringify(serializeStage()); }
+function histInit(){
+  undoStack=[]; redoStack=[]; histNu=histSnapshot();
+  clearTimeout(histTimer); histTimer=null;
+  histKnoppen();
+}
+function histLeg(){
+  histTimer=null;
+  if(histBezig||restoring) return;
+  var snap=histSnapshot();
+  if(snap===histNu) return;
+  if(histNu!==null){
+    undoStack.push(histNu);
+    if(undoStack.length>UNDO_MAX) undoStack.shift();
+  }
+  histNu=snap;
+  redoStack.length=0;
+  histKnoppen();
+}
+function histPlan(){
+  if(histBezig||restoring) return;
+  clearTimeout(histTimer);
+  histTimer=setTimeout(histLeg,600);
+}
+/* Nog niet vastgelegde wijzigingen alsnog als stap opnemen, anders zou een
+   ongedaan-maken vlak na het typen die tekst overslaan. */
+function histFlush(){ if(histTimer){ clearTimeout(histTimer); histLeg(); } }
+
+function histToepassen(json){
+  histBezig=true;
+  var blokken=JSON.parse(json);
+  stage.innerHTML='';
+  blokken.forEach(function(bl){ addBlock(bl.letter, bl); });
+  renumber();
+  histBezig=false;
+  histNu=json;
+  histKnoppen();
+  scheduleSave();
+}
+function undo(){
+  histFlush();
+  if(!undoStack.length) return;
+  redoStack.push(histNu);
+  histToepassen(undoStack.pop());
+}
+function redo(){
+  if(!redoStack.length) return;
+  undoStack.push(histNu);
+  histToepassen(redoStack.pop());
+}
+function histKnoppen(){
+  var u=document.getElementById('undoBtn'), r=document.getElementById('redoBtn');
+  if(u){ u.disabled=!undoStack.length; u.title=undoStack.length?('Ongedaan maken ('+undoStack.length+' stap'+(undoStack.length===1?'':'pen')+')'):'Niets om ongedaan te maken'; }
+  if(r){ r.disabled=!redoStack.length; r.title=redoStack.length?'Opnieuw uitvoeren':'Niets om opnieuw te doen'; }
+}
+document.addEventListener('keydown',function(e){
+  if(!(e.ctrlKey||e.metaKey) || e.altKey) return;
+  /* In een invoerveld hoort Ctrl+Z gewoon de tekst daar terug te draaien. */
+  var t=e.target;
+  if(t && (t.tagName==='INPUT'||t.tagName==='TEXTAREA')) return;
+  var k=(e.key||'').toLowerCase();
+  if(k==='z' && !e.shiftKey){ e.preventDefault(); undo(); }
+  else if(k==='y' || (k==='z' && e.shiftKey)){ e.preventDefault(); redo(); }
+});
+
+new MutationObserver(function(){ scheduleSave(); histPlan(); })
+  .observe(stage,{childList:true,subtree:true,attributes:true,characterData:true});
 window.addEventListener('beforeunload',function(){ if(saveTimer){ clearTimeout(saveTimer); doSave(); } });
 document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='hidden' && saveTimer){ clearTimeout(saveTimer); doSave(); } });
 
@@ -961,6 +1066,7 @@ function buildDefault(){
   restoring=false;
   pristineJSON=JSON.stringify(serializeStage());
   renumber();
+  histInit();
 }
 function restoreState(data){
   restoring=true;
@@ -969,6 +1075,7 @@ function restoreState(data){
   restoring=false;
   renumber();
   setStatus('saved',data.savedAt);
+  histInit();
 }
 function showRestoreBar(data){
   document.getElementById('restoreWhen').textContent=fmtTime(data.savedAt);
@@ -993,7 +1100,7 @@ idbGet().then(function(data){
 }).catch(function(){ buildDefault(); });
 
 /* ================= MAIL-SJABLOON ================= */
-var MAIL_HEAD = "<!DOCTYPE html>\n<html lang=\"nl\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\">\n<head>\n<meta charset=\"utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />\n<meta name=\"format-detection\" content=\"telephone=no, date=no, address=no, email=no, url=no\" />\n<meta name=\"color-scheme\" content=\"light\" />\n<meta name=\"supported-color-schemes\" content=\"light\" />\n<title>*|MC:SUBJECT|*</title>\n<!--[if gte mso 9]>\n<xml>\n  <o:OfficeDocumentSettings>\n    <o:AllowPNG/>\n    <o:PixelsPerInch>96</o:PixelsPerInch>\n  </o:OfficeDocumentSettings>\n</xml>\n<![endif]-->\n\n<style type=\"text/css\">\n  /* ====================================================================\n     NBC MAILING — BEWERKBAAR WERKBESTAND (blokkenbibliotheek, blanco)\n     Koppen = live tekst in Pockota, fallback Trebuchet MS/Verdana/Arial.\n     Bodytekst = fallback Helvetica/Arial (consistent voor elke ontvanger).\n     Het werkbestand IS al de importklare versie -- geen bak-stap nodig.\n     ==================================================================== */\n\n  body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}\n  table,td{mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;}\n  img{-ms-interpolation-mode:bicubic;border:0;height:auto;line-height:100%;outline:none;text-decoration:none;display:block;}\n  body{margin:0;padding:0;width:100%!important;height:100%!important;background-color:#f1f1ef;}\n  a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important;font-size:inherit!important;font-family:inherit!important;font-weight:inherit!important;line-height:inherit!important;}\n  .ExternalClass{width:100%;}\n  .ExternalClass,.ExternalClass p,.ExternalClass td,.ExternalClass div,.ExternalClass span,.ExternalClass font{line-height:100%;}\n  u + #body a{color:inherit;text-decoration:none;}\n  u + #body .footer-logo-cell{width:48%!important;}\n  u + #body .footer-contact{width:52%!important;font-size:13px!important;white-space:nowrap!important;}\n  p{margin:0;}\n\n  /* Automatische regel- en woordafbreking. Outlook kan woordafbreking negeren,\n     maar normale regelomloop blijft daar wel werken. */\n  h1,h2,h3,p,a{\n    white-space:normal;\n    overflow-wrap:break-word;\n    word-wrap:break-word;\n    word-break:normal;\n    -webkit-hyphens:auto;\n    -ms-hyphens:auto;\n    hyphens:auto;\n  }\n\n  @media only screen and (max-width:620px){\n    .email-container{width:100%!important;max-width:100%!important;}\n    .fluid{width:100%!important;max-width:100%!important;height:auto!important;}\n    .stack{display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;}\n    .px{padding-left:22px!important;padding-right:22px!important;}\n    .py-lg{padding-top:36px!important;padding-bottom:36px!important;}\n    .center-sm{text-align:center!important;}\n    .nav-link{display:inline-block!important;padding:6px 9px!important;}\n    .h1{font-size:34px!important;line-height:1.08!important;}\n    .h2{font-size:28px!important;line-height:1.12!important;}\n    .artnum{font-size:46px!important;}\n    .stat-num{font-size:46px!important;}\n    .card-pad{padding:28px 22px!important;}\n    .col-gap{height:28px!important;line-height:28px!important;}\n    .mt-sm{height:18px!important;line-height:18px!important;}\n    .hide-sm{display:none!important;max-height:0!important;overflow:hidden!important;}\n    .art-num-cell{padding-bottom:6px!important;}\n    .logo-img{margin-left:auto!important;margin-right:auto!important;width:260px!important;max-width:260px!important;}\n    .center-img-sm{margin-left:auto!important;margin-right:auto!important;}\n    .left-sm{text-align:left!important;}\n    .tri-num-img{width:84px!important;max-width:84px!important;height:auto!important;}\n    .eqh{height:auto!important;}\n  }\n</style>\n</head>\n\n<body id=\"body\" style=\"margin:0;padding:0;width:100%;background-color:#f1f1ef;\">\n\n<!-- Mailchimp vult dit vanuit Onderwerp > Previewtekst. -->\n<div mc:edit=\"preview_text\" class=\"mcnPreviewText\" style=\"display:none!important;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;font-family:Arial,sans-serif;color:transparent;\">\n  *|MC_PREVIEW_TEXT|*\n</div>\n<div aria-hidden=\"true\" style=\"display:none!important;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;color:transparent;\">\n  &#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;\n</div>\n\n<center role=\"article\" aria-roledescription=\"email\" lang=\"nl\" style=\"width:100%;background-color:#f1f1ef;\">\n<!--[if mso | IE]>\n<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"background-color:#f1f1ef;\"><tr><td>\n<![endif]-->\n\n";
+var MAIL_HEAD = "<!DOCTYPE html>\n<html lang=\"nl\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\">\n<head>\n<meta charset=\"utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />\n<meta name=\"format-detection\" content=\"telephone=no, date=no, address=no, email=no, url=no\" />\n<meta name=\"color-scheme\" content=\"light\" />\n<meta name=\"supported-color-schemes\" content=\"light\" />\n<title>*|MC:SUBJECT|*</title>\n<!--[if gte mso 9]>\n<xml>\n  <o:OfficeDocumentSettings>\n    <o:AllowPNG/>\n    <o:PixelsPerInch>96</o:PixelsPerInch>\n  </o:OfficeDocumentSettings>\n</xml>\n<![endif]-->\n\n<style type=\"text/css\">\n  /* ====================================================================\n     NBC MAILING — BEWERKBAAR WERKBESTAND (blokkenbibliotheek, blanco)\n     Koppen = live tekst in Pockota, fallback Georgia.\n     Bodytekst = fallback Helvetica/Arial (consistent voor elke ontvanger).\n     Het werkbestand IS al de importklare versie -- geen bak-stap nodig.\n     ==================================================================== */\n\n  body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}\n  table,td{mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;}\n  img{-ms-interpolation-mode:bicubic;border:0;height:auto;line-height:100%;outline:none;text-decoration:none;display:block;}\n  body{margin:0;padding:0;width:100%!important;height:100%!important;background-color:#f1f1ef;}\n  a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important;font-size:inherit!important;font-family:inherit!important;font-weight:inherit!important;line-height:inherit!important;}\n  .ExternalClass{width:100%;}\n  .ExternalClass,.ExternalClass p,.ExternalClass td,.ExternalClass div,.ExternalClass span,.ExternalClass font{line-height:100%;}\n  u + #body a{color:inherit;text-decoration:none;}\n  u + #body .footer-logo-cell{width:48%!important;}\n  u + #body .footer-contact{width:52%!important;font-size:13px!important;white-space:nowrap!important;}\n  p{margin:0;}\n\n  /* Automatische regel- en woordafbreking. Outlook kan woordafbreking negeren,\n     maar normale regelomloop blijft daar wel werken. */\n  h1,h2,h3,p,a{\n    white-space:normal;\n    overflow-wrap:break-word;\n    word-wrap:break-word;\n    word-break:normal;\n    -webkit-hyphens:auto;\n    -ms-hyphens:auto;\n    hyphens:auto;\n  }\n\n  @media only screen and (max-width:620px){\n    .email-container{width:100%!important;max-width:100%!important;}\n    .fluid{width:100%!important;max-width:100%!important;height:auto!important;}\n    .stack{display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;}\n    .px{padding-left:22px!important;padding-right:22px!important;}\n    .py-lg{padding-top:36px!important;padding-bottom:36px!important;}\n    .center-sm{text-align:center!important;}\n    .nav-link{display:inline-block!important;padding:6px 9px!important;}\n    .h1{font-size:34px!important;line-height:1.08!important;}\n    .h2{font-size:28px!important;line-height:1.12!important;}\n    .artnum{font-size:46px!important;}\n    .stat-num{font-size:46px!important;}\n    .card-pad{padding:28px 22px!important;}\n    .col-gap{height:28px!important;line-height:28px!important;}\n    .mt-sm{height:18px!important;line-height:18px!important;}\n    .hide-sm{display:none!important;max-height:0!important;overflow:hidden!important;}\n    .art-num-cell{padding-bottom:6px!important;}\n    .logo-img{margin-left:auto!important;margin-right:auto!important;width:260px!important;max-width:260px!important;}\n    .center-img-sm{margin-left:auto!important;margin-right:auto!important;}\n    .left-sm{text-align:left!important;}\n    .tri-num-img{width:84px!important;max-width:84px!important;height:auto!important;}\n    .eqh{height:auto!important;}\n  }\n</style>\n</head>\n\n<body id=\"body\" style=\"margin:0;padding:0;width:100%;background-color:#f1f1ef;\">\n\n<!-- Mailchimp vult dit vanuit Onderwerp > Previewtekst. -->\n<div mc:edit=\"preview_text\" class=\"mcnPreviewText\" style=\"display:none!important;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;font-family:Arial,sans-serif;color:transparent;\">\n  *|MC_PREVIEW_TEXT|*\n</div>\n<div aria-hidden=\"true\" style=\"display:none!important;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;color:transparent;\">\n  &#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;\n</div>\n\n<center role=\"article\" aria-roledescription=\"email\" lang=\"nl\" style=\"width:100%;background-color:#f1f1ef;\">\n<!--[if mso | IE]>\n<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"background-color:#f1f1ef;\"><tr><td>\n<![endif]-->\n\n";
 var MAIL_TAIL = "<!--[if mso | IE]>\n</td></tr></table>\n<![endif]-->\n</center>\n\n</body>\n</html>\n";
 
 /* ================= CLOUD (Supabase) ================= */
@@ -1345,9 +1452,8 @@ function absolutizeImages(node){
 
 function cleanBlock(wrap,unwrap){
   var c=wrap.cloneNode(true);
-  c.querySelectorAll('.pv-tag,.pv-tools,.photo-badge,.photo-act,.link-badge,.gap-indicator').forEach(function(x){ x.remove(); });
+  c.querySelectorAll('.pv-tag,.pv-tools,.photo-badge,.photo-acts,.link-badge,.gap-indicator').forEach(function(x){ x.remove(); });
   stripInjectedPosition(c);
-  c.querySelectorAll('[data-orig-src]').forEach(function(el){ el.removeAttribute('data-orig-src'); });
   absolutizeImages(c);
   c.querySelectorAll('[contenteditable]').forEach(function(el){ el.removeAttribute('contenteditable'); el.removeAttribute('spellcheck'); });
   c.querySelectorAll('.photo-wrap').forEach(function(el){ el.classList.remove('photo-wrap','photo-wrap-klein'); if(!el.getAttribute('class')) el.removeAttribute('class'); });

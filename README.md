@@ -13,14 +13,19 @@ nieuwsbrieven staan in Supabase en zijn dus vanaf elke computer bereikbaar.
 1. **Blokken kiezen.** Klik links op een blok (A–T). Start met `A Webversie-balk`
    en `B Header`, eindig met `R Donkere footer`.
 2. **Teksten typen.** Klik direct in een kop of alinea en typ.
-3. **Foto's plaatsen.** Klik op een fotoplek, kies je foto, snijd bij. De foto
-   wordt meteen online gezet. Staat de afbeelding al ergens online, klik dan op
-   **🔗 Webadres** en plak het adres. Dat kan bij *elke* afbeelding in elk blok —
-   ook het logo en de social-iconen. Bij die kleine beelden verschijnen de
-   knoppen als je er met de muis overheen gaat.
-4. **Opslaan.** Geef de nieuwsbrief bovenin een naam. Vanaf dan wordt elke
+3. **Foto's plaatsen.** Klik op een fotoplek op **Foto**, kies je foto, snijd
+   bij. De foto wordt meteen online gezet.
+4. **Afbeeldingen klikbaar maken.** Klik op **Link** bij een afbeelding en vul
+   in waar hij naartoe moet, net als bij een knop. Dat kan bij *elke* afbeelding
+   in elk blok — ook het logo en de social-iconen. Bij die kleine beelden
+   verschijnen de knopjes als je er met de muis overheen gaat. Leeg laten haalt
+   de link er weer af.
+5. **Ongedaan maken.** **Ctrl+Z** (Mac: **Cmd+Z**) draait je laatste stap terug,
+   **Ctrl+Shift+Z** of **Ctrl+Y** voert hem opnieuw uit. Kan ook met de pijltjes
+   in de balk. Werkt voor blokken én voor getypte tekst.
+6. **Opslaan.** Geef de nieuwsbrief bovenin een naam. Vanaf dan wordt elke
    wijziging automatisch bewaard.
-5. **Exporteren.** Klik **HTML voor Mailchimp** → **HTML kopiëren**. In
+7. **Exporteren.** Klik **HTML voor Mailchimp** → **HTML kopiëren**. In
    Mailchimp: *Create → Email → Code your own → Paste in code*, plakken, klaar.
 
 ## Waarom de afbeeldingen het nu altijd doen

@@ -3,25 +3,26 @@
 Dit project maakt de **maandelijkse NBC-nieuwsbrief** voor Mailchimp. Lees dit eerst.
 
 ## Werkwijze (vast)
-- **Niet from scratch.** `NBC mailing template.html` is de **blokkenbibliotheek** (de blanco basis). Elke editie wordt samengesteld door deze blokken te hergebruiken/herschikken — nooit opnieuw vanaf nul.
-- **Per editie een eigen bestand**, bv. `Nieuwsbrief april.html`. De bibliotheek blijft blanco.
+- **Niet from scratch.** De blokkenbibliotheek is de blanco basis: in de bouwer de `BLOCKS`-array, handmatig `sjabloon/nbc-mailing-template.html`. Elke editie wordt samengesteld door deze blokken te hergebruiken/herschikken — nooit opnieuw vanaf nul.
+- **Per editie een eigen bestand** bij handwerk, bv. `sjabloon/nieuwsbrief-april.html`. De bibliotheek blijft blanco. Via de bouwer staat elke editie in Supabase onder een eigen naam.
 - **Koppen = live tekst.** Koppen staan in Pockota met een vaste fallback-stack: `'Pockota',Georgia,serif`. Geen afbeeldingen meer voor koppen — dit voorkomt dat de mail onleesbaar wordt als een mailclient (vooral bedrijfs-Outlook) afbeeldingen blokkeert. Georgia is de enige fallback voor Pockota: overal geïnstalleerd, en de rustige serif sluit beter aan bij het karakter van Pockota dan een schreefloze vervanger. **Alleen Pockota valt terug op Georgia** — bodytekst blijft schreefloos (zie hieronder).
 - **Bodytekst = fallback.** Geen Area Normal-webfont in de mail; body draait op Helvetica/Arial — consistent voor élke ontvanger.
-- **Levering:** map `mailchimp-export/` (HTML + `images/`) → zippen → in Mailchimp: Create → Email → Code your own → Import zip. Geen "bak"-stap meer nodig — het werkbestand ís al de importklare versie (alleen kopiëren).
+- **Levering:** in de bouwer op **HTML voor Mailchimp** → **HTML kopiëren** → in Mailchimp: Create → Email → Code your own → Paste in code. De zip-route (**Zip met foto's** → Import zip) blijft als alternatief bestaan.
 - **Niet bedoeld om in Mailchimp te bewerken.** Aanpassingen lopen via het werkbestand hier; ik lever een nieuwe zip.
 
 ## Maandproces
 1. Klant levert teksten + foto's (of een ruwe opzet) — of je collega levert een briefing via de Nieuwsbrief-bouwer.
 2. Stel editie samen uit de standaardblokken, met een **frisse layout-variant** (zie variatieknoppen).
 3. Plaats de foto's op de genummerde placeholders → werkbestand = meteen de importklare versie.
-4. Kopieer naar `mailchimp-export/` → zip → klant importeert en verstuurt.
+4. Exporteer met **HTML voor Mailchimp** → klant plakt de code en verstuurt.
 
 ## Beeld-werkwijze (vast — genummerde placeholders)
 - Bij elke nieuwe editie krijgt **elke afbeeldingsplek een zichtbaar nummer** in het werkbestand: een badge ① ② ③… linksboven op de placeholder.
 - De klant levert foto's aan en zegt simpelweg **"foto 1 = …, foto 2 = …"**. Zo is er nooit twijfel over welke foto waar komt.
 - Lever per editie ook een kort **fotolijstje**: nummer · waar het komt · aanbevolen formaat (hero ~1200px breed, kolom/ruimtefoto's ~530px breed, JPG/PNG). Te kleine foto's worden korrelig op retina.
 - De nummer-badges zijn alleen voor de werkfase: **bij levering verdwijnen ze** (placeholder → echte foto).
-- **Elke afbeelding kan ook een webadres krijgen** — knop `🔗 Webadres` op de afbeelding. Dat geldt voor alle beelden in alle blokken, dus ook logo en social-iconen. Zo'n adres wordt niet geüpload en gaat ongewijzigd mee in de export. Bij beelden smaller dan 120px verschijnen de knoppen pas bij hover, zodat het icoon herkenbaar blijft.
+- **Elke afbeelding kan klikbaar** — knop `Link` op de afbeelding, net als bij een knop. De afbeelding wordt dan in een `<a>` gezet. Dit geldt voor alle beelden in alle blokken, dus ook logo en social-iconen. Leeg laten haalt de link er weer af. Naast `https://` zijn ook `mailto:`, `tel:` en merge-tags als `*|ARCHIVE|*` toegestaan. Bij beelden smaller dan 200px verschijnen de knoppen pas bij hover, zodat het beeld herkenbaar blijft.
+- **Ongedaan maken** met `Ctrl+Z` / `Cmd+Z`, opnieuw met `Ctrl+Shift+Z` of `Ctrl+Y`. De geschiedenis bewaart momentopnamen van de hele opzet (max 80) en dekt zowel blokken als getypte tekst. In invoervelden blijft de normale tekst-undo van de browser werken.
 - Helper: badge = absoluut gepositioneerde pill (petrol `#229d96`, witte Pockota-cijfers) in een `position:relative` wrapper rond de `<img>`. Strip alle `.ph-num`-elementen bij het bakken.
 
 ## Merk (bindend)
@@ -35,7 +36,7 @@ Dit project maakt de **maandelijkse NBC-nieuwsbrief** voor Mailchimp. Lees dit e
 NBC · Blokhoeve 1 · 3438 LC Nieuwegein · info@nbcevents.nl · +31 (0)30 - 602 69 00
 Social: LinkedIn, Instagram, Facebook, YouTube. Merge-tags: `*|ARCHIVE|*`, `*|EMAIL|*`, `*|UPDATE_PROFILE|*`, `*|UNSUB|*`, `*|CURRENT_YEAR|*`, `*|MC:SUBJECT|*`.
 
-## Blokkenbibliotheek (in `NBC mailing template.html`)
+## Blokkenbibliotheek
 Header (logo + nav + gradient-lijn) · hero met beeld · genummerd artikel (zand) · foto + teal actiekaart · genummerd artikel met beeld · twee kolommen · kengetallen · citaat (lichte tint) · afsluit-CTA (teal) · donkere footer.
 **Extra varianten:** typografische hero (zonder beeld) · sectiekop/scheiding · agenda/event-rij · drie kolommen tekst · beeld+tekst (beeld rechts) · highlight-strip (zand) · losse CTA-knop · losse afbeelding (volle breedte).
 
