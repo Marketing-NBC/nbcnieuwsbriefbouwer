@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cloud aanzetten — NBC nieuwsbrief-bouwer</title>
+<link rel="icon" href="../images/nbc-mark.svg">
+<style>
+  @font-face{font-family:'Pockota';src:url("../fonts/Pockota-Light.woff2") format('woff2');font-weight:300;font-style:normal;font-display:swap;}
+  @font-face{font-family:'Pockota';src:url("../fonts/Pockota-Regular.woff2") format('woff2');font-weight:400;font-style:normal;font-display:swap;}
+  @font-face{font-family:'Pockota';src:url("../fonts/Pockota-Medium.woff2") format('woff2');font-weight:500;font-style:normal;font-display:swap;}
+
+  :root{
+    --petrol:#229d96; --diep:#165e5a; --goud:#f6a304; --zand:#f2e6da;
+    --licht:#e9f5f4; --cream:#f1f1ef; --inkt:#0e0e0e; --body:#21282b; --grijs:#596165;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:0 20px 80px;
+    background:var(--cream); color:var(--body);
+    font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-size:15px; line-height:1.65;
+  }
+  .wrap{max-width:760px;margin:0 auto;}
+
+  header.top{padding:48px 0 8px;}
+  .eyebrow{
+    margin:0 0 12px; font-size:11px; font-weight:700; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--petrol);
+  }
+  h1{
+    margin:0 0 14px; font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;
+    font-size:44px; font-weight:400; line-height:1.04; letter-spacing:-.015em; color:var(--inkt);
+  }
+  h1 em{font-style:italic;font-weight:300;color:var(--petrol);}
+  .lead{margin:0 0 8px;font-size:17px;line-height:1.6;}
+
+  .let-op{
+    margin:28px 0 0; padding:16px 20px; background:var(--zand);
+    border-radius:16px; font-size:14.5px;
+  }
+  .let-op b{color:var(--inkt);}
+
+  .stap{
+    display:flex; gap:22px; align-items:flex-start;
+    margin:40px 0 0; padding:30px 0 0; border-top:1px solid #dcd8d3;
+  }
+  .num{
+    flex:0 0 auto; width:64px;
+    font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;
+    font-size:48px; font-weight:400; line-height:.9; color:var(--petrol);
+  }
+  .stap-body{flex:1 1 auto;min-width:0;}
+  h2{
+    margin:0 0 10px; font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;
+    font-size:26px; font-weight:500; line-height:1.14; letter-spacing:-.01em; color:var(--inkt);
+  }
+  p{margin:0 0 12px;}
+
+  pre{
+    margin:14px 0 0; padding:18px 20px; overflow-x:auto;
+    background:#050606; color:#e6ecec; border-radius:14px;
+    font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12.5px; line-height:1.6;
+  }
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.94em;}
+  p code,li code,td code{
+    padding:2px 6px; background:var(--licht); color:var(--diep);
+    border-radius:5px; font-weight:600;
+  }
+
+  table.velden{border-collapse:collapse;width:100%;margin:12px 0 0;font-size:14.5px;}
+  table.velden td{padding:9px 0;border-bottom:1px solid #e2ded9;vertical-align:top;}
+  table.velden td:first-child{width:150px;font-weight:700;color:var(--diep);}
+
+  .klaar{
+    margin:48px 0 0; padding:32px 34px; background:var(--petrol);
+    border-radius:24px; color:#fff;
+  }
+  .klaar h2{color:#fff;margin-bottom:12px;}
+  .klaar p{color:#e6f5f4;}
+  .klaar a{color:#fff;}
+  .btn{
+    display:inline-block; margin-top:10px; padding:14px 30px;
+    background:#fff; color:var(--inkt); border-radius:40px;
+    font-size:15px; font-weight:700; text-decoration:none;
+  }
+
+  a{color:var(--diep);}
+  .voet{margin:44px 0 0;font-size:13px;color:var(--grijs);}
+
+  @media(max-width:620px){
+    h1{font-size:34px;}
+    .stap{flex-direction:column;gap:6px;}
+    .num{font-size:38px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <p class="eyebrow">nieuwsbrief-bouwer · eenmalige installatie</p>
+  <h1>Cloud aanzetten,<br><em>één keer instellen</em></h1>
+  <p class="lead">Vier stappen. Daarna bewaart de bouwer elke nieuwsbrief online, kun je er vanaf elke computer bij, en werkt de HTML die je naar Mailchimp plakt inclusief foto's.</p>
+
+  <div class="let-op">
+    <b>Belangrijk:</b> voer de stukken code hieronder <b>apart</b> uit. De SQL-editor draait alles als één geheel — als het tweede stuk struikelt, wordt het eerste ook weer teruggedraaid.
+  </div>
+</header>
+
+<section class="stap">
+  <div class="num">01</div>
+  <div class="stap-body">
+    <h2>De tabel voor de nieuwsbrieven</h2>
+    <p>Open in Supabase de <b>SQL Editor</b>, klik <b>New query</b>, plak dit en klik <b>Run</b>. Je hoort <code>Success. No rows returned</code> te zien.</p>
+<pre>create table if not exists public.nieuwsbrieven (
+  id          uuid primary key default gen_random_uuid(),
+  naam        text not null,
+  merk        text not null default 'nbc',
+  blokken     jsonb not null default '[]'::jsonb,
+  verwijderd  boolean not null default false,
+  bijgewerkt  timestamptz not null default now()
+);
+
+alter table public.nieuwsbrieven enable row level security;
+grant all on table public.nieuwsbrieven to anon, authenticated;
+
+drop policy if exists "bouwer toegang" on public.nieuwsbrieven;
+create policy "bouwer toegang" on public.nieuwsbrieven
+  for all to anon, authenticated
+  using (true) with check (true);
+
+notify pgrst, 'reload schema';</pre>
+  </div>
+</section>
+
+<section class="stap">
+  <div class="num">02</div>
+  <div class="stap-body">
+    <h2>De map voor de foto's</h2>
+    <p>Doe dit via de knoppen, niet via SQL — dat werkt betrouwbaarder. Ga naar <b>Storage</b> in de linkerbalk en klik <b>New bucket</b>:</p>
+    <table class="velden">
+      <tr><td>Name</td><td><code>nieuwsbrief</code></td></tr>
+      <tr><td>Public bucket</td><td>aanzetten — anders kan Mailchimp de foto's niet laden</td></tr>
+    </table>
+    <p style="margin-top:16px;">Daarna moet de bouwer er foto's in mogen zetten. Open opnieuw de <b>SQL Editor</b> met een <b>nieuwe</b> query, plak dit en klik <b>Run</b>:</p>
+<pre>drop policy if exists "nieuwsbrief beeld lezen"     on storage.objects;
+drop policy if exists "nieuwsbrief beeld toevoegen" on storage.objects;
+drop policy if exists "nieuwsbrief beeld bijwerken" on storage.objects;
+
+create policy "nieuwsbrief beeld lezen" on storage.objects
+  for select to anon, authenticated
+  using (bucket_id = 'nieuwsbrief');
+
+create policy "nieuwsbrief beeld toevoegen" on storage.objects
+  for insert to anon, authenticated
+  with check (bucket_id = 'nieuwsbrief');
+
+create policy "nieuwsbrief beeld bijwerken" on storage.objects
+  for update to anon, authenticated
+  using (bucket_id = 'nieuwsbrief');</pre>
+    <p style="margin-top:14px;">Loopt dit vast op <code>must be owner of table objects</code>? Geen probleem — je tabel uit stap 1 blijft gewoon staan. Zet de rechten dan via <b>Storage → Policies</b> met de knoppen.</p>
+  </div>
+</section>
+
+<section class="stap">
+  <div class="num">03</div>
+  <div class="stap-body">
+    <h2>De sleutel in de bouwer zetten</h2>
+    <p>Ga in Supabase naar <b>Settings → API</b> en kopieer de <b>anon public</b> key. Zet die in <code>config.js</code> in de repository:</p>
+<pre>window.NBC_CONFIG = {
+  url: 'https://uqgpcvuhwfvyhvxokptn.supabase.co',
+  key: 'eyJhbGciOi...'   // anon / publishable key
+};</pre>
+    <p style="margin-top:14px;">Commit en push — daarna werkt het voor iedereen die de bouwer opent, zonder dat er nog iets ingevuld hoeft te worden.</p>
+    <p>Deze sleutel hoort in de browser thuis: hij staat in elke Supabase-webapp en geeft alleen toegang tot wat de policies hierboven toestaan. Zet er nooit de <code>service_role</code>-key neer.</p>
+  </div>
+</section>
+
+<section class="stap">
+  <div class="num">04</div>
+  <div class="stap-body">
+    <h2>Controleren of alles staat</h2>
+    <p>Plak deze query in de SQL-editor. Je ziet in één regel of de tabel, de fotomap én de policies er zijn:</p>
+<pre>select
+  (select string_agg(tablename, ', ')
+     from pg_tables
+    where schemaname = 'public'
+      and tablename = 'nieuwsbrieven')        as tabel,
+  (select name || case when public then' (public)'else' (NIET public!)'end
+     from storage.buckets
+    where id = 'nieuwsbrief')                 as fotomap,
+  (select count(*) from pg_policies
+    where tablename = 'objects'
+      and policyname like 'nieuwsbrief%')     as beeld_policies;</pre>
+    <p style="margin-top:14px;">Je wilt zien: <code>nieuwsbrieven</code> · <code>nieuwsbrief (public)</code> · <code>3</code>.</p>
+  </div>
+</section>
+
+<div class="klaar">
+  <h2>Klaar. Testen maar.</h2>
+  <p>Open de bouwer, voeg een blok met een foto toe en upload er een. Sla de nieuwsbrief op onder een naam, herlaad de pagina en open hem opnieuw uit <b>Mijn nieuwsbrieven</b> — staan tekst én foto er nog, dan klopt de hele keten.</p>
+  <p>Klik daarna op <b>HTML voor Mailchimp</b>. Zie je geen waarschuwing over foto's die nog niet online staan, dan werkt de fotomap ook goed.</p>
+  <a class="btn" href="../index.html">Open de bouwer &rarr;</a>
+</div>
+
+<p class="voet">Werkt de verbinding niet? Een <b>404</b> betekent dat de tabel uit stap 1 er niet is — draai die dan los opnieuw. Een fout over <b>row-level security</b> betekent dat de policy niet is aangemaakt.</p>
+
+</div>
+</body>
+</html>

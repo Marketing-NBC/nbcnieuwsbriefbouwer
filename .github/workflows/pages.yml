@@ -1,0 +1,60 @@
+name: Deploy naar GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Eén deploy tegelijk; een nieuwe push mag een lopende deploy niet afbreken.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Controleer of alle afbeeldingen bestaan
+        run: |
+          missing=0
+          # Elke afbeelding waar de bouwer of een sjabloon naar verwijst moet
+          # ook echt in de repo zitten, anders breekt het beeld bij de klant.
+          # In de BLOCKS-array staan de aanhalingstekens geescaped (src=\"...\"),
+          # vandaar de optionele backslash. Sjablonen staan in een submap en
+          # verwijzen dus met ../ naar images/.
+          refs=$(grep -ho 'src=\\\?"\(\.\./\)\?images/[A-Za-z0-9._/-]*\.\(png\|jpg\|jpeg\|svg\)' \
+                   index.html sjabloon/*.html \
+                 | sed 's|.*"||; s|^\.\./||' | sort -u)
+          for f in $refs; do
+            if [ ! -f "$f" ]; then echo "ONTBREEKT: $f"; missing=1; fi
+          done
+          echo "$(echo "$refs" | wc -l) afbeeldingen gecontroleerd."
+
+          fonts=$(grep -ho 'url("fonts/[A-Za-z0-9._-]*\.woff2")' index.html \
+                  | sed 's|url("||; s|")||' | sort -u)
+          for f in $fonts; do
+            if [ ! -f "$f" ]; then echo "ONTBREEKT: $f"; missing=1; fi
+          done
+          echo "$(echo "$fonts" | wc -l) fonts gecontroleerd."
+          if [ "$missing" = "1" ]; then
+            echo "::error::Er ontbreken assets — deploy gestopt."
+            exit 1
+          fi
+          echo "Alle afbeeldingen en fonts aanwezig."
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4

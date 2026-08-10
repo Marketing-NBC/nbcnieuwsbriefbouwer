@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NBC nieuwsbrief-bouwer</title>
+<link rel="icon" href="images/nbc-mark.svg">
+<!-- Cloud-instellingen voor iedereen die deze pagina opent. Zie config.js. -->
+<script src="config.js"></script>
+<style type="text/css">
+/* ---- e-mail CSS (voor correcte weergave van de blokken) ---- */
+
+  /* ====================================================================
+     NBC MAILING — BEWERKBAAR WERKBESTAND
+     Dit bestand bewerk je hier in Claude (alle tekst is live: klik & typ).
+     - Bodytekst staat bewust op de FALLBACK (Helvetica/Arial), net als in de
+       verzonden mail -> wat je hier ziet is wat ontvangers zien.
+     - Koppen zijn live tekst in het merkfont (Pockota) zodat je de look ziet.
+     Bij het maken van de ZIP worden de koppen omgezet naar scherpe
+     merkfont-afbeeldingen; dat wordt de definitieve, importklare versie.
+     ==================================================================== */
+
+  /* Merkfonts — lokaal gehost naast dit bestand, dus ze laden overal waar de
+     bouwer draait (GitHub Pages, lokaal geopend, of achter een eigen domein). */
+  @font-face{font-family:'Pockota';src:url("fonts/Pockota-Light.woff2") format('woff2');font-weight:300;font-style:normal;font-display:swap;}
+  @font-face{font-family:'Pockota';src:url("fonts/Pockota-Regular.woff2") format('woff2');font-weight:400;font-style:normal;font-display:swap;}
+  @font-face{font-family:'Pockota';src:url("fonts/Pockota-Medium.woff2") format('woff2');font-weight:500;font-style:normal;font-display:swap;}
+  @font-face{font-family:'Pockota';src:url("fonts/Pockota-Bold.woff2") format('woff2');font-weight:700;font-style:normal;font-display:swap;}
+  @font-face{font-family:'Pockota';src:url("fonts/Pockota-ExtraBold.woff2") format('woff2');font-weight:800;font-style:normal;font-display:swap;}
+  @font-face{font-family:'Pockota';src:url("fonts/Pockota-Italic.woff2") format('woff2');font-weight:400;font-style:italic;font-display:swap;}
+  @font-face{font-family:'Pockota';src:url("fonts/Pockota-LightItalic.woff2") format('woff2');font-weight:300;font-style:italic;font-display:swap;}
+  /* Area Normal wordt bewust NIET geladen: bodytekst draait op de fallback
+     (Helvetica/Arial), precies zoals in de verzonden mail. Wat je hier ziet
+     is wat de ontvanger ziet. Zie CLAUDE.md. */
+
+  body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
+  table,td{mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;}
+  img{-ms-interpolation-mode:bicubic;border:0;height:auto;line-height:100%;outline:none;text-decoration:none;display:block;}
+  body{margin:0;padding:0;width:100%!important;height:100%!important;background-color:#f1f1ef;}
+  a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important;font-size:inherit!important;font-family:inherit!important;font-weight:inherit!important;line-height:inherit!important;}
+  .ExternalClass{width:100%;}
+  .ExternalClass,.ExternalClass p,.ExternalClass td,.ExternalClass div,.ExternalClass span,.ExternalClass font{line-height:100%;}
+  u + #body a{color:inherit;text-decoration:none;}
+  p{margin:0;}
+
+  @media only screen and (max-width:620px){
+    .email-container{width:100%!important;max-width:100%!important;}
+    .fluid{width:100%!important;max-width:100%!important;height:auto!important;}
+    .stack{display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;}
+    .px{padding-left:22px!important;padding-right:22px!important;}
+    .py-lg{padding-top:36px!important;padding-bottom:36px!important;}
+    .center-sm{text-align:center!important;}
+    .nav-link{display:inline-block!important;padding:6px 9px!important;}
+    .h1{font-size:34px!important;line-height:1.08!important;}
+    .h2{font-size:28px!important;line-height:1.12!important;}
+    .artnum{font-size:46px!important;}
+    .stat-num{font-size:46px!important;}
+    .card-pad{padding:28px 22px!important;}
+    .col-gap{height:28px!important;line-height:28px!important;}
+    .mt-sm{height:18px!important;line-height:18px!important;}
+    .hide-sm{display:none!important;max-height:0!important;overflow:hidden!important;}
+    .art-num-cell{padding-bottom:6px!important;}
+    .logo-img{margin-left:auto!important;margin-right:auto!important;width:260px!important;max-width:260px!important;}
+    .center-img-sm{margin-left:auto!important;margin-right:auto!important;}
+    .left-sm{text-align:left!important;}
+    .tri-num-img{width:84px!important;max-width:84px!important;height:auto!important;}
+  }
+
+</style>
+<style>
+  :root{--teal:#229d96;--ink:#0e0e0e;--gold:#f6a304;--paper:#f1f1ef;--line:#d5dadb;}
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;}
+  body{font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;color:#21282b;background:#e7eaeb;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+  header.bar{flex:none;background:#050606;color:#fff;padding:14px 22px;display:flex;align-items:center;gap:14px 18px;flex-wrap:wrap;}
+  header.bar .bar-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-left:auto;justify-content:flex-end;}
+  @media (max-width:1180px){ header.bar .sub{display:none;} }
+  @media (max-width:760px){ header.bar h1{font-size:18px;} }
+  header.bar h1{font-family:'Pockota',Arial,sans-serif;font-weight:400;font-size:22px;margin:0;}
+  header.bar .sub{font-size:12.5px;color:#c9cfd0;max-width:640px;line-height:1.4;}
+  header.bar .grow{flex:1;}
+  .btn{border:0;border-radius:999px;padding:11px 20px;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;}
+  .btn-primary{background:#fff;color:#0e0e0e;}
+  .btn-teal{background:var(--teal);color:#fff;}
+  .btn-ghost{background:transparent;color:#fff;border:1px solid #3a4448;}
+  main{flex:1;display:flex;min-height:0;}
+  /* palette */
+  aside{flex:none;width:290px;background:#fff;border-right:1px solid var(--line);overflow-y:auto;padding:16px;}
+  aside h2{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8a9294;margin:8px 4px 10px;}
+  .palette-item{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#f7f8f8;border:1px solid #e6e9e9;border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer;font-family:inherit;transition:.15s;}
+  .palette-item:hover{border-color:var(--teal);background:#fff;transform:translateY(-1px);box-shadow:0 6px 14px -6px rgba(47,58,62,.18);}
+  .palette-item .letter{flex:none;width:34px;height:34px;border-radius:9px;background:#e9f5f4;color:var(--teal);font-family:'Pockota',Arial,sans-serif;font-size:17px;font-weight:500;display:flex;align-items:center;justify-content:center;}
+  .palette-item .nm{font-size:13.5px;font-weight:600;color:#0e0e0e;line-height:1.2;}
+  .palette-item .add{margin-left:auto;color:var(--teal);font-size:20px;font-weight:700;}
+  /* canvas */
+  .canvaswrap{flex:1;overflow-y:auto;padding:28px 20px 120px;display:flex;flex-direction:column;align-items:center;}
+  .hint{max-width:600px;background:#fff;border:1px dashed var(--line);border-radius:14px;padding:22px 24px;color:#596165;font-size:14px;line-height:1.6;text-align:center;}
+  .hint b{color:#0e0e0e;}
+  #stage{width:600px;}
+  .pv-block{position:relative;outline:1px solid transparent;}
+  .pv-block:hover{outline:2px solid rgba(34,157,150,.55);}
+  .pv-tools{position:absolute;top:6px;right:6px;display:none;gap:4px;z-index:5;}
+  .pv-block:hover .pv-tools{display:flex;}
+  .pv-tools button{width:30px;height:30px;border:0;border-radius:8px;background:#050606;color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:.92;}
+  .pv-tools button:hover{background:var(--teal);}
+  .pv-tag{position:absolute;top:6px;left:6px;background:#050606;color:#fff;font-size:10px;font-weight:700;letter-spacing:.08em;padding:3px 8px;border-radius:6px;z-index:5;text-transform:uppercase;}
+  [contenteditable]{cursor:text;border-radius:3px;transition:background .12s;}
+  [contenteditable]:hover{outline:1px dashed rgba(34,157,150,.55);}
+  [contenteditable]:focus{outline:2px solid var(--teal);background:rgba(34,157,150,.07);}
+  .photo-badge{position:absolute;background:var(--teal);color:#fff;font-family:'Pockota',Arial,sans-serif;font-weight:500;font-size:15px;width:30px;height:30px;border-radius:999px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.25);pointer-events:none;z-index:4;}
+  .photo-wrap{position:relative;display:block;}
+  /* briefing modal */
+  .overlay{position:fixed;inset:0;background:rgba(5,6,6,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:24px;}
+  .overlay.on{display:flex;}
+  .modal{background:#fff;border-radius:18px;max-width:680px;width:100%;max-height:86vh;display:flex;flex-direction:column;overflow:hidden;}
+  .modal header{background:#050606;color:#fff;padding:18px 22px;display:flex;align-items:center;}
+  .modal header h3{font-family:'Pockota',Arial,sans-serif;font-weight:400;font-size:20px;margin:0;}
+  .modal header .grow{flex:1;}
+  .modal .body{padding:20px 22px;overflow-y:auto;}
+  .modal textarea{width:100%;height:340px;border:1px solid var(--line);border-radius:12px;padding:14px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.55;color:#21282b;resize:vertical;}
+  .modal .foot{padding:14px 22px;border-top:1px solid #eef0f0;display:flex;gap:10px;justify-content:flex-end;}
+  .empty-note{color:#8a9294;font-size:13px;text-align:center;margin-top:40px;}
+</style></head>
+<body>
+<template id="__bundler_thumbnail">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" fill="#050606"/>
+  <rect x="30" y="30" width="40" height="8" rx="2" fill="#229d96"/>
+  <rect x="30" y="44" width="40" height="26" rx="3" fill="#f1f1ef"/>
+  <rect x="30" y="76" width="40" height="6" rx="2" fill="#f6a304"/>
+</svg>
+</template>
+
+<header class="bar">
+  <h1>Nieuwsbrief-bouwer</h1>
+  <div class="sub">Kies blokken links · klik in de tekst om te typen · klaar? → <b style="color:#f6a304">HTML voor Mailchimp</b></div>
+  <span id="docName" title="Naam van deze nieuwsbrief" style="font-family:'Pockota',Arial,sans-serif;font-size:14px;font-weight:500;color:#828b8d;padding:5px 12px;background:#e9f5f4;border-radius:999px;white-space:nowrap;cursor:pointer;" onclick="renameCurrent()">Naamloos concept</span>
+  <div class="bar-actions">
+    <span id="saveStatus" style="font-size:12px;padding:4px 4px;white-space:nowrap;color:#165e5a;"></span>
+    <button class="btn btn-ghost" id="saveBtn" onclick="saveNow()">Opslaan</button>
+    <button class="btn btn-ghost" onclick="openLibrary()">Mijn nieuwsbrieven</button>
+    <button class="btn btn-ghost" onclick="openHelp()">? Uitleg</button>
+    <button class="btn btn-ghost" onclick="openMobilePreview()">📱 Mobiel</button>
+    <button class="btn btn-ghost" onclick="openBriefing()">Briefing</button>
+    <button class="btn btn-ghost" onclick="resetStage()">Leegmaken</button>
+    <button class="btn btn-ghost" onclick="openConfig()" title="Cloud-instellingen">⚙</button>
+    <button class="btn btn-primary" onclick="openExport()">HTML voor Mailchimp</button>
+  </div>
+</header>
+<main>
+  <aside id="palette"></aside>
+  <div class="canvaswrap">
+    <div id="hint" class="hint"><b>Begin met bouwen.</b><br>Klik links op een blok om het toe te voegen. Tip: start met <b>A&nbsp;Webversie-balk</b> en <b>B&nbsp;Header</b>, en eindig met <b>R&nbsp;Donkere footer</b>.</div>
+    <div id="stage"></div>
+  </div>
+</main>
+
+<div class="overlay on" id="helpOverlay">
+  <div class="modal">
+    <header><h3>Zo maak je een nieuwsbrief</h3><div class="grow"></div></header>
+    <div class="body" style="color:#21282b;font-size:14px;line-height:1.65;">
+      <ol style="margin:0 0 4px 18px;padding:0;">
+        <li style="margin-bottom:10px;"><b>Kies blokken.</b> Klik links op een blok (A–R). Het verschijnt rechts in het live voorbeeld. Start met <b>A&nbsp;Webversie-balk</b> + <b>B&nbsp;Header</b>, eindig met <b>R&nbsp;Donkere footer</b>.</li>
+        <li style="margin-bottom:10px;"><b>Bepaal de volgorde.</b> Zweef over een blok en gebruik de knopjes rechtsboven: <b>▲▼</b> verplaatsen, <b>⧉</b> dupliceren, <b>✕</b> verwijderen.</li>
+        <li style="margin-bottom:10px;"><b>Typ de teksten.</b> Klik direct op een kop of alinea in het voorbeeld en typ jouw tekst.</li>
+        <li style="margin-bottom:10px;"><b>Foto's.</b> Klik op een fotoplek, kies je foto en snijd hem bij. Hij wordt meteen online gezet, dus je hoeft niets los mee te sturen.</li>
+        <li style="margin-bottom:10px;"><b>Geef hem een naam.</b> Klik bovenin op <b>Opslaan als…</b> en typ een naam. Vanaf dan wordt elke wijziging automatisch bewaard en kun je er vanaf elke computer bij. In dat overzicht kun je een nieuwsbrief ook <b>openen</b>, <b>dupliceren</b> als startpunt voor volgende maand, of naar de <b>prullenbak</b> doen.</li>
+        <li style="margin-bottom:0;"><b>Klaar?</b> Klik <b style="color:#0e0e0e;">HTML voor Mailchimp</b> en daarna <b>HTML kopiëren</b>. In Mailchimp: <b>Create → Email → Code your own → Paste in code</b>, plakken, klaar.</li>
+      </ol>
+      <p style="margin:16px 0 0;color:#596165;font-size:13px;">Liever niet zelf in Mailchimp? Klik dan op <b>Briefing</b> — dan krijg je een samenvatting die je kunt doormailen, en wordt de nieuwsbrief voor je opgemaakt.</p>
+      <p style="margin:8px 0 0;color:#596165;font-size:13px;">Het voorbeeld toont de desktopweergave. De mobiele versie wordt automatisch goed gezet — bekijk hem met <b>📱 Mobiel</b>.</p>
+    </div>
+    <div class="foot"><button class="btn btn-teal" onclick="closeHelp()">Aan de slag →</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="libOverlay">
+  <div class="modal" style="max-width:720px;">
+    <header>
+      <h3>Mijn nieuwsbrieven</h3>
+      <div class="grow"></div>
+      <button class="btn btn-ghost" id="libTabActive" onclick="libTab(false)">Nieuwsbrieven</button>
+      <button class="btn btn-ghost" id="libTabTrash" onclick="libTab(true)">Prullenbak</button>
+      <button class="btn btn-ghost" onclick="closeLibrary()">Sluiten</button>
+    </header>
+    <div class="body" id="libBody" style="min-height:220px;"></div>
+    <div class="foot">
+      <div class="grow"></div>
+      <button class="btn btn-teal" onclick="closeLibrary()">Sluiten</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="exportOverlay">
+  <div class="modal" style="max-width:760px;">
+    <header><h3>HTML voor Mailchimp</h3><div class="grow"></div><button class="btn btn-ghost" onclick="closeExport()">Sluiten</button></header>
+    <div class="body">
+      <div id="exportWarning" style="display:none;margin:0 0 14px;padding:12px 16px;background:#fdf1ec;border:1px solid #e2694a;border-radius:10px;color:#a13a12;font-size:13px;line-height:1.6;"></div>
+      <p style="margin:0 0 12px;color:#596165;font-size:13.5px;line-height:1.6">In Mailchimp: <b>Create → Email → Code your own → Paste in code</b>. Plak hieronder gekopieerde HTML en je mail staat er meteen goed in.</p>
+      <textarea id="exportText" readonly="" style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;"></textarea>
+    </div>
+    <div class="foot">
+      <button class="btn btn-ghost" style="color:#0e0e0e;border:1px solid #c8c5c1;" onclick="downloadHTML()">HTML-bestand</button>
+      <button class="btn btn-ghost" style="color:#0e0e0e;border:1px solid #c8c5c1;" onclick="downloadZip()" id="zipBtn">Zip met foto's</button>
+      <div class="grow"></div>
+      <button class="btn btn-teal" onclick="copyExport()" id="copyHtmlBtn">HTML kopiëren</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="cfgOverlay">
+  <div class="modal" style="max-width:520px;">
+    <header><h3>Cloud-instellingen</h3><div class="grow"></div><button class="btn btn-ghost" onclick="closeConfig()">Sluiten</button></header>
+    <div class="body" style="font-size:14px;line-height:1.6;color:#21282b;">
+      <p style="margin:0 0 16px;color:#596165;font-size:13px;">Hiermee bewaart de bouwer je nieuwsbrieven online, zodat je er vanaf elke computer bij kunt — en worden foto's gehost zodat de HTML direct in Mailchimp werkt.</p>
+      <p style="margin:0 0 16px;padding:10px 12px;background:#e9f5f4;border-radius:8px;color:#165e5a;font-size:12.5px;line-height:1.55;">Normaal staat dit al goed voor iedereen, ingesteld in <b>config.js</b>. Vul hier alleen iets in als je tijdelijk een ander project wilt gebruiken — dat geldt dan alleen in jouw browser.</p>
+      <label style="display:block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#596165;margin-bottom:6px;">Project-URL</label>
+      <input id="cfgUrl" type="text" placeholder="https://xxxxx.supabase.co" style="width:100%;padding:10px 12px;border:1px solid #c8c5c1;border-radius:8px;font-size:14px;margin-bottom:16px;">
+      <label style="display:block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#596165;margin-bottom:6px;">Publieke key (anon)</label>
+      <input id="cfgKey" type="text" placeholder="eyJhbGciOi..." style="width:100%;padding:10px 12px;border:1px solid #c8c5c1;border-radius:8px;font-size:14px;">
+      <p id="cfgStatus" style="margin:16px 0 0;font-size:13px;"></p>
+    </div>
+    <div class="foot">
+      <button class="btn btn-ghost" style="color:#0e0e0e;border:1px solid #c8c5c1;" onclick="testConfig()">Verbinding testen</button>
+      <div class="grow"></div>
+      <button class="btn btn-teal" onclick="saveConfig()">Opslaan</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="askOverlay" style="z-index:70;">
+  <div class="modal" style="max-width:440px;">
+    <header><h3 id="askTitle">Naam</h3><div class="grow"></div></header>
+    <div class="body" style="font-size:14px;line-height:1.6;color:#21282b;">
+      <p id="askText" style="margin:0 0 14px;"></p>
+      <input id="askInput" type="text" style="width:100%;padding:11px 13px;border:1px solid #c8c5c1;border-radius:8px;font-size:15px;font-family:inherit;">
+    </div>
+    <div class="foot">
+      <button class="btn btn-ghost" style="color:#0e0e0e;border:1px solid #c8c5c1;" id="askCancel">Annuleren</button>
+      <div class="grow"></div>
+      <button class="btn btn-teal" id="askOk">Opslaan</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="busyOverlay" style="z-index:80;">
+  <div style="background:#fff;border-radius:14px;padding:28px 34px;text-align:center;min-width:260px;">
+    <div style="font-family:'Pockota',Arial,sans-serif;font-size:18px;color:#165e5a;margin-bottom:8px;" id="busyTitle">Bezig…</div>
+    <div style="font-size:13px;color:#596165;" id="busyNote"></div>
+  </div>
+</div>
+
+<div class="overlay" id="restoreOverlay">
+  <div class="modal" style="max-width:440px;">
+    <header><h3>Welkom terug</h3><div class="grow"></div></header>
+    <div class="body" style="color:#21282b;font-size:14px;line-height:1.65;">
+      <p style="margin:0 0 10px;">Je hebt onafgemaakt werk van <b id="restoreWhen"></b>. Wil je daarmee verdergaan?</p>
+      <p style="margin:0;color:#596165;font-size:13px;"><span id="restoreCount"></span> &middot; automatisch bewaard in deze browser op deze computer.</p>
+    </div>
+    <div class="foot">
+      <button class="btn btn-ghost" style="color:#0e0e0e;border:1px solid #c8c5c1;" onclick="doFreshStart()">Opnieuw beginnen</button>
+      <div class="grow"></div>
+      <button class="btn btn-teal" onclick="doRestore()">Verdergaan →</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <header><h3>Jouw briefing</h3><div class="grow"></div><button class="btn btn-ghost" onclick="closeBriefing()">Sluiten</button></header>
+    <div class="body">
+      <div id="linkWarning" style="display:none;margin:0 0 14px;padding:12px 16px;background:#fdf1ec;border:1px solid #e2694a;border-radius:10px;color:#a13a12;font-size:13px;line-height:1.6;"></div>
+      <p style="margin:0 0 12px;color:#596165;font-size:13.5px;line-height:1.6">Dit is de samenvatting van je nieuwsbrief. Klik <b>Kopiëren</b> en plak het in een mail. Foto's die je hier al hebt geüpload hoeven niet meer los als bijlage.</p>
+      <textarea id="briefingText" readonly=""></textarea>
+    </div>
+    <div class="foot">
+      <button class="btn btn-teal" onclick="copyBriefing()" id="copyBtn">Kopiëren</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="mobileOverlay">
+  <div class="modal" style="max-width:520px;background:#f1f1ef;">
+    <header>
+      <h3>Mobiele preview</h3>
+      <div class="grow"></div>
+      <button class="btn btn-ghost mw-btn" data-w="360" onclick="setPreviewWidth(360)">360</button>
+      <button class="btn btn-ghost mw-btn" data-w="375" onclick="setPreviewWidth(375)">375</button>
+      <button class="btn btn-ghost mw-btn" data-w="414" onclick="setPreviewWidth(414)">414</button>
+      <button class="btn btn-ghost" onclick="closeMobilePreview()">Sluiten</button>
+    </header>
+    <div class="body" style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:26px 20px 30px;background:#f1f1ef;">
+      <div id="phoneShell" style="width:399px;padding:12px;background:#050606;border-radius:38px;box-shadow:0 24px 50px -10px rgba(5,6,6,.42);">
+        <div style="background:#050606;border-radius:27px;overflow:hidden;">
+          <div style="height:26px;display:flex;align-items:center;justify-content:center;background:#050606;">
+            <div style="width:64px;height:5px;border-radius:999px;background:#2f3a3e;"></div>
+          </div>
+          <iframe id="mobileFrame" style="display:block;width:375px;height:62vh;border:0;background:#f1f1ef;"></iframe>
+        </div>
+      </div>
+      <div id="mobileNote" style="font-size:12px;color:#596165;"></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="cropOverlay">
+  <div class="modal" style="max-width:520px;">
+    <header><h3>Foto bijsnijden</h3><div class="grow"></div><button class="btn btn-ghost" onclick="cancelCrop()">Sluiten</button></header>
+    <div class="body" style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+      <div id="cropBoxWrap">
+        <canvas id="cropCanvas"></canvas>
+      </div>
+      <div id="cropEmptyNote" class="empty-note" style="margin:0;">Kies eerst een foto.</div>
+      <div id="cropControls" style="display:none;width:100%;align-items:center;gap:12px;">
+        <span style="font-size:12px;color:#596165;flex:none;">Inzoomen</span>
+        <input id="cropZoom" type="range" min="1" max="3" step="0.01" value="1" style="flex:1;">
+      </div>
+      <input type="file" id="cropFileInput" accept="image/*" style="display:none;">
+    </div>
+    <div class="foot">
+      <button class="btn btn-ghost" style="color:#0e0e0e;border:1px solid var(--line);" onclick="document.getElementById('cropFileInput').click()">Andere foto kiezen</button>
+      <div class="grow"></div>
+      <button class="btn btn-teal" id="cropUseBtn" style="display:none;" onclick="confirmCrop()">Gebruiken</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var BLOCKS = [{"letter":"A","name":"Webversie-balk","type":"table","html":"<table role=\"presentation\" align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\" class=\"email-container\" style=\"width:600px;max-width:600px;background-color:#f1f1ef;\">\n  <tr>\n    <td align=\"center\" class=\"px\" style=\"padding:14px 32px 10px 32px;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:11px;line-height:1.4;color:#828b8d;letter-spacing:.1em;text-transform:uppercase;\">\n      <a href=\"*|ARCHIVE|*\" style=\"color:#828b8d;text-decoration:none;\">Online lezen</a>\n    </td>\n  </tr>\n</table>"},{"letter":"B","name":"Header","type":"row","html":"<tr>\n    <td style=\"padding:0;\">\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n        <tr>\n          <td class=\"stack px\" align=\"left\" valign=\"middle\" width=\"190\" style=\"padding:24px 32px 18px 32px;\">\n            <a href=\"https://nbcevents.nl/?utm_source=nieuwsbrief&amp;utm_medium=email&amp;utm_campaign=header\" target=\"_blank\" style=\"text-decoration:none;\">\n              <img src=\"images/nbc-logo-color.png\" width=\"132\" alt=\"NBC — Ruimte voor magie\" class=\"logo-img\" style=\"width:132px;max-width:132px;height:auto;\" />\n            </a>\n          </td>\n          <td class=\"stack px center-sm\" valign=\"middle\" style=\"padding:24px 32px 18px 32px;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-align:right;\">\n            <a class=\"nav-link\" href=\"https://nbcevents.nl/?utm_source=nieuwsbrief&amp;utm_medium=email&amp;utm_campaign=header-home\" target=\"_blank\" style=\"color:#21282b;text-decoration:none;padding:0 9px;\">Home</a>\n            <a class=\"nav-link\" href=\"https://nbcevents.nl/ruimtes/?utm_source=nieuwsbrief&amp;utm_medium=email&amp;utm_campaign=header-ruimtes\" target=\"_blank\" style=\"color:#21282b;text-decoration:none;padding:0 9px;\">Ruimtes</a>\n            <a class=\"nav-link\" href=\"https://nbcevents.nl/over-ons/?utm_source=nieuwsbrief&amp;utm_medium=email&amp;utm_campaign=header-over-ons\" target=\"_blank\" style=\"color:#21282b;text-decoration:none;padding:0 9px;\">Over ons</a>\n          </td>\n        </tr>\n      </table>\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr><td style=\"height:3px;line-height:3px;font-size:0;background-color:#f6a304;background:linear-gradient(90deg,#229d96 0%,#f6a304 100%);\">&nbsp;</td></tr></table>\n    </td>\n  </tr>\n\n  <!-- ════════"},{"letter":"C","name":"Hero met beeld","type":"row","html":"<tr>\n    <td style=\"padding:0;font-size:0;line-height:0;\">\n      <img src=\"images/ph-hero.png\" width=\"600\" alt=\"Vervang door je hero-afbeelding\" class=\"fluid\" style=\"width:100%;max-width:600px;height:auto;\" />\n    </td>\n  </tr>\n  <tr>\n    <td class=\"px\" style=\"padding:40px 36px 8px 36px;\">\n      <p data-eyebrow=\"1\" style=\"margin:0 0 16px 0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#229d96;\">welkom in de wereld van nbc</p>\n      <h1 class=\"h1\" style=\"margin:0 0 18px 0;font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:44px;font-weight:400;line-height:1.04;letter-spacing:-.015em;color:#0e0e0e;\">Ruimte voor magie,<br /><span style=\"font-style:italic;font-weight:300;color:#229d96;\">elke maand opnieuw</span></h1>\n      <p style=\"margin:0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:17px;line-height:1.6;color:#21282b;\">Een korte, warme intro die de toon zet. Vertel in één of twee zinnen wat deze editie te bieden heeft — houd het persoonlijk en concreet.</p>\n    </td>\n  </tr>\n  <tr>\n    <td class=\"px\" align=\"left\" style=\"padding:22px 36px 40px 36px;\">\n      <!-- KNOP: primair (inkt) — klik in Mailchimp op de knop en stel de link in via de werkbalk -->\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>\n        <td bgcolor=\"#0e0e0e\" style=\"border-radius:40px;mso-padding-alt:15px 32px;\">\n          <!--[if mso]>\n          <v:roundrect xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"urn:schemas-microsoft-com:office:word\" href=\"https://nbcevents.nl/\" style=\"height:50px;v-text-anchor:middle;width:200px;\" arcsize=\"50%\" stroke=\"f\" fillcolor=\"#0e0e0e\">\n          <w:anchorlock/>\n          <center style=\"color:#ffffff;font-family:Arial,sans-serif;font-size:15px;font-weight:bold;\">Plan jouw event &rarr;</center>\n          </v:roundrect>\n          <![endif]-->\n          <!--[if !mso]><!-- -->\n          <a href=\"https://nbcevents.nl/\" target=\"_blank\" style=\"display:inline-block;padding:15px 32px;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:700;line-height:1;color:#ffffff;text-decoration:none;border-radius:40px;background-color:#0e0e0e;\">Plan jouw event &rarr;</a>\n          <!--<![endif]-->\n        </td>\n      </tr></table>\n    </td>\n  </tr>\n\n  <!-- ════════"},{"letter":"D","name":"Genummerd artikel (zand)","type":"row","html":"<tr>\n    <td style=\"padding:0;\">\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#f2e6da\" style=\"background-color:#f2e6da;\">\n        <tr>\n          <td class=\"px py-lg\" style=\"padding:42px 36px;\">\n            <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n              <tr>\n                <td class=\"stack art-num-cell\" valign=\"top\" width=\"96\" style=\"padding:0;\">\n                  <div class=\"artnum\" style=\"font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:54px;font-weight:400;line-height:.9;color:#229d96;\">01</div>\n                  <div style=\"margin-top:8px;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#165e5a;\">Artikel</div>\n                </td>\n                <td class=\"stack hide-sm\" width=\"20\" style=\"font-size:0;line-height:0;\">&nbsp;</td>\n                <td class=\"stack\" valign=\"top\" style=\"padding:0;\">\n                  <div class=\"mt-sm hide-sm\" style=\"height:0;line-height:0;font-size:0;\">&nbsp;</div>\n                  <h2 class=\"h2\" style=\"margin:0 0 14px 0;font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:28px;font-weight:500;line-height:1.12;letter-spacing:-.01em;color:#0e0e0e;\">De achterkant&#8209;bierviltje&#8209;test</h2>\n                  <p style=\"margin:0 0 14px 0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.6;color:#165e5a;\">Wij geloven dat de beste eventideeën simpel zijn. Die kun je in één adem uitleggen. Lukt dat niet? Dan is het voor je gasten waarschijnlijk nog te ingewikkeld.</p>\n                  <p style=\"margin:0 0 22px 0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.6;color:#165e5a;\">Ontdek in een paar minuten of jouw idee scherp genoeg is, of nog een beetje schuurt.</p>\n                  <!-- KNOP: primair (inkt) -->\n                  <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>\n                    <td bgcolor=\"#0e0e0e\" style=\"border-radius:40px;mso-padding-alt:13px 28px;\">\n                      <!--[if mso]>\n                      <v:roundrect xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"urn:schemas-microsoft-com:office:word\" href=\"https://nbcevents.nl/\" style=\"height:44px;v-text-anchor:middle;width:150px;\" arcsize=\"50%\" stroke=\"f\" fillcolor=\"#0e0e0e\">\n                      <w:anchorlock/>\n                      <center style=\"color:#ffffff;font-family:Arial,sans-serif;font-size:14px;font-weight:bold;\">Doe de test &rarr;</center>\n                      </v:roundrect>\n                      <![endif]-->\n                      <!--[if !mso]><!-- -->\n                      <a href=\"https://nbcevents.nl/\" target=\"_blank\" style=\"display:inline-block;padding:13px 28px;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:700;line-height:1;color:#ffffff;text-decoration:none;border-radius:40px;background-color:#0e0e0e;\">Doe de test &rarr;</a>\n                      <!--<![endif]-->\n                    </td>\n                  </tr></table>\n                </td>\n              </tr>\n            </table>\n          </td>\n        </tr>\n      </table>\n    </td>\n  </tr>\n\n  <!-- ════════"},{"letter":"E","name":"Foto + teal actiekaart","type":"row","html":"<tr><td style=\"height:40px;line-height:40px;font-size:0;background-color:#ffffff;\">&nbsp;</td></tr>\n  <tr>\n    <td style=\"padding:0;font-size:0;line-height:0;\">\n      <img src=\"images/ph-full.png\" width=\"600\" alt=\"Vervang door je sfeerfoto\" class=\"fluid\" style=\"width:100%;max-width:600px;height:auto;\" />\n    </td>\n  </tr>\n  <tr>\n    <td class=\"px\" style=\"padding:24px 24px 40px 24px;background-color:#ffffff;\">\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#229d96\" style=\"background-color:#229d96;border-radius:24px;\">\n        <tr>\n          <td class=\"card-pad\" style=\"padding:34px 36px;\">\n            <p style=\"margin:0 0 14px 0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#ffffff;\">Speciale actie</p>\n            <h2 class=\"h2\" style=\"margin:0 0 16px 0;font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:30px;font-weight:500;line-height:1.08;letter-spacing:-.01em;color:#ffffff;\">Zet de zomer<br /><span style=\"font-style:italic;font-weight:300;color:#f6a304;\">op de agenda.</span></h2>\n            <p style=\"margin:0 0 22px 0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.6;color:#eafaf8;\">Last-minute een training, meeting of bedrijfsevent organiseren? Bij NBC schakelen we snel, denken we mee en regelen we alles tot in de puntjes. <span style=\"color:#f6a304;font-weight:600;\">Plus speciale zomertarieven.</span></p>\n            <!-- KNOP: wit (op teal) -->\n            <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>\n              <td bgcolor=\"#ffffff\" style=\"border-radius:40px;mso-padding-alt:14px 30px;\">\n                <!--[if mso]>\n                <v:roundrect xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"urn:schemas-microsoft-com:office:word\" href=\"https://nbcevents.nl/contact\" style=\"height:46px;v-text-anchor:middle;width:230px;\" arcsize=\"50%\" stroke=\"f\" fillcolor=\"#ffffff\">\n                <w:anchorlock/>\n                <center style=\"color:#0e0e0e;font-family:Arial,sans-serif;font-size:14px;font-weight:bold;\">Plan jouw zomerevent &rarr;</center>\n                </v:roundrect>\n                <![endif]-->\n                <!--[if !mso]><!-- -->\n                <a href=\"https://nbcevents.nl/contact\" target=\"_blank\" style=\"display:inline-block;padding:14px 30px;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:700;line-height:1;color:#0e0e0e;text-decoration:none;border-radius:40px;background-color:#ffffff;\">Plan jouw zomerevent &rarr;</a>\n                <!--<![endif]-->\n              </td>\n            </tr></table>\n          </td>\n        </tr>\n      </table>\n    </td>\n  </tr>\n\n  <!-- ════════"},{"letter":"F","name":"Genummerd artikel met beeld","type":"row","html":"<tr>\n    <td class=\"px py-lg\" style=\"padding:40px 36px 40px 36px;\">\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n        <tr>\n          <td class=\"stack\" valign=\"top\" width=\"244\" style=\"padding:0;\">\n            <img src=\"images/ph-col.png\" width=\"244\" alt=\"Afbeelding\" class=\"fluid\" style=\"width:100%;max-width:100%;height:auto;border-radius:20px;\" />\n          </td>\n          <td class=\"stack hide-sm\" width=\"24\" style=\"font-size:0;line-height:0;\">&nbsp;</td>\n          <td class=\"stack\" valign=\"top\" style=\"padding:0;\">\n            <div class=\"col-gap\" style=\"height:0;line-height:0;font-size:0;\">&nbsp;</div>\n            <div style=\"font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:28px;font-weight:400;line-height:.9;color:#229d96;\">02</div>\n            <div style=\"margin:6px 0 12px 0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#229d96;\">Ruimtes</div>\n            <h3 style=\"margin:0 0 10px 0;font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:23px;font-weight:500;line-height:1.15;color:#0e0e0e;\">Een titel naast het beeld</h3>\n            <p style=\"margin:0 0 14px 0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.6;color:#21282b;\">Korte begeleidende tekst om een ruimte, dienst of verhaal uit te lichten met een beeld ernaast. Op mobiel stapelt het netjes.</p>\n            <a href=\"https://nbcevents.nl/ruimtes/\" target=\"_blank\" style=\"font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:700;color:#0e0e0e;text-decoration:none;\">Lees meer &rarr;</a>\n          </td>\n        </tr>\n      </table>\n    </td>\n  </tr>\n\n  <!-- ════════"},{"letter":"G","name":"Twee kolommen","type":"row","html":"<tr>\n    <td class=\"px\" style=\"padding:40px 36px 40px 36px;\">\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n        <tr>\n          <td class=\"stack\" valign=\"top\" width=\"252\" style=\"padding:0;\">\n            <img src=\"images/ph-col.png\" width=\"252\" alt=\"Afbeelding\" class=\"fluid\" style=\"width:100%;max-width:100%;height:auto;border-radius:20px;\" />\n            <h3 style=\"margin:14px 0 6px 0;font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:19px;font-weight:500;line-height:1.18;color:#0e0e0e;\">Titel kolom één</h3>\n            <p style=\"margin:0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:1.55;color:#21282b;\">Korte begeleidende tekst onder het beeld.</p>\n          </td>\n          <td class=\"stack hide-sm\" width=\"24\" style=\"font-size:0;line-height:0;\">&nbsp;</td>\n          <td class=\"stack\" valign=\"top\" width=\"252\" style=\"padding:0;\">\n            <div class=\"col-gap\" style=\"height:0;line-height:0;font-size:0;\">&nbsp;</div>\n            <img src=\"images/ph-col.png\" width=\"252\" alt=\"Afbeelding\" class=\"fluid\" style=\"width:100%;max-width:100%;height:auto;border-radius:20px;\" />\n            <h3 style=\"margin:14px 0 6px 0;font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:19px;font-weight:500;line-height:1.18;color:#0e0e0e;\">Titel kolom twee</h3>\n            <p style=\"margin:0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:1.55;color:#21282b;\">Korte begeleidende tekst onder het beeld.</p>\n          </td>\n        </tr>\n      </table>\n    </td>\n  </tr>\n\n  <!-- ════════"},{"letter":"H","name":"Kengetallen","type":"row","html":"<tr>\n    <td class=\"px py-lg\" style=\"padding:40px 36px 40px 36px;\">\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"border-top:1px solid #eaebec;border-bottom:1px solid #eaebec;\">\n        <tr>\n          <td align=\"center\" valign=\"top\" width=\"33%\" style=\"padding:24px 8px;\">\n            <div class=\"stat-num\" style=\"font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:50px;font-weight:400;line-height:1;color:#229d96;\">30+</div>\n            <p style=\"margin:8px 0 0 0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:12px;line-height:1.4;letter-spacing:.04em;color:#596165;\">flexibele ruimtes</p>\n          </td>\n          <td align=\"center\" valign=\"top\" width=\"33%\" style=\"padding:24px 8px;\">\n            <div class=\"stat-num\" style=\"font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:50px;font-weight:400;line-height:1;color:#229d96;\">4.8</div>\n            <p style=\"margin:8px 0 0 0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:12px;line-height:1.4;letter-spacing:.04em;color:#596165;\">gemiddelde beoordeling</p>\n          </td>\n          <td align=\"center\" valign=\"top\" width=\"33%\" style=\"padding:24px 8px;\">\n            <div class=\"stat-num\" style=\"font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:50px;font-weight:400;line-height:1;color:#229d96;\">25</div>\n            <p style=\"margin:8px 0 0 0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:12px;line-height:1.4;letter-spacing:.04em;color:#596165;\">jaar ervaring</p>\n          </td>\n        </tr>\n      </table>\n    </td>\n  </tr>\n\n  <!-- ════════"},{"letter":"I","name":"Citaat","type":"row","html":"<tr>\n    <td style=\"padding:0;\">\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#e9f5f4\" style=\"background-color:#e9f5f4;\">\n        <tr>\n          <td class=\"px py-lg\" align=\"center\" style=\"padding:46px 44px;\">\n            <div style=\"font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:48px;line-height:.6;color:#f6a304;\">&ldquo;</div>\n            <p style=\"margin:6px 0 18px 0;font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:23px;font-weight:300;line-height:1.4;color:#0e0e0e;\">Een oprecht citaat van een tevreden organisator zet kracht bij je verhaal. Houd het kort en menselijk.</p>\n            <p style=\"margin:0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:13px;font-weight:600;letter-spacing:.04em;color:#165e5a;\">Naam &middot; Functie, Organisatie</p>\n          </td>\n        </tr>\n      </table>\n    </td>\n  </tr>\n\n  <!-- ════════"},{"letter":"J","name":"Afsluit-CTA (teal)","type":"row","html":"<tr>\n    <td style=\"padding:0;\">\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#229d96\" style=\"background-color:#229d96;\">\n        <tr>\n          <td class=\"px py-lg\" align=\"center\" style=\"padding:50px 40px;\">\n            <h2 class=\"h2\" style=\"margin:0 0 18px 0;font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:30px;font-weight:400;line-height:1.1;color:#ffffff;\">Klaar om iets moois<br /><span style=\"font-style:italic;font-weight:300;color:#f6a304;\">te plannen?</span></h2>\n            <p style=\"margin:0 0 26px 0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:1.6;color:#bfe2df;\">Onze eventregisseurs denken graag met je mee. Plan een vrijblijvend locatiebezoek.</p>\n            <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\"><tr>\n              <td bgcolor=\"#ffffff\" style=\"border-radius:40px;mso-padding-alt:15px 32px;\">\n                <!--[if mso]>\n                <v:roundrect xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"urn:schemas-microsoft-com:office:word\" href=\"https://nbcevents.nl/plan-een-locatiebezoek/\" style=\"height:50px;v-text-anchor:middle;width:250px;\" arcsize=\"50%\" stroke=\"f\" fillcolor=\"#ffffff\">\n                <w:anchorlock/>\n                <center style=\"color:#0e0e0e;font-family:Arial,sans-serif;font-size:15px;font-weight:bold;\">Plan een locatiebezoek &rarr;</center>\n                </v:roundrect>\n                <![endif]-->\n                <!--[if !mso]><!-- -->\n                <a href=\"https://nbcevents.nl/plan-een-locatiebezoek/\" target=\"_blank\" style=\"display:inline-block;padding:15px 32px;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:700;line-height:1;color:#0e0e0e;text-decoration:none;border-radius:40px;background-color:#ffffff;\">Plan een locatiebezoek &rarr;</a>\n                <!--<![endif]-->\n              </td>\n            </tr></table>\n          </td>\n        </tr>\n      </table>\n    </td>\n  </tr>"},{"letter":"K","name":"Typografische hero","type":"row","html":"<tr>\n    <td class=\"px py-lg\" style=\"padding:48px 36px;\">\n      <p data-eyebrow=\"1\" style=\"margin:0 0 16px 0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#229d96;\">de editie van deze maand</p>\n      <h1 class=\"h1\" style=\"margin:0 0 18px 0;font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:44px;font-weight:400;line-height:1.04;letter-spacing:-.015em;color:#0e0e0e;\">Een titel zonder beeld,<br /><span style=\"font-style:italic;font-weight:300;color:#229d96;\">puur typografie</span></h1>\n      <p style=\"margin:0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:17px;line-height:1.6;color:#21282b;\">Gebruik deze hero als je geen sterke openingsfoto hebt — de tweekleurige kop draagt het op zichzelf.</p>\n    </td>\n  </tr>\n\n  <!-- ════════"},{"letter":"L","name":"Sectiekop","type":"row","html":"<tr>\n    <td class=\"px\" align=\"center\" style=\"padding:34px 36px 6px 36px;\">\n      <p data-eyebrow=\"1\" style=\"margin:0 0 10px 0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#229d96;\">in deze editie</p>\n      <h2 class=\"h2\" style=\"margin:0 0 16px 0;font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:28px;font-weight:400;line-height:1.12;color:#0e0e0e;\">Een sectie-tussenkop</h2>\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\"><tr><td style=\"width:48px;height:3px;line-height:3px;font-size:0;background-color:#f6a304;\">&nbsp;</td></tr></table>\n    </td>\n  </tr>\n\n  <!-- ════════"},{"letter":"M","name":"Agenda / event-rij","type":"row","html":"<tr>\n    <td class=\"px\" style=\"padding:12px 36px 6px 36px;\">\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"border-top:1px solid #eaebec;\">\n        <tr>\n          <td valign=\"middle\" width=\"76\" style=\"padding:18px 16px 18px 0;\">\n            <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" bgcolor=\"#e9f5f4\" style=\"background-color:#e9f5f4;border-radius:12px;\"><tr>\n              <td align=\"center\" style=\"padding:10px 0;width:60px;\">\n                <div style=\"font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:24px;font-weight:500;line-height:1;color:#165e5a;\">12</div>\n                <div style=\"font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#229d96;\">jun</div>\n              </td>\n            </tr></table>\n          </td>\n          <td valign=\"middle\" style=\"padding:14px 0;\">\n            <h3 style=\"margin:0 0 3px 0;font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:18px;font-weight:500;line-height:1.2;color:#0e0e0e;\">Titel van het event</h3>\n            <p style=\"margin:0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:1.5;color:#596165;\">Korte regel met type, tijd of locatie &middot; <a href=\"https://nbcevents.nl/\" style=\"color:#229d96;text-decoration:none;font-weight:700;\">Bekijk &rarr;</a></p>\n          </td>\n        </tr>\n        <tr>\n          <td valign=\"middle\" width=\"76\" style=\"padding:18px 16px 18px 0;border-top:1px solid #eaebec;\">\n            <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" bgcolor=\"#e9f5f4\" style=\"background-color:#e9f5f4;border-radius:12px;\"><tr>\n              <td align=\"center\" style=\"padding:10px 0;width:60px;\">\n                <div style=\"font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:24px;font-weight:500;line-height:1;color:#165e5a;\">03</div>\n                <div style=\"font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#229d96;\">jul</div>\n              </td>\n            </tr></table>\n          </td>\n          <td valign=\"middle\" style=\"padding:14px 0;border-top:1px solid #eaebec;\">\n            <h3 style=\"margin:0 0 3px 0;font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:18px;font-weight:500;line-height:1.2;color:#0e0e0e;\">Tweede event in de rij</h3>\n            <p style=\"margin:0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:1.5;color:#596165;\">Korte regel met type, tijd of locatie &middot; <a href=\"https://nbcevents.nl/\" style=\"color:#229d96;text-decoration:none;font-weight:700;\">Bekijk &rarr;</a></p>\n          </td>\n        </tr>\n      </table>\n    </td>\n  </tr>\n\n  <!-- ════════"},{"letter":"N","name":"Drie kolommen tekst","type":"row","html":"<tr>\n    <td class=\"px py-lg\" style=\"padding:28px 36px;\">\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n        <tr>\n          <td class=\"stack center-sm\" valign=\"top\" width=\"160\" style=\"padding:0;\">\n            <div style=\"font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:34px;font-weight:400;line-height:1;color:#229d96;\">01</div>\n            <h3 style=\"margin:10px 0 6px 0;font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:17px;font-weight:500;line-height:1.2;color:#0e0e0e;\">Eerste punt</h3>\n            <p style=\"margin:0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:1.55;color:#21282b;\">Korte uitleg in één of twee regels.</p>\n          </td>\n          <td class=\"stack hide-sm\" width=\"20\" style=\"font-size:0;line-height:0;\">&nbsp;</td>\n          <td class=\"stack center-sm\" valign=\"top\" width=\"160\" style=\"padding:0;\">\n            <div class=\"col-gap\" style=\"height:0;line-height:0;font-size:0;\">&nbsp;</div>\n            <div style=\"font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:34px;font-weight:400;line-height:1;color:#229d96;\">02</div>\n            <h3 style=\"margin:10px 0 6px 0;font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:17px;font-weight:500;line-height:1.2;color:#0e0e0e;\">Tweede punt</h3>\n            <p style=\"margin:0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:1.55;color:#21282b;\">Korte uitleg in één of twee regels.</p>\n          </td>\n          <td class=\"stack hide-sm\" width=\"20\" style=\"font-size:0;line-height:0;\">&nbsp;</td>\n          <td class=\"stack center-sm\" valign=\"top\" width=\"160\" style=\"padding:0;\">\n            <div class=\"col-gap\" style=\"height:0;line-height:0;font-size:0;\">&nbsp;</div>\n            <div style=\"font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:34px;font-weight:400;line-height:1;color:#229d96;\">03</div>\n            <h3 style=\"margin:10px 0 6px 0;font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:17px;font-weight:500;line-height:1.2;color:#0e0e0e;\">Derde punt</h3>\n            <p style=\"margin:0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:1.55;color:#21282b;\">Korte uitleg in één of twee regels.</p>\n          </td>\n        </tr>\n      </table>\n    </td>\n  </tr>\n\n  <!-- ════════"},{"letter":"O","name":"Beeld + tekst (rechts)","type":"row","html":"<tr>\n    <td class=\"px py-lg\" style=\"padding:28px 36px;\">\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n        <tr>\n          <td class=\"stack\" valign=\"top\" style=\"padding:0;\">\n            <div class=\"col-gap\" style=\"height:0;line-height:0;font-size:0;\">&nbsp;</div>\n            <h3 style=\"margin:0 0 10px 0;font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:23px;font-weight:500;line-height:1.15;color:#0e0e0e;\">Tekst links, beeld rechts</h3>\n            <p style=\"margin:0 0 14px 0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.6;color:#21282b;\">Spiegel van het beeld-en-tekstblok, voor afwisseling in het ritme van de mail.</p>\n            <a href=\"https://nbcevents.nl/\" target=\"_blank\" style=\"font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:700;color:#0e0e0e;text-decoration:none;\">Lees meer &rarr;</a>\n          </td>\n          <td class=\"stack hide-sm\" width=\"24\" style=\"font-size:0;line-height:0;\">&nbsp;</td>\n          <td class=\"stack\" valign=\"top\" width=\"244\" style=\"padding:0;height:100%;\">\n            <div class=\"col-gap\" style=\"height:0;line-height:0;font-size:0;\">&nbsp;</div>\n            <!--[if mso]>\n            <img src=\"images/ph-col.png\" width=\"244\" height=\"200\" alt=\"Afbeelding\" style=\"width:244px;height:200px;display:block;border:0;\" />\n            <![endif]-->\n            <!--[if !mso]><!-- -->\n            <div class=\"eqh\" style=\"height:100%;overflow:hidden;border-radius:20px;\">\n              <img src=\"images/ph-col.png\" width=\"244\" alt=\"Afbeelding\" class=\"fluid\" style=\"width:100%;max-width:100%;height:100%;object-fit:cover;border-radius:20px;display:block;\" />\n            </div>\n            <!--<![endif]-->\n          </td>\n        </tr>\n      </table>\n    </td>\n  </tr>\n\n  <!-- ════════"},{"letter":"P","name":"Highlight-strip","type":"row","html":"<tr>\n    <td class=\"px\" style=\"padding:10px 36px;\">\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#f2e6da\" style=\"background-color:#f2e6da;border-radius:16px;\">\n        <tr>\n          <td valign=\"top\" style=\"padding:20px 24px 0 24px;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.45;color:#0e0e0e;\">\n            <strong style=\"font-weight:700;\">Korte aankondiging op één regel.</strong><br />Een aanvullend zinnetje mag.\n          </td>\n        </tr>\n        <tr>\n          <td valign=\"top\" style=\"padding:8px 24px 20px 24px;\">\n            <a href=\"https://nbcevents.nl/\" target=\"_blank\" style=\"font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:700;color:#0e0e0e;text-decoration:none;\">Meer weten &rarr;</a>\n          </td>\n        </tr>\n      </table>\n    </td>\n  </tr>\n\n  <!-- ════════"},{"letter":"Q","name":"Losse CTA-knop","type":"row","html":"<tr>\n    <td class=\"px\" align=\"center\" style=\"padding:36px 36px 36px 36px;\">\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\"><tr>\n        <td bgcolor=\"#0e0e0e\" style=\"border-radius:40px;mso-padding-alt:15px 32px;\">\n          <!--[if mso]>\n          <v:roundrect xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"urn:schemas-microsoft-com:office:word\" href=\"https://nbcevents.nl/\" style=\"height:50px;v-text-anchor:middle;width:220px;\" arcsize=\"50%\" stroke=\"f\" fillcolor=\"#0e0e0e\">\n          <w:anchorlock/>\n          <center style=\"color:#ffffff;font-family:Arial,sans-serif;font-size:15px;font-weight:bold;\">Bekijk alle ruimtes &rarr;</center>\n          </v:roundrect>\n          <![endif]-->\n          <!--[if !mso]><!-- -->\n          <a href=\"https://nbcevents.nl/\" target=\"_blank\" style=\"display:inline-block;padding:15px 32px;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:700;line-height:1;color:#ffffff;text-decoration:none;border-radius:40px;background-color:#0e0e0e;\">Bekijk alle ruimtes &rarr;</a>\n          <!--<![endif]-->\n        </td>\n      </tr></table>\n    </td>\n  </tr>\n  <!-- ════════"},{"letter":"R","name":"Donkere footer","type":"table","html":"<table role=\"presentation\" align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\" class=\"email-container\" style=\"width:600px;max-width:600px;background-color:#050606;\">\n  <tr><td style=\"height:4px;line-height:4px;font-size:0;background-color:#f6a304;\">&nbsp;</td></tr>\n  <tr>\n    <td class=\"px\" style=\"padding:38px 36px 24px 36px;\">\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n        <tr>\n          <td class=\"footer-logo-cell\" valign=\"top\" align=\"left\" width=\"211\" style=\"width:40%;padding:0 0 12px 0;\">\n            <img src=\"images/nbc-mark-white.png\" width=\"118\" alt=\"NBC\" style=\"width:118px;max-width:118px;height:auto;\" />\n          </td>\n          <td class=\"footer-contact\" valign=\"top\" align=\"right\" width=\"317\" style=\"width:60%;padding:0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:1.7;color:#ffffff;white-space:nowrap;\">\n            <a href=\"tel:+31306026900\" style=\"color:#ffffff;text-decoration:none;\">030 602 69 00</a><br />\n            <a href=\"mailto:info@nbcevents.nl\" style=\"color:#ffffff;text-decoration:none;\">info@nbcevents.nl</a><br />\n            <a href=\"https://nbcevents.nl/\" target=\"_blank\" style=\"color:#ffffff;text-decoration:none;\">nbcevents.nl</a>\n          </td>\n        </tr>\n      </table>\n    </td>\n  </tr>\n  <tr>\n    <td class=\"px\" style=\"padding:0 36px 4px 36px;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:1.7;color:#828b8d;\">\n      <strong style=\"color:#d9e0e2;font-weight:600;\">NBC</strong><br />\n      Blokhoeve 1<br />\n      3438 LC Nieuwegein\n    </td>\n  </tr>\n  <tr>\n    <td class=\"px\" style=\"padding:18px 36px 6px 36px;\">\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>\n        <td style=\"padding:0 10px 0 0;\"><a href=\"https://www.linkedin.com/company/2736261\" target=\"_blank\"><img src=\"images/social-linkedin.png\" width=\"32\" height=\"32\" alt=\"LinkedIn\" style=\"display:block;width:32px;height:32px;border:0;\" /></a></td>\n        <td style=\"padding:0 10px 0 0;\"><a href=\"https://instagram.com/nbcevents.nl/\" target=\"_blank\"><img src=\"images/social-instagram.png\" width=\"32\" height=\"32\" alt=\"Instagram\" style=\"display:block;width:32px;height:32px;border:0;\" /></a></td>\n        <td style=\"padding:0 10px 0 0;\"><a href=\"https://www.facebook.com/nbcevents\" target=\"_blank\"><img src=\"images/social-facebook.png\" width=\"32\" height=\"32\" alt=\"Facebook\" style=\"display:block;width:32px;height:32px;border:0;\" /></a></td>\n        <td style=\"padding:0;\"><a href=\"https://www.youtube.com/@nbcevents.3438\" target=\"_blank\"><img src=\"images/social-youtube.png\" width=\"32\" height=\"32\" alt=\"YouTube\" style=\"display:block;width:32px;height:32px;border:0;\" /></a></td>\n      </tr></table>\n    </td>\n  </tr>\n  <tr>\n    <td class=\"px\" style=\"padding:14px 36px 8px 36px;\">\n      <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"><tr><td style=\"height:1px;line-height:1px;font-size:0;background-color:#2f3a3e;\">&nbsp;</td></tr></table>\n    </td>\n  </tr>\n  <tr>\n    <td class=\"px\" align=\"left\" style=\"padding:14px 36px 6px 36px;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:11px;line-height:1.7;color:#828b8d;\">\n      Deze nieuwsbrief is verstuurd naar <span style=\"color:#acb0b2;\">*|EMAIL|*</span><br />\n      <a href=\"*|UPDATE_PROFILE|*\" style=\"color:#acb0b2;text-decoration:underline;\">Voorkeuren wijzigen</a> &nbsp;&middot;&nbsp;\n      <a href=\"*|UNSUB|*\" style=\"color:#acb0b2;text-decoration:underline;\">Uitschrijven</a> &nbsp;&middot;&nbsp;\n      <a href=\"*|ARCHIVE|*\" style=\"color:#acb0b2;text-decoration:underline;\">Online lezen</a>\n    </td>\n  </tr>\n  <tr>\n    <td class=\"px\" align=\"left\" style=\"padding:6px 36px 40px 36px;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:11px;line-height:1.6;color:#596165;\">\n      &copy; *|CURRENT_YEAR|* NBC. Alle rechten voorbehouden.\n    </td>\n  </tr>\n</table>"},{"letter":"S","name":"Losse afbeelding (volle breedte)","type":"row","html":"<tr>\n    <td style=\"padding:0;font-size:0;line-height:0;\">\n      <img src=\"images/ph-full.png\" width=\"600\" alt=\"Vervang door je afbeelding\" class=\"fluid\" style=\"width:100%;max-width:600px;height:auto;\" />\n    </td>\n  </tr>"},{"letter":"T","name":"Alleen tekst + CTA","type":"row","html":"<tr data-text-only-block=\"1\">\n    <td class=\"px\" style=\"padding:40px 36px 44px 36px;background-color:#ffffff;\">\n      <h2 class=\"h2\" style=\"margin:0 0 14px 0;font-family:'Pockota','Trebuchet MS',Verdana,Arial,sans-serif;font-size:30px;font-weight:500;line-height:1.12;letter-spacing:-.01em;color:#0e0e0e;\">Kop van dit blok</h2>\n      <p style=\"margin:0 0 22px 0;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.6;color:#21282b;\">Korte alinea met de kern van je boodschap. Houd het bij één idee per blok.</p>\n      <table data-optional-button=\"1\" role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>\n        <td bgcolor=\"#0e0e0e\" style=\"border-radius:40px;mso-padding-alt:14px 30px;\">\n          <!--[if mso]>\n          <v:roundrect xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"urn:schemas-microsoft-com:office:word\" href=\"https://nbcevents.nl/\" style=\"height:48px;v-text-anchor:middle;width:290px;\" arcsize=\"50%\" stroke=\"f\" fillcolor=\"#0e0e0e\">\n          <w:anchorlock/>\n          <center style=\"color:#ffffff;font-family:Arial,sans-serif;font-size:14px;font-weight:bold;\">Lees meer</center>\n          </v:roundrect>\n          <![endif]-->\n          <!--[if !mso]><!-- -->\n          <a href=\"https://nbcevents.nl/\" target=\"_blank\" style=\"display:inline-block;padding:14px 30px;font-family:'Area Normal','Helvetica Neue',Arial,sans-serif;font-size:14px;font-weight:700;line-height:1;color:#ffffff;text-decoration:none;border-radius:40px;background-color:#0e0e0e;\">Kijk rond in de 3D-plattegrond</a>\n          <!--<![endif]-->\n        </td>\n      </tr>"}];
+var byLetter = {}; BLOCKS.forEach(function(b){ byLetter[b.letter]=b; });
+var GAP_LETTERS=['C','E','F','G','H','K','N','O','Q','T'];
+var GAP_SIZES=[['compact',24,'Compact'],['normal',40,'Normaal'],['groot',64,'Groot']];
+function gapCell(wrap){
+  var table=wrap.querySelector(':scope > table');
+  if(!table || !table.rows.length) return null;
+  var lastRow=table.rows[table.rows.length-1];
+  return lastRow.cells[lastRow.cells.length-1];
+}
+function gapTier(px){
+  for(var i=0;i<GAP_SIZES.length;i++){ if(GAP_SIZES[i][1]===px) return GAP_SIZES[i]; }
+  return GAP_SIZES[1];
+}
+function cycleGap(wrap){
+  var cell=gapCell(wrap); if(!cell) return;
+  var cur=parseInt(cell.style.paddingBottom)||40;
+  var idx=0; for(var i=0;i<GAP_SIZES.length;i++){ if(GAP_SIZES[i][1]===cur){ idx=i; break; } }
+  var next=GAP_SIZES[(idx+1)%GAP_SIZES.length];
+  cell.style.paddingBottom=next[1]+'px';
+  wrap.setAttribute('data-gap',next[0]);
+  var gi=wrap.querySelector('.gap-indicator'); if(gi) gi.innerHTML='&#8597; Afstand: '+next[2];
+}
+
+// build palette
+var pal = document.getElementById('palette');
+pal.innerHTML = '<h2>Vaste blokken</h2>';
+var coreLetters = ['A','B','C','D','E','F','G','H','I','J','R'];
+var varLetters = ['K','L','M','N','O','P','Q','S','T'];
+function palItem(b){
+  var d=document.createElement('button'); d.className='palette-item';
+  d.innerHTML='<span class="letter">'+b.letter+'</span><span class="nm">'+b.name+'</span><span class="add">+</span>';
+  d.onclick=function(){ addBlock(b.letter); };
+  return d;
+}
+coreLetters.forEach(function(L){ pal.appendChild(palItem(byLetter[L])); });
+var h2=document.createElement('h2'); h2.textContent='Variatie-blokken'; pal.appendChild(h2);
+varLetters.forEach(function(L){ pal.appendChild(palItem(byLetter[L])); });
+
+var stage=document.getElementById('stage');
+var hint=document.getElementById('hint');
+
+function wrapHTML(b){
+  if(b.type==='table') return b.html;
+  return '<table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0" width="600" class="email-container" style="width:600px;max-width:600px;background-color:#ffffff;border-collapse:collapse;">'+b.html+'</table>';
+}
+function makeEditable(node){
+  node.querySelectorAll('h1,h2,h3,p').forEach(function(el){ el.setAttribute('contenteditable','true'); el.spellcheck=false; });
+  Array.prototype.forEach.call(node.querySelectorAll('div'),function(el){
+    if(el.children.length===0 && el.textContent.trim()!==''){ el.setAttribute('contenteditable','true'); el.spellcheck=false; }
+  });
+  node.querySelectorAll('a').forEach(function(a){
+    a.setAttribute('contenteditable','true'); a.spellcheck=false;
+    a.addEventListener('click',function(e){e.preventDefault();});
+    var href=(a.getAttribute('href')||'').trim();
+    var editable = href.indexOf('http')===0;
+    if(!editable) return;
+    a.setAttribute('data-link-editable','1');
+    a.setAttribute('data-default-href',href);
+    var badge=document.createElement('span');
+    badge.className='link-badge';
+    badge.title=href;
+    badge.textContent='\uD83D\uDD17';
+    var img=a.querySelector('img');
+    if(img){
+      badge.textContent='\uD83D\uDD17';
+      badge.setAttribute('data-link-label', img.getAttribute('alt')||'deze afbeelding');
+    }
+    badge.onclick=function(ev){ ev.stopPropagation(); editLink(a,badge); };
+    a.insertAdjacentElement('afterend', badge);
+  });
+}
+function editLink(a,badge){
+  var current=a.getAttribute('href')||'';
+  var lbl=a.textContent.replace(/\s+/g,' ').trim() || badge.getAttribute('data-link-label') || 'dit element';
+  askDialog({title:'Link instellen',text:'Waar moet <b>'+esc(lbl)+'</b> naartoe linken?',value:current,okLabel:'Instellen'}).then(function(v){
+    if(v===null) return;
+    _applyLink(a,badge,String(v).trim());
+  });
+}
+function _applyLink(a,badge,val){
+  if(val){ a.setAttribute('href',val); }
+  badge.title=val||'(geen link)';
+  var def=a.getAttribute('data-default-href')||'';
+  badge.classList.toggle('link-badge-set', !!val && val!==def);
+}
+function addBlock(letter, restore){
+  var b=byLetter[letter];
+  var wrap=document.createElement('div'); wrap.className='pv-block'; wrap.setAttribute('data-letter',letter);
+  wrap.innerHTML = restore ? restore.html : wrapHTML(b);
+  makeEditable(wrap);
+  var tag=document.createElement('div'); tag.className='pv-tag'; tag.textContent=letter+' · '+b.name; wrap.appendChild(tag);
+  var tools=document.createElement('div'); tools.className='pv-tools';
+  tools.innerHTML='<button title="Omhoog" onclick="moveBlock(this,-1)">&#9650;</button><button title="Omlaag" onclick="moveBlock(this,1)">&#9660;</button><button title="Dupliceren" onclick="dupBlock(this)">&#10697;</button><button title="Verwijderen" onclick="delBlock(this)">&#10005;</button>';
+  wrap.appendChild(tools);
+  var eb=wrap.querySelector('[data-eyebrow]');
+  if(eb){
+    var tb=document.createElement('button');
+    tb.title='Bovenste tekst tonen/verbergen';
+    tb.innerHTML='&#128065;';
+    tb.onclick=function(){ toggleEyebrow(wrap); };
+    tools.insertBefore(tb, tools.firstChild);
+  }
+  if(GAP_LETTERS.indexOf(letter)!==-1){
+    var cell=gapCell(wrap);
+    if(cell){
+      var curPx=parseInt(cell.style.paddingBottom)||40;
+      var tier=gapTier(curPx);
+      wrap.setAttribute('data-gap',tier[0]);
+      var gi=document.createElement('button');
+      gi.className='gap-indicator';
+      gi.type='button';
+      gi.innerHTML='&#8597; Afstand: '+tier[2];
+      gi.title='Klik om de afstand na dit blok te wisselen';
+      gi.onclick=function(){ cycleGap(wrap); };
+      wrap.appendChild(gi);
+    }
+  }
+  if(restore){
+    if(restore.gap) wrap.setAttribute('data-gap',restore.gap);
+    if(restore.eyebrowHidden!=null) wrap.setAttribute('data-eyebrow-hidden',restore.eyebrowHidden);
+  }
+  var lastEl=stage.lastElementChild;
+  if(!restore && letter!=='R' && lastEl && lastEl.getAttribute('data-letter')==='R'){ stage.insertBefore(wrap,lastEl); }
+  else { stage.appendChild(wrap); }
+  renumber();
+  if(!restore) wrap.scrollIntoView({block:'nearest'});
+}
+function moveBlock(btn,dir){
+  var w=btn.closest('.pv-block');
+  if(dir<0 && w.previousElementSibling) stage.insertBefore(w,w.previousElementSibling);
+  if(dir>0 && w.nextElementSibling) stage.insertBefore(w.nextElementSibling,w);
+  renumber();
+}
+function dupBlock(btn){
+  var w=btn.closest('.pv-block'); addBlock(w.getAttribute('data-letter'));
+  var last=stage.lastElementChild; stage.insertBefore(last, w.nextElementSibling);
+  renumber();
+}
+function delBlock(btn){ btn.closest('.pv-block').remove(); renumber(); }
+function resetStage(){
+  askConfirm('Alles leegmaken?','Alle blokken en teksten in dit voorbeeld verdwijnen. Opgeslagen nieuwsbrieven blijven staan.','Leegmaken',true)
+    .then(function(ok){ if(ok){ stage.innerHTML=''; renumber(); } });
+}
+
+function renumber(){
+  hint.style.display = stage.children.length? 'none':'block';
+  // clear old badges
+  stage.querySelectorAll('.photo-badge,.photo-edit-btn').forEach(function(x){x.remove();});
+  var imgs = stage.querySelectorAll('img.fluid');
+  var n=0;
+  imgs.forEach(function(im){
+    n++;
+    var p=im.parentElement;
+    if(getComputedStyle(p).position==='static'){ p.style.position='relative'; }
+    p.classList.add('photo-wrap');
+    var bd=document.createElement('span'); bd.className='photo-badge'; bd.textContent=n;
+    bd.style.left='8px'; bd.style.top='8px';
+    p.appendChild(bd);
+    im.setAttribute('data-photo',n);
+    var filled = im.getAttribute('data-photo-filled')==='1';
+    var eb=document.createElement('button');
+    eb.type='button';
+    eb.className='photo-edit-btn'+(filled?' filled':'');
+    eb.innerHTML='<span class="dot"></span>'+(filled?'Foto wijzigen':'Foto uploaden');
+    eb.onclick=function(ev){ ev.stopPropagation(); openCropper(im); };
+    p.appendChild(eb);
+  });
+}
+
+// ---- briefing ----
+function briefingLines(){
+  var out=[];
+  out.push('NBC NIEUWSBRIEF — BRIEFING');
+  out.push('Datum: '+new Date().toLocaleDateString('nl-NL'));
+  out.push('Volgorde van blokken: '+Array.prototype.map.call(stage.children,function(w){return w.getAttribute('data-letter');}).join(' → '));
+  out.push('');
+  var photoTotal=0;
+  Array.prototype.forEach.call(stage.children,function(w,i){
+    var L=w.getAttribute('data-letter'); var nm=byLetter[L].name;
+    out.push('──────────────────────────────');
+    out.push((i+1)+'. BLOK '+L+' — '+nm);
+    // texts
+    if(w.getAttribute('data-eyebrow-hidden')==='1'){ out.push('   • (bovenste tekst verborgen)'); }
+    var gapTierNow=w.getAttribute('data-gap');
+    if(gapTierNow){
+      var gt=GAP_SIZES.filter(function(g){return g[0]===gapTierNow;})[0];
+      if(gt){ out.push('   • Afstand na dit blok: '+gt[2]+' ('+gt[1]+'px)'); }
+    }
+    var seen={};
+    w.querySelectorAll('[contenteditable]').forEach(function(el){
+      var t=el.innerText.replace(/\s+/g,' ').trim();
+      if(t && !seen[t]){ seen[t]=1; out.push('   • '+t); }
+    });
+    // photos
+    var ph=w.querySelectorAll('img[data-photo]');
+    ph.forEach(function(im){
+      if(im.getAttribute('data-photo-filled')==='1'){ out.push('   [foto '+im.getAttribute('data-photo')+': ge\u00fcpload in de bouwer \u2014 hoeft niet meer los bijgevoegd]'); }
+      else { out.push('   [foto '+im.getAttribute('data-photo')+' hier — beschrijf welke foto]'); photoTotal++; }
+    });
+    w.querySelectorAll('a[data-link-editable]').forEach(function(a){
+      var label=a.textContent.replace(/\s+/g,' ').trim();
+      var href=a.getAttribute('href')||'';
+      var def=a.getAttribute('data-default-href')||'';
+      if(href && href!==def){ out.push('   → link "'+label+'": '+href); }
+    });
+  });
+  out.push('──────────────────────────────');
+  out.push('');
+  out.push('FOTO-OVERZICHT ('+photoTotal+' foto'+(photoTotal===1?'':'\'s')+')');
+  for(var i=1;i<=photoTotal;i++){ out.push('foto '+i+' = '); }
+  out.push('');
+  out.push('(Aanbevolen formaat: hero ~1200px breed, kolom/ruimtefoto\'s ~530px breed, JPG/PNG.)');
+  return out.join('\n');
+}
+function checkReadiness(){
+  var missingLinks=[];
+  var missingPhotos=[];
+  Array.prototype.forEach.call(stage.children,function(w){
+    var L=w.getAttribute('data-letter'); var nm=byLetter[L].name;
+    if(L==='B'||L==='R') return;
+    w.querySelectorAll('a[data-link-editable]').forEach(function(a){
+      var href=a.getAttribute('href')||''; var def=a.getAttribute('data-default-href')||'';
+      if(href===def){ missingLinks.push('Blok '+L+' (“'+nm+'”) — knop “'+a.textContent.replace(/\s+/g,' ').trim()+'”'); }
+    });
+    w.querySelectorAll('img[data-photo]').forEach(function(im){
+      if(im.getAttribute('data-photo-filled')!=='1'){ missingPhotos.push('Foto '+im.getAttribute('data-photo')+' (blok '+L+')'); }
+    });
+  });
+  return {missingLinks:missingLinks, missingPhotos:missingPhotos};
+}
+function openBriefing(){
+  if(stage.children.length===0){ notify('Nog leeg','Voeg eerst een paar blokken toe.'); return; }
+  document.getElementById('briefingText').value=briefingLines();
+  var chk=checkReadiness();
+  var w=document.getElementById('linkWarning');
+  var lines=[];
+  if(chk.missingLinks.length){ lines.push('<b>'+chk.missingLinks.length+' knop(pen) hebben nog de standaardlink:</b><br>'+chk.missingLinks.join('<br>')); }
+  if(chk.missingPhotos.length){ lines.push('<b>'+chk.missingPhotos.length+' foto(’s) zijn nog niet geüpload:</b><br>'+chk.missingPhotos.join('<br>')); }
+  if(lines.length){ w.innerHTML=lines.join('<br><br>'); w.style.display='block'; } else { w.style.display='none'; }
+  document.getElementById('overlay').classList.add('on');
+}
+function closeBriefing(){ document.getElementById('overlay').classList.remove('on'); }
+function copyBriefing(){
+  var ta=document.getElementById('briefingText'); ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  if(navigator.clipboard){ navigator.clipboard.writeText(ta.value); }
+  var b=document.getElementById('copyBtn'); var o=b.textContent; b.textContent='Gekopieerd ✓'; setTimeout(function(){b.textContent=o;},1500);
+}
+document.getElementById('overlay').addEventListener('click',function(e){ if(e.target===this) closeBriefing(); });
+function toggleEyebrow(wrap){
+  var eb=wrap.querySelector('[data-eyebrow]'); if(!eb) return;
+  var td=eb.closest('td');
+  var hidden = wrap.getAttribute('data-eyebrow-hidden')==='1';
+  if(hidden){
+    eb.style.display='';
+    if(td && td.getAttribute('data-padtop')!==null) td.style.paddingTop=td.getAttribute('data-padtop');
+    wrap.setAttribute('data-eyebrow-hidden','0');
+  } else {
+    if(td){ td.setAttribute('data-padtop', getComputedStyle(td).paddingTop); td.style.paddingTop='40px'; }
+    eb.style.display='none';
+    wrap.setAttribute('data-eyebrow-hidden','1');
+  }
+}
+function openHelp(){ document.getElementById('helpOverlay').classList.add('on'); }
+function closeHelp(){ document.getElementById('helpOverlay').classList.remove('on'); }
+document.getElementById('helpOverlay').addEventListener('click',function(e){ if(e.target===this) closeHelp(); });
+var previewWidth=375;
+function setPreviewWidth(w){
+  previewWidth=w;
+  document.getElementById('phoneShell').style.width=(w+24)+'px';
+  document.getElementById('mobileFrame').style.width=w+'px';
+  Array.prototype.forEach.call(document.querySelectorAll('.mw-btn'),function(btn){
+    var on=parseInt(btn.getAttribute('data-w'),10)===w;
+    btn.style.background=on?'#fff':'transparent';
+    btn.style.color=on?'#0e0e0e':'';
+  });
+  if(document.getElementById('mobileOverlay').classList.contains('on')) renderMobilePreview();
+}
+function renderMobilePreview(){
+  var emailCss=document.querySelector('style[type="text/css"]').textContent;
+  var doc='<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width='+previewWidth+', initial-scale=1">'
+    +'<style>'+emailCss+'</style>'
+    +'<style>html{overflow-x:hidden;}body{margin:0;background:#f1f1ef;}</style></head>'
+    +'<body id="body"><center>'+buildBodyHTML()+'</center></body></html>';
+  var f=document.getElementById('mobileFrame');
+  f.srcdoc=doc;
+  f.onload=function(){
+    try{
+      var d=f.contentDocument;
+      var over=d.documentElement.scrollWidth-previewWidth;
+      var note=document.getElementById('mobileNote');
+      if(over>1){ note.innerHTML='<span style="color:#c0492b;">Let op: '+over+'px te breed — dit schuift ook in Gmail.</span>'; }
+      else { note.innerHTML='Past netjes op '+previewWidth+'px. Zelfde HTML als de export.'; }
+    }catch(e){}
+  };
+}
+function openMobilePreview(){
+  if(stage.children.length===0){ notify('Nog leeg','Voeg eerst een paar blokken toe.'); return; }
+  document.getElementById('mobileOverlay').classList.add('on');
+  setPreviewWidth(previewWidth);
+  renderMobilePreview();
+}
+function closeMobilePreview(){ document.getElementById('mobileOverlay').classList.remove('on'); }
+document.getElementById('mobileOverlay').addEventListener('click',function(e){ if(e.target===this) closeMobilePreview(); });
+
+/* ---- Foto-cropper ---- */
+var cropTarget=null, cropImg=null, cropRatio=1, cropBoxW=440, cropBoxH=330;
+var cropScale=1, cropOffX=0, cropOffY=0, cropCoverScale=1;
+var cropDragging=false, cropDragStart=null, cropOffStart=null;
+var cropOriginals=new Map(); // imgEl -> {dataUrl, scale, offX, offY}
+var cropOriginalDataUrl=null;
+var cropCanvas=document.getElementById('cropCanvas');
+var cropCtx=cropCanvas.getContext('2d');
+var cropFileInput=document.getElementById('cropFileInput');
+function openCropper(imgEl){
+  cropTarget=imgEl;
+  var r=imgEl.getBoundingClientRect();
+  cropRatio = (r.width>0 && r.height>0) ? (r.width/r.height) : (imgEl.naturalWidth/imgEl.naturalHeight||1.5);
+  var maxW=440, maxH=380;
+  if(maxW/cropRatio<=maxH){ cropBoxW=maxW; cropBoxH=Math.round(maxW/cropRatio); }
+  else { cropBoxH=maxH; cropBoxW=Math.round(maxH*cropRatio); }
+  cropCanvas.width=cropBoxW; cropCanvas.height=cropBoxH;
+  document.getElementById('cropBoxWrap').style.width=cropBoxW+'px';
+  document.getElementById('cropBoxWrap').style.height=cropBoxH+'px';
+  cropCtx.clearRect(0,0,cropBoxW,cropBoxH);
+  document.getElementById('cropOverlay').classList.add('on');
+  var saved=cropOriginals.get(imgEl);
+  if(saved){
+    cropImg=null;
+    document.getElementById('cropEmptyNote').style.display='none';
+    document.getElementById('cropControls').style.display='flex';
+    document.getElementById('cropUseBtn').style.display='inline-block';
+    var im=new Image();
+    im.onload=function(){
+      cropImg=im;
+      cropOriginalDataUrl=saved.dataUrl;
+      cropCoverScale=Math.max(cropBoxW/im.naturalWidth, cropBoxH/im.naturalHeight);
+      cropScale=saved.scale; cropOffX=saved.offX; cropOffY=saved.offY;
+      document.getElementById('cropZoom').value=cropScale;
+      drawCrop();
+    };
+    im.src=saved.dataUrl;
+  } else {
+    cropImg=null;
+    document.getElementById('cropEmptyNote').style.display='block';
+    document.getElementById('cropControls').style.display='none';
+    document.getElementById('cropUseBtn').style.display='none';
+    cropFileInput.value='';
+    cropFileInput.click();
+  }
+}
+cropFileInput.addEventListener('change',function(){
+  var f=cropFileInput.files && cropFileInput.files[0];
+  if(!f) return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var im=new Image();
+    im.onload=function(){
+      cropImg=im;
+      cropOriginalDataUrl=e.target.result;
+      cropCoverScale=Math.max(cropBoxW/im.naturalWidth, cropBoxH/im.naturalHeight);
+      cropScale=1; cropOffX=0; cropOffY=0;
+      document.getElementById('cropZoom').value=1;
+      document.getElementById('cropEmptyNote').style.display='none';
+      document.getElementById('cropControls').style.display='flex';
+      document.getElementById('cropUseBtn').style.display='inline-block';
+      drawCrop();
+    };
+    im.src=e.target.result;
+  };
+  reader.readAsDataURL(f);
+});
+function clampOffsets(){
+  var dw=cropImg.naturalWidth*cropCoverScale*cropScale;
+  var dh=cropImg.naturalHeight*cropCoverScale*cropScale;
+  var maxX=Math.max(0,(dw-cropBoxW)/2);
+  var maxY=Math.max(0,(dh-cropBoxH)/2);
+  cropOffX=Math.max(-maxX,Math.min(maxX,cropOffX));
+  cropOffY=Math.max(-maxY,Math.min(maxY,cropOffY));
+}
+function drawCrop(){
+  if(!cropImg) return;
+  clampOffsets();
+  var dw=cropImg.naturalWidth*cropCoverScale*cropScale;
+  var dh=cropImg.naturalHeight*cropCoverScale*cropScale;
+  var dx=cropBoxW/2-dw/2+cropOffX;
+  var dy=cropBoxH/2-dh/2+cropOffY;
+  cropCtx.clearRect(0,0,cropBoxW,cropBoxH);
+  cropCtx.drawImage(cropImg,dx,dy,dw,dh);
+}
+document.getElementById('cropZoom').addEventListener('input',function(){
+  cropScale=parseFloat(this.value)||1;
+  drawCrop();
+});
+var cropBoxWrapEl=document.getElementById('cropBoxWrap');
+cropBoxWrapEl.addEventListener('mousedown',function(e){
+  if(!cropImg) return;
+  cropDragging=true; cropDragStart={x:e.clientX,y:e.clientY}; cropOffStart={x:cropOffX,y:cropOffY};
+  cropBoxWrapEl.style.cursor='grabbing';
+});
+window.addEventListener('mousemove',function(e){
+  if(!cropDragging) return;
+  cropOffX=cropOffStart.x+(e.clientX-cropDragStart.x);
+  cropOffY=cropOffStart.y+(e.clientY-cropDragStart.y);
+  drawCrop();
+});
+window.addEventListener('mouseup',function(){ cropDragging=false; cropBoxWrapEl.style.cursor='grab'; });
+cropBoxWrapEl.addEventListener('touchstart',function(e){
+  if(!cropImg) return;
+  var t=e.touches[0];
+  cropDragging=true; cropDragStart={x:t.clientX,y:t.clientY}; cropOffStart={x:cropOffX,y:cropOffY};
+},{passive:true});
+cropBoxWrapEl.addEventListener('touchmove',function(e){
+  if(!cropDragging) return;
+  var t=e.touches[0];
+  cropOffX=cropOffStart.x+(t.clientX-cropDragStart.x);
+  cropOffY=cropOffStart.y+(t.clientY-cropDragStart.y);
+  drawCrop();
+},{passive:true});
+cropBoxWrapEl.addEventListener('touchend',function(){ cropDragging=false; });
+function cancelCrop(){
+  document.getElementById('cropOverlay').classList.remove('on');
+  cropTarget=null; cropImg=null;
+}
+function confirmCrop(){
+  if(!cropImg || !cropTarget) return;
+  var outW=Math.round(cropBoxW*2), outH=Math.round(cropBoxH*2);
+  var maxDim=1400;
+  if(outW>maxDim){ var f=maxDim/outW; outW=Math.round(outW*f); outH=Math.round(outH*f); }
+  var out=document.createElement('canvas'); out.width=outW; out.height=outH;
+  var octx=out.getContext('2d');
+  var f2=outW/cropBoxW;
+  var dw=cropImg.naturalWidth*cropCoverScale*cropScale*f2;
+  var dh=cropImg.naturalHeight*cropCoverScale*cropScale*f2;
+  var dx=outW/2-dw/2+cropOffX*f2;
+  var dy=outH/2-dh/2+cropOffY*f2;
+  octx.drawImage(cropImg,dx,dy,dw,dh);
+  var dataUrl=out.toDataURL('image/jpeg',0.87);
+  cropTarget.src=dataUrl;
+  cropTarget.setAttribute('data-photo-filled','1');
+  (function(t,d){
+    if(typeof cloudOn!=='function' || !cloudOn()) return;
+    srcToBlob(d).then(function(bl){
+      return storageUpload('beeld/'+hashStr(d.slice(0,3000)+d.length)+'.'+extFor(bl.type||''),bl);
+    }).then(function(url){ if(t) t.setAttribute('src',url); }).catch(function(e){ console.warn('foto-upload mislukt',e); });
+  })(cropTarget,dataUrl);
+  cropOriginals.set(cropTarget, {dataUrl:cropOriginalDataUrl, scale:cropScale, offX:cropOffX, offY:cropOffY});
+  document.getElementById('cropOverlay').classList.remove('on');
+  cropTarget=null; cropImg=null;
+  renumber();
+}
+document.getElementById('cropOverlay').addEventListener('click',function(e){ if(e.target===this) cancelCrop(); });
+
+/* ---- Automatisch opslaan & verdergaan (in deze browser) ---- */
+function serializeStage(){
+  var blocks=[];
+  Array.prototype.forEach.call(stage.children,function(w){
+    var c=w.cloneNode(true);
+    c.querySelectorAll('.pv-tag,.pv-tools,.photo-badge,.photo-edit-btn,.link-badge,.gap-indicator').forEach(function(x){x.remove();});
+    c.querySelectorAll('[contenteditable]').forEach(function(el){ el.removeAttribute('contenteditable'); el.removeAttribute('spellcheck'); });
+    c.querySelectorAll('.photo-wrap').forEach(function(el){ el.classList.remove('photo-wrap'); if(!el.getAttribute('class')) el.removeAttribute('class'); });
+    blocks.push({
+      letter:w.getAttribute('data-letter'),
+      gap:w.getAttribute('data-gap'),
+      eyebrowHidden:w.getAttribute('data-eyebrow-hidden'),
+      html:c.innerHTML
+    });
+  });
+  return blocks;
+}
+var DB_NAME='nbc_nieuwsbrief_bouwer',STORE='state',KEY='current';
+function idbOpen(){return new Promise(function(res,rej){var r=indexedDB.open(DB_NAME,1);r.onupgradeneeded=function(){r.result.createObjectStore(STORE);};r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};});}
+function idbSet(v){return idbOpen().then(function(db){return new Promise(function(res,rej){var tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put(v,KEY);tx.oncomplete=function(){res();};tx.onerror=function(){rej(tx.error);};});});}
+function idbGet(){return idbOpen().then(function(db){return new Promise(function(res,rej){var tx=db.transaction(STORE,'readonly');var q=tx.objectStore(STORE).get(KEY);q.onsuccess=function(){res(q.result);};q.onerror=function(){rej(q.error);};});});}
+function idbClear(){return idbOpen().then(function(db){return new Promise(function(res,rej){var tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).delete(KEY);tx.oncomplete=function(){res();};tx.onerror=function(){rej(tx.error);};});});}
+
+var saveTimer=null, restoring=false, pristineJSON=null;
+var statusEl=document.getElementById('saveStatus');
+function fmtTime(ts){ try{ return new Date(ts).toLocaleString('nl-NL',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
+function setStatus(mode,ts){
+  if(!statusEl) return;
+  if(mode==='saving'){ statusEl.textContent='Opslaan\u2026'; statusEl.style.color='#828b8d'; statusEl.title=''; }
+  else if(mode==='saved'){ statusEl.textContent='Opgeslagen \u2713'; statusEl.style.color='#165e5a'; statusEl.title=ts?('Laatst opgeslagen: '+fmtTime(ts)):''; }
+  else if(mode==='error'){ statusEl.textContent='Niet opgeslagen'; statusEl.style.color='#c0492b'; statusEl.title='Opslaan in deze browser is niet gelukt.'; }
+  else { statusEl.textContent=''; statusEl.title=''; }
+}
+function doSave(){
+  if(restoring) return;
+  var blocks=serializeStage();
+  if(pristineJSON && JSON.stringify(blocks)===pristineJSON){ idbClear().catch(function(){}); setStatus(''); return; }
+  var data={blocks:blocks,savedAt:Date.now()};
+  idbSet(data).then(function(){ setStatus('saved',data.savedAt); }).catch(function(){ setStatus('error'); });
+}
+function scheduleSave(){
+  if(restoring) return;
+  setStatus('saving');
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(doSave,700);
+}
+new MutationObserver(scheduleSave).observe(stage,{childList:true,subtree:true,attributes:true,characterData:true});
+window.addEventListener('beforeunload',function(){ if(saveTimer){ clearTimeout(saveTimer); doSave(); } });
+document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='hidden' && saveTimer){ clearTimeout(saveTimer); doSave(); } });
+
+function buildDefault(){
+  restoring=true;
+  stage.innerHTML='';
+  addBlock('A'); addBlock('B'); addBlock('R');
+  restoring=false;
+  pristineJSON=JSON.stringify(serializeStage());
+  renumber();
+}
+function restoreState(data){
+  restoring=true;
+  stage.innerHTML='';
+  (data.blocks||[]).forEach(function(bl){ addBlock(bl.letter, bl); });
+  restoring=false;
+  renumber();
+  setStatus('saved',data.savedAt);
+}
+function showRestoreBar(data){
+  document.getElementById('restoreWhen').textContent=fmtTime(data.savedAt);
+  var n=(data.blocks||[]).length;
+  document.getElementById('restoreCount').textContent=n+' blok'+(n===1?'':'ken');
+  document.getElementById('restoreOverlay').classList.add('on');
+}
+function doRestore(){
+  document.getElementById('restoreOverlay').classList.remove('on');
+  idbGet().then(function(data){ if(data&&data.blocks){ restoreState(data); } else { buildDefault(); } });
+}
+function doFreshStart(){
+  document.getElementById('restoreOverlay').classList.remove('on');
+  idbClear().catch(function(){});
+  buildDefault();
+  openHelp();
+}
+
+idbGet().then(function(data){
+  if(data && data.blocks && data.blocks.length){ closeHelp(); showRestoreBar(data); }
+  else { buildDefault(); }
+}).catch(function(){ buildDefault(); });
+
+/* ================= MAIL-SJABLOON ================= */
+var MAIL_HEAD = "<!DOCTYPE html>\n<html lang=\"nl\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\">\n<head>\n<meta charset=\"utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />\n<meta name=\"format-detection\" content=\"telephone=no, date=no, address=no, email=no, url=no\" />\n<meta name=\"color-scheme\" content=\"light\" />\n<meta name=\"supported-color-schemes\" content=\"light\" />\n<title>*|MC:SUBJECT|*</title>\n<!--[if gte mso 9]>\n<xml>\n  <o:OfficeDocumentSettings>\n    <o:AllowPNG/>\n    <o:PixelsPerInch>96</o:PixelsPerInch>\n  </o:OfficeDocumentSettings>\n</xml>\n<![endif]-->\n\n<style type=\"text/css\">\n  /* ====================================================================\n     NBC MAILING — BEWERKBAAR WERKBESTAND (blokkenbibliotheek, blanco)\n     Koppen = live tekst in Pockota, fallback Trebuchet MS/Verdana/Arial.\n     Bodytekst = fallback Helvetica/Arial (consistent voor elke ontvanger).\n     Het werkbestand IS al de importklare versie -- geen bak-stap nodig.\n     ==================================================================== */\n\n  body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}\n  table,td{mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;}\n  img{-ms-interpolation-mode:bicubic;border:0;height:auto;line-height:100%;outline:none;text-decoration:none;display:block;}\n  body{margin:0;padding:0;width:100%!important;height:100%!important;background-color:#f1f1ef;}\n  a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important;font-size:inherit!important;font-family:inherit!important;font-weight:inherit!important;line-height:inherit!important;}\n  .ExternalClass{width:100%;}\n  .ExternalClass,.ExternalClass p,.ExternalClass td,.ExternalClass div,.ExternalClass span,.ExternalClass font{line-height:100%;}\n  u + #body a{color:inherit;text-decoration:none;}\n  u + #body .footer-logo-cell{width:48%!important;}\n  u + #body .footer-contact{width:52%!important;font-size:13px!important;white-space:nowrap!important;}\n  p{margin:0;}\n\n  /* Automatische regel- en woordafbreking. Outlook kan woordafbreking negeren,\n     maar normale regelomloop blijft daar wel werken. */\n  h1,h2,h3,p,a{\n    white-space:normal;\n    overflow-wrap:break-word;\n    word-wrap:break-word;\n    word-break:normal;\n    -webkit-hyphens:auto;\n    -ms-hyphens:auto;\n    hyphens:auto;\n  }\n\n  @media only screen and (max-width:620px){\n    .email-container{width:100%!important;max-width:100%!important;}\n    .fluid{width:100%!important;max-width:100%!important;height:auto!important;}\n    .stack{display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;}\n    .px{padding-left:22px!important;padding-right:22px!important;}\n    .py-lg{padding-top:36px!important;padding-bottom:36px!important;}\n    .center-sm{text-align:center!important;}\n    .nav-link{display:inline-block!important;padding:6px 9px!important;}\n    .h1{font-size:34px!important;line-height:1.08!important;}\n    .h2{font-size:28px!important;line-height:1.12!important;}\n    .artnum{font-size:46px!important;}\n    .stat-num{font-size:46px!important;}\n    .card-pad{padding:28px 22px!important;}\n    .col-gap{height:28px!important;line-height:28px!important;}\n    .mt-sm{height:18px!important;line-height:18px!important;}\n    .hide-sm{display:none!important;max-height:0!important;overflow:hidden!important;}\n    .art-num-cell{padding-bottom:6px!important;}\n    .logo-img{margin-left:auto!important;margin-right:auto!important;width:260px!important;max-width:260px!important;}\n    .center-img-sm{margin-left:auto!important;margin-right:auto!important;}\n    .left-sm{text-align:left!important;}\n    .tri-num-img{width:84px!important;max-width:84px!important;height:auto!important;}\n    .eqh{height:auto!important;}\n  }\n</style>\n</head>\n\n<body id=\"body\" style=\"margin:0;padding:0;width:100%;background-color:#f1f1ef;\">\n\n<!-- Mailchimp vult dit vanuit Onderwerp > Previewtekst. -->\n<div mc:edit=\"preview_text\" class=\"mcnPreviewText\" style=\"display:none!important;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;font-family:Arial,sans-serif;color:transparent;\">\n  *|MC_PREVIEW_TEXT|*\n</div>\n<div aria-hidden=\"true\" style=\"display:none!important;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;color:transparent;\">\n  &#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;&#847;&zwnj;\n</div>\n\n<center role=\"article\" aria-roledescription=\"email\" lang=\"nl\" style=\"width:100%;background-color:#f1f1ef;\">\n<!--[if mso | IE]>\n<table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"background-color:#f1f1ef;\"><tr><td>\n<![endif]-->\n\n";
+var MAIL_TAIL = "<!--[if mso | IE]>\n</td></tr></table>\n<![endif]-->\n</center>\n\n</body>\n</html>\n";
+
+/* ================= CLOUD (Supabase) ================= */
+var BRAND='nbc', BUCKET='nieuwsbrief', TABLE='nieuwsbrieven';
+var CFG_KEY='nbc_bouwer_cloud', ASSET_KEY='nbc_bouwer_assets';
+var SITE_CFG=(typeof window!=='undefined' && window.NBC_CONFIG)||{};
+var DEFAULT_URL=SITE_CFG.url||'https://uqgpcvuhwfvyhvxokptn.supabase.co';
+/* De instellingen uit config.js gelden voor iedereen; wat iemand zelf via ⚙
+   invult overschrijft dat alleen in zijn eigen browser. */
+function cfg(){
+  var local={}; try{ local=JSON.parse(localStorage.getItem(CFG_KEY))||{}; }catch(e){}
+  return { url: local.url||SITE_CFG.url||'', key: local.key||SITE_CFG.key||'' };
+}
+function cloudOn(){ var c=cfg(); return !!(c.url&&c.key); }
+function apiBase(){ return (cfg().url||DEFAULT_URL).replace(/\/+$/,''); }
+function hdrs(extra){ var c=cfg(); var h={apikey:c.key, Authorization:'Bearer '+c.key}; if(extra){ for(var k in extra) h[k]=extra[k]; } return h; }
+function api(path,opts){
+  opts=opts||{};
+  var h=hdrs(opts.headers||{}); if(opts.body) h['Content-Type']='application/json';
+  return fetch(apiBase()+path,{method:opts.method||'GET',headers:h,body:opts.body?JSON.stringify(opts.body):undefined})
+    .then(function(r){
+      if(!r.ok) return r.text().then(function(t){ throw new Error(r.status+' '+t); });
+      if(r.status===204) return null;
+      return r.text().then(function(t){ return t?JSON.parse(t):null; });
+    });
+}
+function publicUrl(p){ return apiBase()+'/storage/v1/object/public/'+BUCKET+'/'+p; }
+function storageUpload(path,blob){
+  return fetch(apiBase()+'/storage/v1/object/'+BUCKET+'/'+path,{method:'POST',headers:hdrs({'x-upsert':'true','Content-Type':blob.type||'application/octet-stream'}),body:blob})
+    .then(function(r){ if(!r.ok) return r.text().then(function(t){ throw new Error('upload '+r.status+' '+t); }); return publicUrl(path); });
+}
+function srcToBlob(src){
+  if(/^data:/.test(src)){
+    var parts=src.split(','), mime=((parts[0].match(/:(.*?);/))||[])[1]||'image/jpeg';
+    var bin=atob(parts[1]), u=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i);
+    return Promise.resolve(new Blob([u],{type:mime}));
+  }
+  return fetch(src).then(function(r){ if(!r.ok) throw new Error('fetch '+r.status); return r.blob(); });
+}
+function hashStr(s){ var h=5381; for(var i=0;i<s.length;i++){ h=((h<<5)+h+s.charCodeAt(i))|0; } return (h>>>0).toString(36); }
+function extFor(t){ return t.indexOf('png')>-1?'png':(t.indexOf('gif')>-1?'gif':(t.indexOf('webp')>-1?'webp':'jpg')); }
+function assetCache(){ try{ return JSON.parse(localStorage.getItem(ASSET_KEY))||{}; }catch(e){ return {}; } }
+
+var _askDone=null;
+function _askClose(val){
+  document.getElementById('askOverlay').classList.remove('on');
+  var f=_askDone; _askDone=null;
+  if(f) f(val);
+}
+function askDialog(opts){
+  return new Promise(function(res){
+    _askDone=res;
+    document.getElementById('askTitle').textContent=opts.title||'';
+    var t=document.getElementById('askText');
+    t.innerHTML=opts.text||''; t.style.display=opts.text?'block':'none';
+    var inp=document.getElementById('askInput');
+    if(opts.input===false){ inp.style.display='none'; }
+    else { inp.style.display='block'; inp.value=opts.value||''; }
+    var ok=document.getElementById('askOk');
+    ok.textContent=opts.okLabel||'Opslaan';
+    ok.style.background=opts.danger?'#c0492b':'';
+    ok.style.color=opts.danger?'#fff':'';
+    document.getElementById('askCancel').style.display=opts.cancel===false?'none':'inline-block';
+    document.getElementById('askOverlay').classList.add('on');
+    if(opts.input!==false) setTimeout(function(){ inp.focus(); inp.select(); },60);
+  });
+}
+function askText(title,text,value,okLabel){
+  return askDialog({title:title,text:text,value:value,okLabel:okLabel||'Opslaan'}).then(function(v){
+    return (v===null||String(v).trim()==='')?null:String(v).trim();
+  });
+}
+function askConfirm(title,text,okLabel,danger){
+  return askDialog({title:title,text:text,input:false,okLabel:okLabel||'Ja',danger:!!danger}).then(function(v){ return v!==null; });
+}
+function notify(title,text){
+  return askDialog({title:title,text:text,input:false,okLabel:'Oké',cancel:false});
+}
+document.getElementById('askOk').addEventListener('click',function(){
+  var inp=document.getElementById('askInput');
+  _askClose(inp.style.display==='none'?true:inp.value);
+});
+document.getElementById('askCancel').addEventListener('click',function(){ _askClose(null); });
+document.getElementById('askOverlay').addEventListener('click',function(e){ if(e.target===this) _askClose(null); });
+document.getElementById('askInput').addEventListener('keydown',function(e){
+  if(e.key==='Enter'){ e.preventDefault(); _askClose(this.value); }
+  if(e.key==='Escape'){ e.preventDefault(); _askClose(null); }
+});
+
+function busy(on,title,note){
+  document.getElementById('busyOverlay').classList[on?'add':'remove']('on');
+  if(title) document.getElementById('busyTitle').textContent=title;
+  document.getElementById('busyNote').textContent=note||'';
+}
+
+/* Geüploade foto's zitten als data:-adres in de pagina; die moeten naar de
+   cloud voordat ze in een mail kunnen. De vaste merkafbeeldingen hoeven niet
+   geüpload: die staan al op een publiek adres naast de bouwer zelf. */
+function ensureHostedImages(){
+  if(!cloudOn()) return Promise.resolve(0);
+  var imgs=Array.prototype.slice.call(stage.querySelectorAll('img')).filter(function(im){
+    return /^data:/i.test(im.getAttribute('src')||'');
+  });
+  if(!imgs.length) return Promise.resolve(0);
+  var cache=assetCache(), done=0, ok=0;
+  return imgs.reduce(function(p,im){
+    return p.then(function(){
+      var src=im.getAttribute('src')||'';
+      if(!src) return;
+      var key=hashStr(src);
+      if(cache[key]){ im.setAttribute('src',cache[key]); ok++; done++; busy(true,null,'Afbeelding '+done+' van '+imgs.length); return; }
+      return srcToBlob(src).then(function(bl){
+        return storageUpload('beeld/'+key+'.'+extFor(bl.type||''),bl);
+      }).then(function(url){
+        cache[key]=url; localStorage.setItem(ASSET_KEY,JSON.stringify(cache));
+        im.setAttribute('src',url); ok++;
+      }).catch(function(e){ console.warn('upload mislukt',src,e); })
+      .then(function(){ done++; busy(true,null,'Afbeelding '+done+' van '+imgs.length); });
+    });
+  },Promise.resolve()).then(function(){ return ok; });
+}
+
+/* ================= NIEUWSBRIEVEN (database) ================= */
+var currentDoc=null;
+function docLabel(){
+  var el=document.getElementById('docName');
+  el.textContent=currentDoc?currentDoc.naam:'Naamloos concept';
+  el.style.color=currentDoc?'#165e5a':'#828b8d';
+  var sb=document.getElementById('saveBtn');
+  if(sb){
+    sb.textContent=currentDoc?'Opslaan':'Opslaan als…';
+    sb.title=currentDoc?'Nu opslaan — dit gebeurt ook automatisch':'Geef deze nieuwsbrief een naam en bewaar hem online';
+  }
+}
+function saveNow(){
+  if(!currentDoc){ saveAsNew(); return; }
+  var sb=document.getElementById('saveBtn'), orig='Opslaan';
+  sb.textContent='Opslaan…';
+  busy(true,'Opslaan…','Afbeeldingen worden gehost');
+  ensureHostedImages()
+    .then(function(){ return patchDoc(currentDoc.id,{blokken:serializeStage(),bijgewerkt:new Date().toISOString()}); })
+    .then(function(){
+      busy(false); cloudStatus('Online opgeslagen ✓','#165e5a');
+      sb.textContent='Opgeslagen ✓';
+      setTimeout(function(){ sb.textContent=orig; },1600);
+    })
+    .catch(function(e){ busy(false); sb.textContent=orig; notify('Opslaan mislukt',esc(e.message)); });
+}
+function listDocs(trash){
+  return api('/rest/v1/'+TABLE+'?select=id,naam,bijgewerkt&merk=eq.'+BRAND+'&verwijderd=is.'+(trash?'true':'false')+'&order=bijgewerkt.desc');
+}
+function createDoc(naam,blokken){
+  return api('/rest/v1/'+TABLE,{method:'POST',headers:{Prefer:'return=representation'},body:{naam:naam,merk:BRAND,blokken:blokken,bijgewerkt:new Date().toISOString()}})
+    .then(function(r){ return r&&r[0]; });
+}
+function patchDoc(id,fields){ return api('/rest/v1/'+TABLE+'?id=eq.'+id,{method:'PATCH',headers:{Prefer:'return=minimal'},body:fields}); }
+function fetchDoc(id){ return api('/rest/v1/'+TABLE+'?select=*&id=eq.'+id).then(function(r){ return r&&r[0]; }); }
+
+var _localSave=doSave;
+doSave=function(){
+  _localSave();
+  if(currentDoc && cloudOn()){
+    var blokken=serializeStage();
+    patchDoc(currentDoc.id,{blokken:blokken,bijgewerkt:new Date().toISOString()})
+      .then(function(){ cloudStatus('Online opgeslagen ✓','#165e5a'); })
+      .catch(function(){ cloudStatus('Niet online opgeslagen','#c0492b'); });
+  }
+};
+function cloudStatus(txt,col){
+  var el=document.getElementById('saveStatus');
+  if(el){ el.textContent=txt; el.style.color=col; el.title='Laatst opgeslagen: '+fmtTime(Date.now()); }
+}
+function needCloud(){
+  if(cloudOn()) return true;
+  closeLibrary();
+  openConfig();
+  document.getElementById('cfgStatus').innerHTML='<span style="color:#c0492b">Vul eerst de project-URL en key in — daarna kun je online opslaan.</span>';
+  return false;
+}
+function saveAsNew(){
+  if(!needCloud()) return;
+  if(!stage.children.length){ notify('Nog niets om op te slaan','Voeg eerst een paar blokken toe.'); return; }
+  var voorstel=currentDoc?currentDoc.naam+' (kopie)':'Nieuwsbrief '+new Date().toLocaleDateString('nl-NL',{month:'long',year:'numeric'});
+  askText('Nieuwsbrief opslaan','Geef deze nieuwsbrief een naam. Vanaf nu wordt elke wijziging automatisch bewaard.',voorstel).then(function(naam){
+    if(!naam) return;
+    busy(true,'Opslaan…','Afbeeldingen worden gehost');
+    ensureHostedImages().then(function(){ return createDoc(naam,serializeStage()); })
+      .then(function(d){ currentDoc={id:d.id,naam:d.naam}; docLabel(); cloudStatus('Online opgeslagen ✓','#165e5a'); busy(false); closeLibrary(); })
+      .catch(function(e){ busy(false); notify('Opslaan mislukt',esc(e.message)); });
+  });
+}
+function renameCurrent(){
+  if(!currentDoc){ saveAsNew(); return; }
+  askText('Naam wijzigen','',currentDoc.naam,'Wijzigen').then(function(naam){
+    if(!naam) return;
+    patchDoc(currentDoc.id,{naam:naam}).then(function(){ currentDoc.naam=naam; docLabel(); })
+      .catch(function(e){ notify('Hernoemen mislukt',esc(e.message)); });
+  });
+}
+function openDoc(id){
+  busy(true,'Openen…','');
+  fetchDoc(id).then(function(d){
+    if(!d) throw new Error('niet gevonden');
+    currentDoc={id:d.id,naam:d.naam};
+    restoreState({blocks:d.blokken||[],savedAt:new Date(d.bijgewerkt).getTime()});
+    docLabel(); busy(false); closeLibrary();
+  }).catch(function(e){ busy(false); notify('Openen mislukt',esc(e.message)); });
+}
+function dupDoc(id,naam){
+  askText('Kopie maken','Handig als startpunt voor de volgende maand.',naam+' (kopie)','Dupliceren').then(function(nn){
+    if(!nn) return;
+    busy(true,'Dupliceren…','');
+    fetchDoc(id).then(function(d){ return createDoc(nn,d.blokken||[]); })
+      .then(function(){ busy(false); renderLib(); })
+      .catch(function(e){ busy(false); notify('Dupliceren mislukt',esc(e.message)); });
+  });
+}
+function trashDoc(id){
+  askConfirm('Naar de prullenbak?','Je kunt hem daar altijd terugzetten.','Verwijderen',true).then(function(ok){
+    if(!ok) return;
+    patchDoc(id,{verwijderd:true}).then(function(){
+      if(currentDoc && currentDoc.id===id){ currentDoc=null; docLabel(); }
+      renderLib();
+    }).catch(function(e){ notify('Verwijderen mislukt',esc(e.message)); });
+  });
+}
+function untrashDoc(id){ patchDoc(id,{verwijderd:false}).then(renderLib).catch(function(e){ notify('Terugzetten mislukt',esc(e.message)); }); }
+function purgeDoc(id){
+  askConfirm('Definitief wissen?','Dit kan niet ongedaan worden gemaakt.','Definitief wissen',true).then(function(ok){
+    if(!ok) return;
+    api('/rest/v1/'+TABLE+'?id=eq.'+id,{method:'DELETE',headers:{Prefer:'return=minimal'}}).then(renderLib).catch(function(e){ notify('Wissen mislukt',esc(e.message)); });
+  });
+}
+
+/* ---- bibliotheek-UI ---- */
+var libTrash=false;
+function libTab(t){ libTrash=t; renderLib(); }
+function openLibrary(){ document.getElementById('libOverlay').classList.add('on'); renderLib(); }
+function closeLibrary(){ document.getElementById('libOverlay').classList.remove('on'); }
+document.getElementById('libOverlay').addEventListener('click',function(e){ if(e.target===this) closeLibrary(); });
+function renderLib(){
+  var body=document.getElementById('libBody');
+  document.getElementById('libTabActive').style.background=libTrash?'transparent':'#e9f5f4';
+  document.getElementById('libTabTrash').style.background=libTrash?'#e9f5f4':'transparent';
+  if(!cloudOn()){
+    body.innerHTML='<div style="padding:28px 4px;color:#596165;font-size:14px;line-height:1.7;">Online opslaan staat nog niet aan. Klik op <b>⚙</b> rechtsboven en vul de project-URL en publieke key in.<br><br>Zonder cloud werkt de bouwer nog gewoon, maar je werk blijft dan op deze computer.</div>';
+    return;
+  }
+  body.innerHTML='<div style="padding:28px 4px;color:#828b8d;font-size:14px;">Laden…</div>';
+  listDocs(libTrash).then(function(rows){
+    if(!rows || !rows.length){
+      body.innerHTML='<div style="padding:28px 4px;color:#596165;font-size:14px;">'+(libTrash?'De prullenbak is leeg.':'Nog geen opgeslagen nieuwsbrieven. Bouw er een en klik bovenin op <b>Opslaan als…</b>.')+'</div>';
+      return;
+    }
+    var h='<div style="display:flex;flex-direction:column;gap:8px;">';
+    rows.forEach(function(r){
+      var open=currentDoc&&currentDoc.id===r.id;
+      h+='<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid '+(open?'#229d96':'#e2ddd7')+';border-radius:12px;background:'+(open?'#e9f5f4':'#fff')+';">'
+       + '<div style="flex:1;min-width:0;">'
+       + '<div style="font-family:\'Pockota\',Arial,sans-serif;font-size:16px;color:#21282b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+esc(r.naam)+(open?' <span style="font-family:Arial;font-size:11px;color:#165e5a;">· nu open</span>':'')+'</div>'
+       + '<div style="font-size:12px;color:#828b8d;margin-top:2px;">'+fmtTime(new Date(r.bijgewerkt).getTime())+'</div>'
+       + '</div>';
+      if(libTrash){
+        h+='<button class="btn btn-ghost" style="border:1px solid #c8c5c1;color:#0e0e0e;" onclick="untrashDoc(\''+r.id+'\')">Terugzetten</button>'
+         + '<button class="btn btn-ghost" style="color:#c0492b;" onclick="purgeDoc(\''+r.id+'\')">Definitief wissen</button>';
+      } else {
+        h+='<button class="btn btn-ghost" style="border:1px solid #c8c5c1;color:#0e0e0e;" onclick="openDoc(\''+r.id+'\')">Openen</button>'
+         + '<button class="btn btn-ghost" onclick="dupDoc(\''+r.id+'\',\''+esc(r.naam).replace(/'/g,"&#39;")+'\')">Dupliceren</button>'
+         + '<button class="btn btn-ghost" style="color:#c0492b;" onclick="trashDoc(\''+r.id+'\')">Verwijderen</button>';
+      }
+      h+='</div>';
+    });
+    body.innerHTML=h+'</div>';
+  }).catch(function(e){
+    body.innerHTML='<div style="padding:28px 4px;color:#c0492b;font-size:14px;line-height:1.7;">Kon de lijst niet laden.<br><span style="color:#828b8d;font-size:12px;">'+esc(e.message)+'</span></div>';
+  });
+}
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* ---- instellingen ---- */
+function openConfig(){
+  var c=cfg();
+  document.getElementById('cfgUrl').value=c.url||DEFAULT_URL;
+  document.getElementById('cfgKey').value=c.key||'';
+  document.getElementById('cfgStatus').innerHTML=cloudOn()?'<span style="color:#165e5a">Online opslaan staat aan.</span>':'<span style="color:#828b8d">Nog niet ingesteld.</span>';
+  document.getElementById('cfgOverlay').classList.add('on');
+}
+function closeConfig(){ document.getElementById('cfgOverlay').classList.remove('on'); }
+document.getElementById('cfgOverlay').addEventListener('click',function(e){ if(e.target===this) closeConfig(); });
+function saveConfig(){
+  var url=document.getElementById('cfgUrl').value.trim().replace(/\/+$/,'');
+  var key=document.getElementById('cfgKey').value.trim();
+  localStorage.setItem(CFG_KEY,JSON.stringify({url:url,key:key}));
+  document.getElementById('cfgStatus').innerHTML='<span style="color:#165e5a">Opgeslagen.</span>';
+  setTimeout(function(){ closeConfig(); renderLib(); },600);
+}
+function testConfig(){
+  var url=document.getElementById('cfgUrl').value.trim().replace(/\/+$/,'');
+  var key=document.getElementById('cfgKey').value.trim();
+  var st=document.getElementById('cfgStatus');
+  if(!url||!key){ st.innerHTML='<span style="color:#c0492b">Vul beide velden in.</span>'; return; }
+  st.innerHTML='<span style="color:#828b8d">Testen…</span>';
+  fetch(url+'/rest/v1/'+TABLE+'?select=id&limit=1',{headers:{apikey:key,Authorization:'Bearer '+key}})
+    .then(function(r){
+      if(r.ok){ st.innerHTML='<span style="color:#165e5a">Verbinding werkt ✓</span>'; return; }
+      return r.text().then(function(t){
+        st.innerHTML='<span style="color:#c0492b">Verbinding mislukt ('+r.status+'). '+(r.status===404?'Bestaat de tabel <b>'+TABLE+'</b> al?':esc(t.slice(0,160)))+'</span>';
+      });
+    })
+    .catch(function(e){ st.innerHTML='<span style="color:#c0492b">Geen verbinding: '+esc(e.message)+'</span>'; });
+}
+
+/* ================= EXPORT ================= */
+
+/* De map waarin de bouwer draait. Op GitHub Pages is dat bijvoorbeeld
+   https://digitaldedication.github.io/nbcnieuwsbriefbouwer/ — en dus hebben
+   alle merkafbeeldingen (logo, social-iconen) daar een vast, publiek adres. */
+var ASSET_BASE=location.href.split(/[?#]/)[0].replace(/[^\/]*$/,'');
+/* Draait de bouwer als los bestand, dan zijn de afbeeldingsadressen file://
+   en werken ze niet in een verstuurde mail. Daar waarschuwen we voor. */
+function assetsArePublic(){ return /^https?:/i.test(ASSET_BASE); }
+
+function toAbsolute(u){
+  try{ return new URL(u, document.baseURI).href; }catch(e){ return u; }
+}
+
+/* Maakt elk afbeeldingsadres absoluut. De browser rekent 'images/logo.png'
+   zelf om naar het volledige adres, dus dit werkt ongeacht waar de bouwer
+   staat. data:-afbeeldingen blijven ongemoeid. */
+function absolutizeImages(node){
+  node.querySelectorAll('img').forEach(function(im){
+    var raw=im.getAttribute('src')||'';
+    if(!raw || /^data:/i.test(raw)) return;
+    im.setAttribute('src', im.src);
+  });
+  /* Outlook-only afbeeldingen staan in een conditional comment. Die zijn voor
+     de DOM gewoon tekst, dus querySelectorAll ziet ze niet — hier los doen,
+     anders is het beeld in Outlook stuk. */
+  var w=document.createTreeWalker(node,NodeFilter.SHOW_COMMENT,null,false), c, comments=[];
+  while((c=w.nextNode())) comments.push(c);
+  comments.forEach(function(cm){
+    if(cm.nodeValue.indexOf('<img')===-1) return;
+    cm.nodeValue=cm.nodeValue.replace(/(<img\b[^>]*?\bsrc=")([^"]+)(")/gi,function(m,a,src,z){
+      return /^(https?:|data:)/i.test(src) ? m : a+toAbsolute(src)+z;
+    });
+  });
+}
+
+function cleanBlock(wrap,unwrap){
+  var c=wrap.cloneNode(true);
+  c.querySelectorAll('.pv-tag,.pv-tools,.photo-badge,.photo-edit-btn,.link-badge,.gap-indicator').forEach(function(x){ x.remove(); });
+  absolutizeImages(c);
+  c.querySelectorAll('[contenteditable]').forEach(function(el){ el.removeAttribute('contenteditable'); el.removeAttribute('spellcheck'); });
+  c.querySelectorAll('.photo-wrap').forEach(function(el){ el.classList.remove('photo-wrap'); if(!el.getAttribute('class')) el.removeAttribute('class'); });
+  c.querySelectorAll('[data-photo-filled]').forEach(function(el){ el.removeAttribute('data-photo-filled'); });
+  if(unwrap){
+    var t=c.querySelector(':scope > table');
+    if(t) return t.innerHTML;
+  }
+  return c.innerHTML;
+}
+/* Eén witte container van 600px met de blokken als rijen — dezelfde opbouw
+   als het handgemaakte sjabloon. Losse tabellen (webversie-balk, footer)
+   blijven ernaast staan. */
+function buildBodyHTML(){
+  var out=[], rows=[];
+  function flush(){
+    if(!rows.length) return;
+    out.push('<table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0" width="600" class="email-container" style="width:600px;max-width:600px;background-color:#ffffff;border-collapse:collapse;">\n'+rows.join('\n')+'\n</table>');
+    rows=[];
+  }
+  Array.prototype.forEach.call(stage.children,function(w){
+    var L=w.getAttribute('data-letter');
+    var isTable=!!(byLetter[L] && byLetter[L].type==='table');
+    if(isTable){ flush(); out.push(cleanBlock(w,false)); }
+    else { rows.push(cleanBlock(w,true)); }
+  });
+  flush();
+  return out.join('\n\n');
+}
+function buildMailHTML(){ return MAIL_HEAD+'\n'+buildBodyHTML()+'\n'+MAIL_TAIL; }
+function openExport(){
+  if(!stage.children.length){ notify('Nog leeg','Voeg eerst een paar blokken toe.'); return; }
+  busy(true,'HTML maken…','');
+  ensureHostedImages().then(function(){
+    if(currentDoc && cloudOn()) doSave();
+    document.getElementById('exportText').value=buildMailHTML();
+    var chk=checkReadiness();
+    var msgs=[];
+    var mp=(chk.missingPhotos||[]).length, ml=(chk.missingLinks||[]).length;
+    if(mp) msgs.push('<b>'+mp+' fotoplek'+(mp===1?'':'ken')+'</b> '+(mp===1?'is':'zijn')+' nog niet gevuld: '+esc(chk.missingPhotos.join(' · ')));
+    if(ml) msgs.push('<b>'+ml+' knop'+(ml===1?'':'pen')+'</b> '+(ml===1?'heeft':'hebben')+' nog de standaardlink: '+esc(chk.missingLinks.join(' · ')));
+    var kb=Math.round(document.getElementById('exportText').value.length/1024);
+    if(kb>100) msgs.push('De HTML is <b>'+kb+' KB</b>. Gmail kapt mails boven 100 KB af — zet foto\'s online (⚙) zodat ze niet in de code zelf zitten.');
+    var local=Array.prototype.slice.call(stage.querySelectorAll('img')).filter(function(im){ return /^data:/i.test(im.getAttribute('src')||''); }).length;
+    if(local) msgs.push('<b>'+local+' geüploade foto'+(local===1?'':'\'s')+'</b> staat nog niet online — die verschijnt niet in geplakte HTML. Zet cloud-opslag aan (⚙) of gebruik <b>Zip met foto\'s</b>.');
+    if(!assetsArePublic()) msgs.push('Je opent de bouwer als los bestand, dus de merkafbeeldingen krijgen een <b>file://</b>-adres dat in een mail niet werkt. Gebruik de online bouwer, of exporteer via <b>Zip met foto\'s</b>.');
+    var w=document.getElementById('exportWarning');
+    if(msgs.length){ w.innerHTML='Let op:<br>'+msgs.join('<br>'); w.style.display='block'; } else { w.style.display='none'; }
+    busy(false);
+    document.getElementById('exportOverlay').classList.add('on');
+  }).catch(function(e){ busy(false); notify('Er ging iets mis',esc(e.message)); });
+}
+function closeExport(){ document.getElementById('exportOverlay').classList.remove('on'); }
+document.getElementById('exportOverlay').addEventListener('click',function(e){ if(e.target===this) closeExport(); });
+function copyExport(){
+  var ta=document.getElementById('exportText'); ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  if(navigator.clipboard) navigator.clipboard.writeText(ta.value);
+  var b=document.getElementById('copyHtmlBtn'), o=b.textContent;
+  b.textContent='Gekopieerd ✓'; setTimeout(function(){ b.textContent=o; },1600);
+}
+function fileStem(){ return (currentDoc?currentDoc.naam:'nieuwsbrief').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'nieuwsbrief'; }
+function downloadBlob(blob,name){
+  var a=document.createElement('a'), u=URL.createObjectURL(blob);
+  a.href=u; a.download=name; document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(u); a.remove(); },1500);
+}
+function downloadHTML(){ downloadBlob(new Blob([document.getElementById('exportText').value],{type:'text/html'}),fileStem()+'.html'); }
+
+/* ---- zip (store-only, geen library nodig) ---- */
+var CRC_T=null;
+function crcTable(){ if(CRC_T) return CRC_T; CRC_T=[]; for(var n=0;n<256;n++){ var c=n; for(var k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); CRC_T[n]=c>>>0; } return CRC_T; }
+function crc32(u8){ var t=crcTable(), c=0xFFFFFFFF; for(var i=0;i<u8.length;i++) c=t[(c^u8[i])&0xFF]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+function zipStore(files){
+  var enc=new TextEncoder(), chunks=[], central=[], offset=0;
+  files.forEach(function(f){
+    var name=enc.encode(f.name), data=f.data, crc=crc32(data);
+    var lh=new DataView(new ArrayBuffer(30));
+    lh.setUint32(0,0x04034b50,true); lh.setUint16(4,20,true); lh.setUint16(6,0,true); lh.setUint16(8,0,true);
+    lh.setUint16(10,0,true); lh.setUint16(12,0,true); lh.setUint32(14,crc,true);
+    lh.setUint32(18,data.length,true); lh.setUint32(22,data.length,true);
+    lh.setUint16(26,name.length,true); lh.setUint16(28,0,true);
+    chunks.push(new Uint8Array(lh.buffer),name,data);
+    var cd=new DataView(new ArrayBuffer(46));
+    cd.setUint32(0,0x02014b50,true); cd.setUint16(4,20,true); cd.setUint16(6,20,true);
+    cd.setUint32(16,crc,true); cd.setUint32(20,data.length,true); cd.setUint32(24,data.length,true);
+    cd.setUint16(28,name.length,true); cd.setUint32(42,offset,true);
+    central.push(new Uint8Array(cd.buffer),name);
+    offset+=30+name.length+data.length;
+  });
+  var cdSize=central.reduce(function(a,x){ return a+x.length; },0);
+  var eo=new DataView(new ArrayBuffer(22));
+  eo.setUint32(0,0x06054b50,true); eo.setUint16(8,files.length,true); eo.setUint16(10,files.length,true);
+  eo.setUint32(12,cdSize,true); eo.setUint32(16,offset,true);
+  return new Blob(chunks.concat(central,[new Uint8Array(eo.buffer)]),{type:'application/zip'});
+}
+function downloadZip(){
+  var btn=document.getElementById('zipBtn'), orig=btn.textContent;
+  btn.textContent='Zip maken…';
+  var imgs=Array.prototype.slice.call(stage.querySelectorAll('img'));
+  var map={}, files=[], n=0;
+  imgs.reduce(function(p,im){
+    return p.then(function(){
+      /* im.src geeft hetzelfde absolute adres als in de geëxporteerde HTML
+         staat, zodat het vervangen hieronder gegarandeerd matcht. */
+      var src=im.src||'';
+      if(!src||map[src]) return;
+      return srcToBlob(src).then(function(bl){
+        n++; var name='images/beeld-'+n+'.'+extFor(bl.type||'');
+        map[src]=name;
+        return bl.arrayBuffer().then(function(ab){ files.push({name:name,data:new Uint8Array(ab)}); });
+      }).catch(function(e){ console.warn('zip: overgeslagen',src,e); });
+    });
+  },Promise.resolve()).then(function(){
+    var html=buildMailHTML();
+    Object.keys(map).forEach(function(s){ html=html.split(s).join(map[s]); });
+    files.push({name:'index.html',data:new TextEncoder().encode(html)});
+    downloadBlob(zipStore(files),fileStem()+'.zip');
+    btn.textContent=orig;
+  }).catch(function(e){ btn.textContent=orig; notify('Zip mislukt',esc(e.message)); });
+}
+
+docLabel();
+if(!cloudOn()) setTimeout(function(){
+  var el=document.getElementById('saveStatus');
+  if(el && !el.textContent) { el.textContent='Klik op ⚙ voor online opslaan'; el.style.color='#828b8d'; el.title='Vul de sleutel in om je nieuwsbrieven online te bewaren.'; }
+},1200);
+
+</script>
+</body></html>
