@@ -1,8 +1,11 @@
-name: Deploy naar GitHub Pages
+name: Assets controleren en publiceren
 
+# De assetcontrole draait bij élke push, ongeacht hoe Pages is ingesteld.
+# Staat Pages op "Deploy from a branch", dan publiceert GitHub zelf en is de
+# controle hier het vangnet. Staat Pages op "GitHub Actions", dan publiceert
+# de deploy-job hieronder vanaf main.
 on:
   push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -12,19 +15,17 @@ permissions:
 
 # Eén deploy tegelijk; een nieuwe push mag een lopende deploy niet afbreken.
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  controle:
+    name: Afbeeldingen en fonts aanwezig
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Controleer of alle afbeeldingen bestaan
+      - name: Controleer of alles bestaat waarnaar verwezen wordt
         run: |
           missing=0
           # Elke afbeelding waar de bouwer of een sjabloon naar verwijst moet
@@ -46,12 +47,46 @@ jobs:
             if [ ! -f "$f" ]; then echo "ONTBREEKT: $f"; missing=1; fi
           done
           echo "$(echo "$fonts" | wc -l) fonts gecontroleerd."
+
+          # De publieke anon-sleutel hoort in de browser, de service_role-sleutel
+          # nooit — die geeft volledige toegang tot de database. We lezen de rol
+          # uit de sleutel zelf; op het woord in het commentaar zoeken zou een
+          # valse melding geven.
+          key=$(grep -o "key:[[:space:]]*'[^']*'" config.js | sed "s/.*'\(.*\)'/\1/")
+          if [ -n "$key" ]; then
+            payload=$(echo "$key" | cut -d. -f2)
+            pad=$(( (4 - ${#payload} % 4) % 4 ))
+            [ $pad -gt 0 ] && payload="$payload$(printf '=%.0s' $(seq 1 $pad))"
+            rol=$(echo "$payload" | tr '_-' '/+' | base64 -d 2>/dev/null)
+            case "$rol" in
+              *service_role*)
+                echo "::error::config.js bevat een service_role-sleutel. Gebruik de anon-sleutel."
+                missing=1 ;;
+              *anon*) echo "Sleutel in config.js is de anon-sleutel." ;;
+              *) echo "::warning::Rol van de sleutel in config.js niet te bepalen." ;;
+            esac
+          else
+            echo "::warning::Geen sleutel in config.js — online opslaan staat uit."
+          fi
+
           if [ "$missing" = "1" ]; then
-            echo "::error::Er ontbreken assets — deploy gestopt."
+            echo "::error::Er ontbreekt iets — controleer de meldingen hierboven."
             exit 1
           fi
-          echo "Alle afbeeldingen en fonts aanwezig."
+          echo "Alles aanwezig."
 
+  deploy:
+    name: Publiceren via GitHub Actions
+    # Alleen zinvol als Pages op "GitHub Actions" staat. Bij "Deploy from a
+    # branch" publiceert GitHub zelf en wordt deze job overgeslagen.
+    if: github.ref == 'refs/heads/main'
+    needs: controle
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
