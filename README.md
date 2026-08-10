@@ -14,7 +14,10 @@ nieuwsbrieven staan in Supabase en zijn dus vanaf elke computer bereikbaar.
    en `B Header`, eindig met `R Donkere footer`.
 2. **Teksten typen.** Klik direct in een kop of alinea en typ.
 3. **Foto's plaatsen.** Klik op een fotoplek, kies je foto, snijd bij. De foto
-   wordt meteen online gezet.
+   wordt meteen online gezet. Staat de afbeelding al ergens online, klik dan op
+   **🔗 Webadres** en plak het adres. Dat kan bij *elke* afbeelding in elk blok —
+   ook het logo en de social-iconen. Bij die kleine beelden verschijnen de
+   knoppen als je er met de muis overheen gaat.
 4. **Opslaan.** Geef de nieuwsbrief bovenin een naam. Vanaf dan wordt elke
    wijziging automatisch bewaard.
 5. **Exporteren.** Klik **HTML voor Mailchimp** → **HTML kopiëren**. In
@@ -96,8 +99,8 @@ Kort samengevat — de volledige set staat in [`CLAUDE.md`](CLAUDE.md):
   `#f2e6da`, donker `#050606`, bodytekst `#21282b`.
 - **Knoppen:** pill-vorm, inkt `#0e0e0e` met witte tekst op licht, wit met
   inkt-tekst op teal. Geen geel.
-- **Koppen** staan in Pockota met fallback Trebuchet MS/Verdana — live tekst,
-  geen afbeeldingen, zodat de mail leesbaar blijft als beelden geblokkeerd zijn.
+- **Koppen** staan in Pockota met Georgia als enige fallback — live tekst, geen
+  afbeeldingen, zodat de mail leesbaar blijft als beelden geblokkeerd zijn.
 - **Bodytekst** draait bewust op Helvetica/Arial, ook in de bouwer: wat je ziet
   is wat de ontvanger ziet.
 - **Breedte** 600px, mobiel stapelt onder 620px.
