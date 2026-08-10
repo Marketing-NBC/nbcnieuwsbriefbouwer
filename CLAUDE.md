@@ -1,12 +1,26 @@
-# NBC nieuwsbrief — projectgeheugen
+# Nieuwsbrief-bouwer — projectgeheugen
 
-Dit project maakt de **maandelijkse NBC-nieuwsbrief** voor Mailchimp. Lees dit eerst.
+Dit project maakt de **maandelijkse nieuwsbrief** voor Mailchimp, voor twee
+merken: **NBC** en **Green Village**. Lees dit eerst.
+
+## Eén bouwer, twee merken (bindend)
+- De bouwer (`index.html`) is **merkloos**. Alles wat per merk verschilt —
+  blokken, fonts, kleuren, mail-sjabloon — staat in `merken/<merk>.js`.
+- **Nooit forken.** Er komt geen tweede bouwer-bestand. Een verbetering hoort
+  in `index.html` te landen en werkt daarmee meteen voor beide merken; iets
+  merkspecifieks hoort in de merkmodule.
+- Merk kiezen via `?merk=nbc` of `?merk=gv`; de keuze wordt onthouden en staat
+  als chip in de balk. Zonder keuze verschijnt eerst het kiesscherm.
+- Beide merken delen één Supabase-project. De kolom `merk` houdt de
+  nieuwsbrieven uit elkaar, dus je ziet in elk merk alleen die van dat merk.
+- Een merk toevoegen = `merken/<id>.js` maken, een `<script>`-regel in
+  `index.html` erbij, en een kaart in het kiesscherm.
 
 ## Werkwijze (vast)
 - **Niet from scratch.** De blokkenbibliotheek is de blanco basis: in de bouwer de `BLOCKS`-array, handmatig `sjabloon/nbc-mailing-template.html`. Elke editie wordt samengesteld door deze blokken te hergebruiken/herschikken — nooit opnieuw vanaf nul.
 - **Per editie een eigen bestand** bij handwerk, bv. `sjabloon/nieuwsbrief-april.html`. De bibliotheek blijft blanco. Via de bouwer staat elke editie in Supabase onder een eigen naam.
-- **Koppen = live tekst.** Koppen staan in Pockota met een vaste fallback-stack: `'Pockota',Georgia,serif`. Geen afbeeldingen meer voor koppen — dit voorkomt dat de mail onleesbaar wordt als een mailclient (vooral bedrijfs-Outlook) afbeeldingen blokkeert. Georgia is de enige fallback voor Pockota: overal geïnstalleerd, en de rustige serif sluit beter aan bij het karakter van Pockota dan een schreefloze vervanger. **Alleen Pockota valt terug op Georgia** — bodytekst blijft schreefloos (zie hieronder).
-- **Bodytekst = fallback.** Geen Area Normal-webfont in de mail; body draait op Helvetica/Arial — consistent voor élke ontvanger.
+- **Koppen = live tekst**, nooit als afbeelding. Dat voorkomt dat de mail onleesbaar wordt als een mailclient (vooral bedrijfs-Outlook) beelden blokkeert. Welk font en welke fallback per merk gelden staat in de merksecties hieronder.
+- **Bodytekst leunt op de fallback.** Wat je in de bouwer ziet is wat de ontvanger krijgt; een merkfont op body is hooguit progressive enhancement.
 - **Levering:** in de bouwer op **HTML voor Mailchimp** → **HTML kopiëren** → in Mailchimp: Create → Email → Code your own → Paste in code. De zip-route (**Zip met foto's** → Import zip) blijft als alternatief bestaan.
 - **Niet bedoeld om in Mailchimp te bewerken.** Aanpassingen lopen via het werkbestand hier; ik lever een nieuwe zip.
 
@@ -23,42 +37,58 @@ Dit project maakt de **maandelijkse NBC-nieuwsbrief** voor Mailchimp. Lees dit e
 - De nummer-badges zijn alleen voor de werkfase: **bij levering verdwijnen ze** (placeholder → echte foto).
 - **Elke afbeelding kan klikbaar** — knop `Link` op de afbeelding, net als bij een knop. De afbeelding wordt dan in een `<a>` gezet. Dit geldt voor alle beelden in alle blokken, dus ook logo en social-iconen. Leeg laten haalt de link er weer af. Naast `https://` zijn ook `mailto:`, `tel:` en merge-tags als `*|ARCHIVE|*` toegestaan. Bij beelden smaller dan 200px verschijnen de knoppen pas bij hover, zodat het beeld herkenbaar blijft.
 - **Ongedaan maken** met `Ctrl+Z` / `Cmd+Z`, opnieuw met `Ctrl+Shift+Z` of `Ctrl+Y`. De geschiedenis bewaart momentopnamen van de hele opzet (max 80) en dekt zowel blokken als getypte tekst. In invoervelden blijft de normale tekst-undo van de browser werken.
-- Helper: badge = absoluut gepositioneerde pill (petrol `#229d96`, witte Pockota-cijfers) in een `position:relative` wrapper rond de `<img>`. Strip alle `.ph-num`-elementen bij het bakken.
+- Helper: badge = absoluut gepositioneerde pill in de merk-accentkleur, in een `position:relative` wrapper rond de `<img>`. De bouwer stript die wrapper en alle knoppen bij het exporteren.
 
-## Merk (bindend)
+## Merk NBC (bindend)
 - **Fonts:** display = Pockota (live tekst, fallback `Georgia`, dan `serif`); body/UI = Area Normal → fallback Helvetica/Arial. Nooit Georgia op bodytekst zetten.
 - **Kleuren:** petrol `#229d96`, goud-accent `#f6a304` (**nooit knopkleur**), zand `#f2e6da`, lichte tint `#e9f5f4`, cream `#f1f1ef`, donker `#050606`, body-tekst `#21282b` (nooit puur zwart), diep petrol `#165e5a`.
 - **Knoppen:** pill; inkt `#0e0e0e` met witte tekst op licht, wit met inkt-tekst op teal/donker. Geen geel.
 - **Toon:** Nederlands, informeel (je/jouw), warm, sentence-case koppen, lowercase eyebrows. Geen emoji.
 - **Breedte:** 600px. Mobiel stapelt onder 620px.
 
-## Footer-gegevens (vast)
+## Footer-gegevens NBC (vast)
 NBC · Blokhoeve 1 · 3438 LC Nieuwegein · info@nbcevents.nl · +31 (0)30 - 602 69 00
 Social: LinkedIn, Instagram, Facebook, YouTube. Merge-tags: `*|ARCHIVE|*`, `*|EMAIL|*`, `*|UPDATE_PROFILE|*`, `*|UNSUB|*`, `*|CURRENT_YEAR|*`, `*|MC:SUBJECT|*`.
 
+## Merk Green Village (bindend — Huisstijlgids april 2026)
+- **Fonts:** display/koppen = TT Ramillas Light, **altijd in kapitalen**, fallback `'Times New Roman',Georgia,serif`; body = TT Wellingtons, fallback Helvetica Neue/Arial. Anders dan bij NBC wordt het bodyfont hier **wél** geladen: de merkgids schrijft TT Wellingtons voor als progressive enhancement.
+- **Kleuren:** sage `#71755d` (primair) · `#4b4e3e` (donker) · `#d7d9cf` (lichte tint) · terracotta `#d24e1f` (accent) · khaki `#e3ddc4` (zandvervanger) · body-tekst `#2f3a3e` · paper `#f1f1ef` · near-black `#0e0d07`.
+- **Hoeken:** knoppen = pil; kaarten, afbeeldingen en badges = **vierkant (radius 0)**. Harde regel, anders dan NBC.
+- **Knoppen:** inkt `#0e0d07` met crème tekst op licht; wit met inkt-tekst op sage/donker.
+- **Toon:** Nederlands, informeel (je/jullie), warm, **koppen in kapitalen**, lowercase eyebrows. Geen emoji.
+- **Breedte:** 600px. Mobiel stapelt onder 620px.
+
+## Footer-gegevens Green Village (vast)
+Green Village · Blokhoeve 7 · 3438 LC Nieuwegein · info@green-village.nl · 030 - 60 39 114
+Social: LinkedIn, Instagram, Facebook. Zelfde merge-tags als NBC.
+
 ## Blokkenbibliotheek
-Header (logo + nav + gradient-lijn) · hero met beeld · genummerd artikel (zand) · foto + teal actiekaart · genummerd artikel met beeld · twee kolommen · kengetallen · citaat (lichte tint) · afsluit-CTA (teal) · donkere footer.
-**Extra varianten:** typografische hero (zonder beeld) · sectiekop/scheiding · agenda/event-rij · drie kolommen tekst · beeld+tekst (beeld rechts) · highlight-strip (zand) · losse CTA-knop · losse afbeelding (volle breedte).
+Beide merken hebben dezelfde blokken op dezelfde letters, in hun eigen stijl:
+webversie-balk · header (logo + nav + accentlijn) · hero met beeld · genummerd artikel · foto + actiekaart · genummerd artikel met beeld · twee kolommen · kengetallen · citaat · afsluit-CTA · donkere footer.
+**Extra varianten:** typografische hero (zonder beeld) · sectiekop/scheiding · agenda/event-rij · drie kolommen tekst · beeld+tekst (beeld rechts) · highlight-strip · losse CTA-knop · losse afbeelding (volle breedte).
+NBC heeft er één extra: **T · alleen tekst + CTA**.
 
 ## Variatieknoppen (voor afwisseling, binnen de stijl)
 - **Hero:** groot beeld + tweekleurige kop ↔ typografische hero zonder beeld.
-- **Sectie-achtergronden** rouleren: wit / zand / teal / lichte tint (max 1–2 per mail).
+- **Sectie-achtergronden** rouleren binnen de merkkleuren (max 1–2 per mail).
 - **Beeld:** 1 groot ↔ 2 naast elkaar ↔ beeld+tekst links/rechts.
 - **Genummerd** (01/02/03) ↔ los.
 - **Wisselend element:** citaat (lichte tint) / kengetallen / highlight-strip / agenda-rij.
-- Elke maand een andere combinatie — herkenbaar NBC, nooit een kopie van vorige maand.
+- Elke maand een andere combinatie — herkenbaar voor het merk, nooit een kopie van vorige maand.
 
 ## Bestanden
-- `index.html` — de online nieuwsbrief-bouwer (draait op GitHub Pages).
+- `index.html` — de merkloze bouwer (draait op GitHub Pages).
+- `merken/nbc.js`, `merken/gv.js` — alles wat per merk verschilt.
 - `config.js` — Supabase-URL + publieke anon-key, geldt voor alle gebruikers.
-- `sjabloon/nbc-mailing-template.html` — blanco blokkenbibliotheek (niet versturen).
+- `sjabloon/nbc-mailing-template.html` — blanco blokkenbibliotheek NBC (niet versturen).
 - `sjabloon/nieuwsbrief-<maand>.html` — handgemaakt werkbestand per editie.
 - `docs/supabase-setup.html` — eenmalige installatie van database + fotomap.
-- `images/`, `fonts/` — assets. Alles waarnaar verwezen wordt moet hier staan;
-  de Pages-deploy stopt als er iets ontbreekt.
+- `images/` (NBC), `images/gv/` (Green Village), `fonts/` — assets. Alles
+  waarnaar verwezen wordt moet hier staan; de deploy stopt als er iets ontbreekt.
 
 ## Route via de bouwer (standaard)
-De bouwer draait op https://digitaldedication.github.io/nbcnieuwsbriefbouwer/ en
+De bouwer draait op https://digitaldedication.github.io/nbcnieuwsbriefbouwer/
+(Green Village: voeg `?merk=gv` toe) en
 levert met **HTML voor Mailchimp** de complete mail in één klik. Afbeeldingen
 krijgen daarbij automatisch hun volledige webadres: merkbeelden vanaf Pages,
 geüploade foto's vanuit Supabase Storage. Plakken in *Code your own → Paste in

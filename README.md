@@ -1,17 +1,28 @@
-# NBC nieuwsbrief-bouwer
+# Nieuwsbrief-bouwer — NBC & Green Village
 
-De online bouwer voor de maandelijkse NBC-nieuwsbrief. Blokken kiezen, teksten
+De online bouwer voor de maandelijkse nieuwsbrief. Blokken kiezen, teksten
 typen, foto's uploaden — en met één klik de complete HTML voor Mailchimp.
+Eén bouwer, twee merken.
 
-**Open de bouwer:** https://digitaldedication.github.io/nbcnieuwsbriefbouwer/
+| Merk | Link |
+|---|---|
+| NBC | https://digitaldedication.github.io/nbcnieuwsbriefbouwer/?merk=nbc |
+| Green Village | https://digitaldedication.github.io/nbcnieuwsbriefbouwer/?merk=gv |
+
+Open je hem [zonder merk](https://digitaldedication.github.io/nbcnieuwsbriefbouwer/),
+dan vraagt hij eerst voor welk merk je bouwt en onthoudt die keuze. Wisselen kan
+altijd via de merknaam in de balk.
 
 Iedereen met de link kan hem gebruiken; er is niets te installeren. Opgeslagen
-nieuwsbrieven staan in Supabase en zijn dus vanaf elke computer bereikbaar.
+nieuwsbrieven staan in Supabase en zijn dus vanaf elke computer bereikbaar —
+per merk gescheiden, dus je ziet alleen de nieuwsbrieven van het merk waarin je
+werkt.
 
 ## Zo werkt het
 
-1. **Blokken kiezen.** Klik links op een blok (A–T). Start met `A Webversie-balk`
-   en `B Header`, eindig met `R Donkere footer`.
+1. **Blokken kiezen.** Klik links op een blok. Start met `A Webversie-balk` en
+   `B Header`, eindig met `R Donkere footer`. Beide merken hebben dezelfde
+   blokken op dezelfde letters, elk in de eigen huisstijl.
 2. **Teksten typen.** Klik direct in een kop of alinea en typ.
 3. **Foto's plaatsen.** Klik op een fotoplek op **Foto**, kies je foto, snijd
    bij. De foto wordt meteen online gezet.
@@ -37,6 +48,9 @@ webadres hebben. Er zijn twee soorten:
 |---|---|
 | Vaste merkafbeeldingen (logo, social-iconen) | Deze repo, via GitHub Pages |
 | Foto's die je zelf uploadt | Supabase Storage |
+
+Hetzelfde geldt voor de merkfonts: staan die in het mail-sjabloon (Green Village
+doet dat), dan krijgen ze bij het exporteren ook hun volledige webadres.
 
 Omdat de bouwer op GitHub Pages draait, heeft élke afbeelding in `images/`
 automatisch een vast, publiek adres. Bij het exporteren rekent de bouwer alle
@@ -78,10 +92,13 @@ Database en fotomap opzetten: zie [`docs/supabase-setup.html`](docs/supabase-set
 ## Wat staat waar
 
 ```
-index.html                 de bouwer zelf
+index.html                 de bouwer — merkloos
+merken/nbc.js              blokken, fonts, kleuren en mail-sjabloon van NBC
+merken/gv.js               idem voor Green Village
 config.js                  Supabase-URL + publieke sleutel
-images/                    logo, social-iconen, placeholders, foto's
-fonts/                     Pockota (merkfont, alleen voor de koppen)
+images/                    NBC: logo, social-iconen, placeholders
+images/gv/                 Green Village: idem
+fonts/                     Pockota (NBC) + TT Ramillas/TT Wellingtons (GV)
 sjabloon/                  handgemaakt blokkensjabloon + eerdere edities
 docs/supabase-setup.html   handleiding database + fotomap
 CLAUDE.md                  merkregels, werkwijze, maandproces
@@ -89,23 +106,32 @@ CLAUDE.md                  merkregels, werkwijze, maandproces
 
 ## Aanpassen
 
-De bouwer is één HTML-bestand zonder buildstap. Bewerk `index.html`, push naar
-`main`, en de site is binnen een minuut bij.
+De bouwer is één HTML-bestand zonder buildstap. Bewerk `index.html`, push, en de
+site is binnen een minuut bij.
 
-De blokkenbibliotheek staat als `BLOCKS`-array bovenaan het `<script>`-blok.
-Een blok toevoegen betekent: een item aan die array toevoegen en de letter in
+**`index.html` bevat niets merkspecifieks.** Blokken, fonts, kleuren en het
+mail-sjabloon staan in `merken/nbc.js` en `merken/gv.js`. Een functie erbij hoort
+dus in `index.html` — dan werkt hij meteen voor beide merken. Een blok erbij
+hoort in de merkmodule: een item aan `blocks` toevoegen en de letter in
 `coreLetters` of `varLetters` zetten.
+
+Een derde merk toevoegen: kopieer een merkmodule, pas de waarden aan, zet er een
+`<script src="merken/<id>.js">`-regel bij in `index.html` en voeg een kaart toe
+aan het kiesscherm.
 
 ## Merkregels
 
 Kort samengevat — de volledige set staat in [`CLAUDE.md`](CLAUDE.md):
 
-- **Kleuren:** petrol `#229d96`, goud `#f6a304` (nooit knopkleur), zand
-  `#f2e6da`, donker `#050606`, bodytekst `#21282b`.
-- **Knoppen:** pill-vorm, inkt `#0e0e0e` met witte tekst op licht, wit met
-  inkt-tekst op teal. Geen geel.
-- **Koppen** staan in Pockota met Georgia als enige fallback — live tekst, geen
-  afbeeldingen, zodat de mail leesbaar blijft als beelden geblokkeerd zijn.
-- **Bodytekst** draait bewust op Helvetica/Arial, ook in de bouwer: wat je ziet
-  is wat de ontvanger ziet.
-- **Breedte** 600px, mobiel stapelt onder 620px.
+| | NBC | Green Village |
+|---|---|---|
+| Koppen | Pockota, fallback Georgia | TT Ramillas in **kapitalen**, fallback Times New Roman |
+| Bodytekst | Area Normal → Helvetica/Arial | TT Wellingtons → Helvetica Neue/Arial |
+| Accent | petrol `#229d96`, goud `#f6a304` | sage `#71755d`, terracotta `#d24e1f` |
+| Vlakken | zand `#f2e6da`, lichte tint `#e9f5f4` | khaki `#e3ddc4`, lichte sage `#d7d9cf` |
+| Hoeken | kaarten afgerond | kaarten **vierkant** (harde regel) |
+| Knoppen | pill, inkt `#0e0e0e`, nooit geel | pill, inkt `#0e0d07` |
+
+Voor beide geldt: koppen zijn live tekst en nooit een afbeelding, zodat de mail
+leesbaar blijft als beelden geblokkeerd worden. Breedte 600px, mobiel stapelt
+onder 620px.

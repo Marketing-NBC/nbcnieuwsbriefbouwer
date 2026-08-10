@@ -34,15 +34,16 @@ jobs:
           # vandaar de optionele backslash. Sjablonen staan in een submap en
           # verwijzen dus met ../ naar images/.
           refs=$(grep -ho 'src=\\\?"\(\.\./\)\?images/[A-Za-z0-9._/-]*\.\(png\|jpg\|jpeg\|svg\)' \
-                   index.html sjabloon/*.html \
+                   index.html sjabloon/*.html merken/*.js \
                  | sed 's|.*"||; s|^\.\./||' | sort -u)
           for f in $refs; do
             if [ ! -f "$f" ]; then echo "ONTBREEKT: $f"; missing=1; fi
           done
           echo "$(echo "$refs" | wc -l) afbeeldingen gecontroleerd."
 
-          fonts=$(grep -ho 'url("fonts/[A-Za-z0-9._-]*\.woff2")' index.html \
-                  | sed 's|url("||; s|")||' | sort -u)
+          # Alleen het pad zelf matchen; de aanhalingstekens eromheen verschillen
+          # per bestand (geescaped in de merkmodules).
+          fonts=$(grep -ho 'fonts/[A-Za-z0-9._-]*\.woff2' index.html merken/*.js | sort -u)
           for f in $fonts; do
             if [ ! -f "$f" ]; then echo "ONTBREEKT: $f"; missing=1; fi
           done
