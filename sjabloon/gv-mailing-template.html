@@ -17,6 +17,21 @@
 </xml>
 <![endif]-->
 
+<!-- Webfonts alleen voor clients die ze aankunnen. Outlook voor Windows ziet
+     ze niet: zodra dat @font-face tegenkomt, negeert het de fallback-fonts en
+     valt alles terug op Times New Roman. Zonder deze declaraties kiest Outlook
+     gewoon Times New Roman voor koppen en Arial voor bodytekst. -->
+<!--[if !mso]><!-->
+<style type="text/css">
+  @font-face{font-family:'TT Ramillas';src:url('../fonts/TTRamillas-Light.woff2') format('woff2');font-weight:300;font-style:normal;font-display:swap;}
+  @font-face{font-family:'TT Ramillas';src:url('../fonts/TTRamillas-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
+  @font-face{font-family:'TT Ramillas';src:url('../fonts/TTRamillas-Medium.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap;}
+  @font-face{font-family:'TT Wellingtons';src:url('../fonts/TTWellingtons-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
+  @font-face{font-family:'TT Wellingtons';src:url('../fonts/TTWellingtons-Medium.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap;}
+  @font-face{font-family:'TT Wellingtons';src:url('../fonts/TTWellingtons-DemiBold.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap;}
+</style>
+<!--<![endif]-->
+
 <style type="text/css">
   /* ====================================================================
      GREEN VILLAGE MAILING — BEWERKBAAR WERKBESTAND (blokkenbibliotheek, blanco)
@@ -25,13 +40,6 @@
      Koppen = live tekst in TT Ramillas (kapitalen), fallback serif.
      Bodytekst = TT Wellingtons, fallback Helvetica/Arial.
      ==================================================================== */
-
-  @font-face{font-family:'TT Ramillas';src:url('../fonts/TTRamillas-Light.woff2') format('woff2');font-weight:300;font-style:normal;font-display:swap;}
-  @font-face{font-family:'TT Ramillas';src:url('../fonts/TTRamillas-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
-  @font-face{font-family:'TT Ramillas';src:url('../fonts/TTRamillas-Medium.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap;}
-  @font-face{font-family:'TT Wellingtons';src:url('../fonts/TTWellingtons-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
-  @font-face{font-family:'TT Wellingtons';src:url('../fonts/TTWellingtons-Medium.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap;}
-  @font-face{font-family:'TT Wellingtons';src:url('../fonts/TTWellingtons-DemiBold.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap;}
 
   body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
   table,td{mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;}

@@ -702,6 +702,189 @@ function renumber(){
   });
 }
 
+/* ---- Beeld naast tekst: even hoog ----
+   In blokken waar een kolomfoto naast een tekstkolom staat (genummerd artikel
+   met beeld, beeld + tekst) krijgt de foto de hoogte van de tekst. De bouwer
+   meet de tekstkolom en zet die hoogte op de afbeelding; het beeld wordt dan
+   uitgesneden (object-fit) in plaats van uitgerekt. Bij het exporteren wordt
+   de foto ook echt op die maat bijgesneden, want Outlook kent object-fit niet
+   en zou het beeld anders uitrekken. */
+var EQH_MIN=150, eqhTimer=null, eqhBezig=false;
+var CHROME_SEL='.pv-tag,.pv-tools,.photo-badge,.photo-acts,.link-badge,.gap-indicator';
+function tdHeeftTekst(td){
+  var w=document.createTreeWalker(td,NodeFilter.SHOW_TEXT,{acceptNode:function(n){
+    var p=n.parentElement;
+    return (p && p.closest(CHROME_SEL)) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
+  }},false), n;
+  while((n=w.nextNode())){ if(n.nodeValue.replace(/[\s\u00a0]/g,'')) return true; }
+  return false;
+}
+/* Rijen met precies één fotokolom (alleen een kolombeeld, geen tekst) naast
+   een tekstkolom. Twee-kolommenblokken hebben tekst onder elk beeld en
+   vallen er zo buiten. */
+function sideImageRows(){
+  var out=[];
+  stage.querySelectorAll('tr').forEach(function(tr){
+    var tds=Array.prototype.filter.call(tr.children,function(c){ return c.tagName==='TD'; });
+    if(tds.length<2) return;
+    var img=null, txtTd=null;
+    tds.forEach(function(td){
+      var im=td.querySelector('img.fluid');
+      if(im){
+        var w=parseInt(im.getAttribute('width'),10)||0;
+        if(!img && w>=200 && w<560 && !tdHeeftTekst(td)) img=im;
+      } else if(!txtTd && td.querySelector('h1,h2,h3,p')){ txtTd=td; }
+    });
+    if(img && txtTd) out.push({img:img, txtTd:txtTd});
+  });
+  return out;
+}
+/* Hoogte van de inhoud van de tekstkolom, niet van de cel zelf: de cel is
+   altijd zo hoog als de rij, dus die zegt niets. */
+function tekstHoogte(td){
+  var r=td.getBoundingClientRect(), cs=getComputedStyle(td);
+  var top=r.top+(parseFloat(cs.paddingTop)||0), bottom=top;
+  Array.prototype.forEach.call(td.children,function(el){
+    if(el.matches(CHROME_SEL)) return;
+    var er=el.getBoundingClientRect();
+    if(!er.height && !er.width) return;
+    bottom=Math.max(bottom, er.bottom+(parseFloat(getComputedStyle(el).marginBottom)||0));
+  });
+  return Math.round(bottom-top+(parseFloat(cs.paddingBottom)||0));
+}
+function syncSideImages(){
+  if(eqhBezig) return;
+  eqhBezig=true;
+  try{
+    sideImageRows().forEach(function(row){
+      var im=row.img, h=Math.max(EQH_MIN, tekstHoogte(row.txtTd));
+      if(!(h>0) || h>2000) return;
+      if(im.getAttribute('data-eqh')!=='1') im.setAttribute('data-eqh','1');
+      if(im.getAttribute('height')!==String(h)) im.setAttribute('height',h);
+      if(im.style.height!==h+'px') im.style.height=h+'px';
+      if(im.style.minHeight) im.style.minHeight='';
+      if(im.style.objectFit!=='cover') im.style.objectFit='cover';
+      if(!im.style.objectPosition) im.style.objectPosition='center';
+    });
+  } finally { eqhBezig=false; }
+}
+function eqhPlan(){
+  if(eqhTimer) return;
+  eqhTimer=requestAnimationFrame(function(){ eqhTimer=null; syncSideImages(); });
+}
+if(document.fonts && document.fonts.ready){ document.fonts.ready.then(eqhPlan); }
+window.addEventListener('load',eqhPlan);
+
+/* Sleutel waaraan te zien is of de bijgesneden versie nog bij deze foto en
+   deze maat hoort. */
+function cropKey(im){ return hashStr(im.getAttribute('src')||'')+'-'+(im.getAttribute('width')||'')+'x'+(im.getAttribute('height')||''); }
+/* Waar: de foto heeft (na bijsnijden, of van zichzelf) precies de verhouding
+   van de gemeten maat, dus vaste breedte en hoogte vervormen hem niet. */
+function beeldPastOpMaat(im){ return im.getAttribute('data-crop-key')===cropKey(im); }
+/* Het adres dat in de mail komt: de bijgesneden versie als die er is. */
+function exportSrc(im){
+  var s=im.getAttribute('data-crop-src');
+  if(s && beeldPastOpMaat(im)) return s;
+  return im.src;
+}
+function laadBeeld(src){
+  return new Promise(function(res,rej){
+    var i=new Image();
+    if(!/^data:/i.test(src)) i.crossOrigin='anonymous';
+    i.onload=function(){ res(i); };
+    i.onerror=function(){ rej(new Error('laden mislukt')); };
+    i.src=src;
+  });
+}
+/* Kolomfoto's echt bijsnijden op de gemeten hoogte (2x voor retina), zodat
+   ook Outlook een beeld met de juiste verhouding krijgt. Klopt de verhouding
+   al — net bijgesneden in de bouwer — dan gebeurt er niets. */
+function ensureCroppedSideImages(){
+  syncSideImages();
+  var imgs=Array.prototype.slice.call(stage.querySelectorAll('img[data-eqh="1"][data-photo-filled="1"]')).filter(function(im){
+    return parseInt(im.getAttribute('height'),10)>0 && /^(https?:|data:)/i.test(im.getAttribute('src')||'');
+  });
+  return imgs.reduce(function(p,im){
+    return p.then(function(){
+      var key=cropKey(im);
+      if(im.getAttribute('data-crop-key')===key) return;
+      var W=parseInt(im.getAttribute('width'),10), H=parseInt(im.getAttribute('height'),10);
+      var src=im.getAttribute('src');
+      return laadBeeld(src).then(function(pic){
+        var nw=pic.naturalWidth, nh=pic.naturalHeight;
+        if(!nw||!nh) throw new Error('geen maat');
+        if(Math.abs(nw/nh-W/H) < 0.015*(W/H)){ im.setAttribute('data-crop-key',key); im.setAttribute('data-crop-src',''); return; }
+        var outW=W*2, outH=H*2;
+        var cv=document.createElement('canvas'); cv.width=outW; cv.height=outH;
+        var sc=Math.max(outW/nw, outH/nh), dw=nw*sc, dh=nh*sc;
+        cv.getContext('2d').drawImage(pic,(outW-dw)/2,(outH-dh)/2,dw,dh);
+        var data=cv.toDataURL('image/jpeg',0.87);
+        if(!cloudOn()){ im.setAttribute('data-crop-src',data); im.setAttribute('data-crop-key',key); return; }
+        return srcToBlob(data).then(function(bl){ return storageUpload('beeld/'+key+'.jpg',bl); })
+          .then(function(url){ im.setAttribute('data-crop-src',url); im.setAttribute('data-crop-key',key); });
+      }).catch(function(e){ console.warn('bijsnijden mislukt',src,e); });
+    });
+  },Promise.resolve());
+}
+
+/* ---- Outlook-kopieën gelijktrekken ----
+   Outlook voor Windows toont niet de gewone knop of afbeelding, maar de kopie
+   in het <!--[if mso]>-commentaar. Die kopie verandert niet mee als je in de
+   bouwer typt, een link zet of een foto plaatst; hier wordt hij bijgewerkt
+   vanuit het echte element ernaast. */
+function volgendElement(node){
+  var n=node.nextSibling;
+  while(n){
+    if(n.nodeType===1) return n;
+    if(n.nodeType===8 && /^\s*<!\[endif\]/.test(n.nodeValue)) return null;
+    n=n.nextSibling;
+  }
+  return null;
+}
+function syncOutlookCopies(root){
+  var w=document.createTreeWalker(root,NodeFilter.SHOW_COMMENT,null,false), c, comments=[];
+  while((c=w.nextNode())) comments.push(c);
+  comments.forEach(function(cm){
+    var v=cm.nodeValue, nv=v;
+    if(!/^\s*\[if mso\]>/i.test(v)) return;
+    var live=volgendElement(cm);
+    if(!live) return;
+    if(/<v:roundrect/i.test(v) && live.tagName==='A'){
+      var tekst=live.textContent.replace(/\s+/g,' ').trim();
+      var href=live.getAttribute('href')||'';
+      var br=Math.ceil(live.getBoundingClientRect().width)+6;
+      if(href) nv=nv.replace(/(<v:roundrect\b[^>]*?\bhref=")[^"]*(")/i,function(m,a,z){ return a+esc(href)+z; });
+      if(tekst) nv=nv.replace(/(<center\b[^>]*>)[\s\S]*?(<\/center>)/i,function(m,a,z){ return a+esc(tekst)+z; });
+      if(br>46) nv=nv.replace(/(<v:roundrect\b[^>]*?\bstyle="[^"]*?\bwidth:)\s*\d+px/i,function(m,a){ return a+br+'px'; });
+    } else if(/<img\b/i.test(v)){
+      var im=live.tagName==='IMG'?live:live.querySelector('img');
+      if(!im) return;
+      var src=exportSrc(im);
+      if(src) nv=nv.replace(/(<img\b[^>]*?\bsrc=")[^"]*(")/i,function(m,a,z){ return a+esc(src)+z; });
+      var h=parseInt(im.getAttribute('height'),10);
+      if(h>0 && beeldPastOpMaat(im)){
+        nv=nv.replace(/(<img\b[^>]*?\bheight=")[^"]*(")/i,function(m,a,z){ return a+h+z; });
+        nv=nv.replace(/(<img\b[^>]*?\bstyle="[^"]*?\bheight:)\s*\d+px/i,function(m,a){ return a+h+'px'; });
+      } else if(im.getAttribute('data-eqh')==='1'){
+        /* Zonder passend bijgesneden beeld liever de natuurlijke hoogte dan uitrekken. */
+        nv=nv.replace(/(<img\b[^>]*?)\s+height="[^"]*"/i,'$1');
+        nv=nv.replace(/(<img\b[^>]*?\bstyle="[^"]*?\bheight:)\s*\d+px/i,function(m,a){ return a+'auto'; });
+      }
+    }
+    if(nv!==v) cm.nodeValue=nv;
+  });
+}
+/* Outlook voor Windows kent text-transform niet. Tekst die als kapitalen
+   bedoeld is, gaat daarom ook echt als kapitalen de mail in. */
+function kapitalenVastzetten(root){
+  root.querySelectorAll('[style*="uppercase"]').forEach(function(el){
+    if(!/text-transform\s*:\s*uppercase/i.test(el.getAttribute('style')||'')) return;
+    var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT,null,false), n, nodes=[];
+    while((n=w.nextNode())) nodes.push(n);
+    nodes.forEach(function(t){ if(t.nodeValue.indexOf('*|')===-1) t.nodeValue=t.nodeValue.toUpperCase(); });
+  });
+}
+
 // ---- briefing ----
 function briefingLines(){
   var out=[];
@@ -1124,7 +1307,7 @@ document.addEventListener('keydown',function(e){
   else if(k==='y' || (k==='z' && e.shiftKey)){ e.preventDefault(); redo(); }
 });
 
-new MutationObserver(function(){ scheduleSave(); histPlan(); })
+new MutationObserver(function(){ scheduleSave(); histPlan(); eqhPlan(); })
   .observe(stage,{childList:true,subtree:true,attributes:true,characterData:true});
 window.addEventListener('beforeunload',function(){ if(saveTimer){ clearTimeout(saveTimer); doSave(); } });
 document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='hidden' && saveTimer){ clearTimeout(saveTimer); doSave(); } });
@@ -1521,10 +1704,32 @@ function absolutizeImages(node){
 }
 
 function cleanBlock(wrap,unwrap){
+  syncOutlookCopies(wrap);
   var c=wrap.cloneNode(true);
-  c.querySelectorAll('.pv-tag,.pv-tools,.photo-badge,.photo-acts,.link-badge,.gap-indicator').forEach(function(x){ x.remove(); });
+  c.querySelectorAll(CHROME_SEL).forEach(function(x){ x.remove(); });
   stripInjectedPosition(c);
+  /* Kolomfoto's: de bijgesneden versie in de mail, bouwer-attributen eraf. */
+  c.querySelectorAll('img').forEach(function(im){
+    var past=beeldPastOpMaat(im), s=im.getAttribute('data-crop-src');
+    if(past && s) im.setAttribute('src',s);
+    var terugval=!past && im.getAttribute('data-eqh')==='1' && im.getAttribute('data-photo-filled')==='1' && im.hasAttribute('height');
+    im.removeAttribute('data-crop-src'); im.removeAttribute('data-crop-key'); im.removeAttribute('data-eqh');
+    if(!terugval) return;
+    /* Geen bijgesneden versie (bijsnijden mislukt): Outlook krijgt het beeld
+       dan op zijn natuurlijke hoogte, want uitrekken is lelijker dan ongelijk.
+       De andere clients snijden het zelf bij met object-fit. */
+    var mso=im.cloneNode(false);
+    Array.prototype.slice.call(mso.attributes).forEach(function(a){ if(/^data-/.test(a.name)) mso.removeAttribute(a.name); });
+    mso.removeAttribute('height'); mso.removeAttribute('class');
+    mso.setAttribute('src', im.src);
+    mso.style.width=im.getAttribute('width')+'px'; mso.style.maxWidth='';
+    mso.style.height='auto'; mso.style.objectFit=''; mso.style.objectPosition=''; mso.style.display='block';
+    im.parentNode.insertBefore(document.createComment('[if mso]>'+mso.outerHTML+'<![endif]'), im);
+    im.parentNode.insertBefore(document.createComment('[if !mso]><!-- '), im);
+    im.parentNode.insertBefore(document.createComment('<![endif]'), im.nextSibling);
+  });
   absolutizeImages(c);
+  kapitalenVastzetten(c);
   c.querySelectorAll('[contenteditable]').forEach(function(el){ el.removeAttribute('contenteditable'); el.removeAttribute('spellcheck'); });
   c.querySelectorAll('.photo-wrap').forEach(function(el){ el.classList.remove('photo-wrap','photo-wrap-klein'); if(!el.getAttribute('class')) el.removeAttribute('class'); });
   c.querySelectorAll('[data-photo-filled]').forEach(function(el){ el.removeAttribute('data-photo-filled'); });
@@ -1562,11 +1767,28 @@ function absolutizeFonts(html){
     return 'url('+q+toAbsolute(pad)+q+')';
   });
 }
-function buildMailHTML(){ return absolutizeFonts(MAIL_HEAD)+'\n'+buildBodyHTML()+'\n'+MAIL_TAIL; }
+/* Outlook voor Windows en webfonts: ziet het een @font-face, dan negeert het
+   de fallback-fonts en valt alles terug op Times New Roman. Daarom horen alle
+   @font-face-regels in een blok dat Outlook overslaat. De merkmodules doen
+   dat zelf al; dit is het vangnet voor een sjabloon dat het nog niet doet. */
+function guardWebFonts(head){
+  var guarded=/<!--\[if !mso\]><!-->[\s\S]*?<!--<!\[endif\]-->/gi, faces=[], parts=[], last=0, m;
+  while((m=guarded.exec(head))){ parts.push({t:head.slice(last,m.index),open:true}); parts.push({t:m[0],open:false}); last=m.index+m[0].length; }
+  parts.push({t:head.slice(last),open:true});
+  var out=parts.map(function(p){
+    if(!p.open) return p.t;
+    return p.t.replace(/@font-face\s*\{[^}]*\}\s*/gi,function(f){ faces.push(f.trim()); return ''; });
+  }).join('');
+  if(!faces.length) return head;
+  var blok='<!--[if !mso]><!-->\n<style type="text/css">\n  '+faces.join('\n  ')+'\n</style>\n<!--<![endif]-->\n';
+  var i=out.search(/<style\b/i);
+  return i<0 ? out.replace(/<\/head>/i, blok+'</head>') : out.slice(0,i)+blok+out.slice(i);
+}
+function buildMailHTML(){ return guardWebFonts(absolutizeFonts(MAIL_HEAD))+'\n'+buildBodyHTML()+'\n'+MAIL_TAIL; }
 function openExport(){
   if(!stage.children.length){ notify('Nog leeg','Voeg eerst een paar blokken toe.'); return; }
   busy(true,'HTML maken…','');
-  ensureHostedImages().then(function(){
+  ensureHostedImages().then(function(){ busy(true,null,'Kolomfoto\'s op maat snijden'); return ensureCroppedSideImages(); }).then(function(){
     if(currentDoc && cloudOn()) doSave();
     document.getElementById('exportText').value=buildMailHTML();
     var chk=checkReadiness();
@@ -1636,9 +1858,9 @@ function downloadZip(){
   var map={}, files=[], n=0;
   imgs.reduce(function(p,im){
     return p.then(function(){
-      /* im.src geeft hetzelfde absolute adres als in de geëxporteerde HTML
+      /* exportSrc geeft hetzelfde absolute adres als in de geëxporteerde HTML
          staat, zodat het vervangen hieronder gegarandeerd matcht. */
-      var src=im.src||'';
+      var src=exportSrc(im)||'';
       if(!src||map[src]) return;
       return srcToBlob(src).then(function(bl){
         n++; var name='images/beeld-'+n+'.'+extFor(bl.type||'');
@@ -1646,7 +1868,7 @@ function downloadZip(){
         return bl.arrayBuffer().then(function(ab){ files.push({name:name,data:new Uint8Array(ab)}); });
       }).catch(function(e){ console.warn('zip: overgeslagen',src,e); });
     });
-  },Promise.resolve()).then(function(){
+  },ensureCroppedSideImages()).then(function(){
     var html=buildMailHTML();
     Object.keys(map).forEach(function(s){ html=html.split(s).join(map[s]); });
     files.push({name:'index.html',data:new TextEncoder().encode(html)});

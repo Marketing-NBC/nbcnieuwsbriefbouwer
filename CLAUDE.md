@@ -38,6 +38,12 @@ merken: **NBC** en **Green Village**. Lees dit eerst.
 - **Elke afbeelding kan klikbaar** — knop `Link` op de afbeelding, net als bij een knop. De afbeelding wordt dan in een `<a>` gezet. Dit geldt voor alle beelden in alle blokken, dus ook logo en social-iconen. Leeg laten haalt de link er weer af. Naast `https://` zijn ook `mailto:`, `tel:` en merge-tags als `*|ARCHIVE|*` toegestaan. Bij beelden smaller dan 200px verschijnen de knoppen pas bij hover, zodat het beeld herkenbaar blijft.
 - **Ongedaan maken** met `Ctrl+Z` / `Cmd+Z`, opnieuw met `Ctrl+Shift+Z` of `Ctrl+Y`. De geschiedenis bewaart momentopnamen van de hele opzet (max 80) en dekt zowel blokken als getypte tekst. In invoervelden blijft de normale tekst-undo van de browser werken.
 - Helper: badge = absoluut gepositioneerde pill in de merk-accentkleur, in een `position:relative` wrapper rond de `<img>`. De bouwer stript die wrapper en alle knoppen bij het exporteren.
+- **Kolomfoto naast tekst is even hoog als de tekst** (genummerd artikel met beeld, beeld+tekst). De bouwer meet de tekstkolom en zet die hoogte op de foto (minimaal 150px); typ je meer regels, dan groeit de foto mee. De cropper snijdt daardoor meteen in de juiste verhouding. Bij het exporteren wordt een foto die nog een andere verhouding heeft echt bijgesneden (2x, naar Supabase Storage), zodat ook Outlook geen uitgerekt beeld krijgt.
+
+## Outlook voor Windows (vast — geldt voor beide merken)
+- **Knoppen en beelden hebben een Outlook-kopie** in een `<!--[if mso]>`-commentaar (VML-knop, losse `<img>`). Die kopie ziet de bouwer niet als tekst, dus hij loopt achter zodra je een knoptekst, link of foto aanpast. De export trekt hem automatisch gelijk met het echte element ernaast (tekst, link, breedte, foto, hoogte). Dit was de oorzaak van "Plan jouw zomerevent" bij een collega terwijl er "Reserveer een tafel" stond.
+- **Webfonts staan in een `<!--[if !mso]><!-->`-blok.** Ziet Outlook een `@font-face`, dan negeert het de fallback-fonts en valt álles terug op Times New Roman. Buiten dat blok kiest Outlook netjes Times New Roman voor koppen en Arial voor bodytekst. De export controleert dit ook als vangnet.
+- **Kapitalen worden echt kapitalen.** Outlook kent `text-transform` niet; tekst met `text-transform:uppercase` gaat daarom als hoofdletters de mail in (merge-tags blijven ongemoeid).
 
 ## Merk NBC (bindend)
 - **Fonts:** display = Pockota (live tekst, fallback `Georgia`, dan `serif`); body/UI = Area Normal → fallback Helvetica/Arial. Nooit Georgia op bodytekst zetten.
@@ -51,7 +57,7 @@ NBC · Blokhoeve 1 · 3438 LC Nieuwegein · info@nbcevents.nl · +31 (0)30 - 602
 Social: LinkedIn, Instagram, Facebook, YouTube. Merge-tags: `*|ARCHIVE|*`, `*|EMAIL|*`, `*|UPDATE_PROFILE|*`, `*|UNSUB|*`, `*|CURRENT_YEAR|*`, `*|MC:SUBJECT|*`.
 
 ## Merk Green Village (bindend — Huisstijlgids april 2026)
-- **Fonts:** display/koppen = TT Ramillas Light, **altijd in kapitalen**, fallback `'Times New Roman',Georgia,serif`; body = TT Wellingtons, fallback Helvetica Neue/Arial. Anders dan bij NBC wordt het bodyfont hier **wél** geladen: de merkgids schrijft TT Wellingtons voor als progressive enhancement.
+- **Fonts:** display/koppen = TT Ramillas Light, **altijd in kapitalen**, fallback `'Times New Roman',Georgia,serif`; body = TT Wellingtons, fallback Helvetica Neue/Arial. Anders dan bij NBC wordt het bodyfont hier **wél** geladen: de merkgids schrijft TT Wellingtons voor als progressive enhancement. De `@font-face`-regels staan in het mail-sjabloon in een `[if !mso]`-blok (zie Outlook hieronder) — niet terugzetten in de gewone `<style>`.
 - **Kleuren:** sage `#71755d` (primair) · `#4b4e3e` (donker) · `#d7d9cf` (lichte tint) · terracotta `#d24e1f` (accent) · khaki `#e3ddc4` (zandvervanger) · body-tekst `#2f3a3e` · paper `#f1f1ef` · near-black `#0e0d07`.
 - **Hoeken:** knoppen = pil; kaarten, afbeeldingen en badges = **vierkant (radius 0)**. Harde regel, anders dan NBC.
 - **Knoppen:** inkt `#0e0d07` met crème tekst op licht; wit met inkt-tekst op sage/donker.
