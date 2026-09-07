@@ -40,7 +40,8 @@
     .px{padding-left:22px!important;padding-right:22px!important;}
     .py-lg{padding-top:36px!important;padding-bottom:36px!important;}
     .center-sm{text-align:center!important;}
-    .nav-link{display:inline-block!important;padding:6px 9px!important;}
+    .nav-link{display:inline-block!important;padding:6px 0!important;}
+    .nav-table{float:none!important;margin-left:auto!important;margin-right:auto!important;}
     .h1{font-size:34px!important;line-height:1.08!important;}
     .h2{font-size:28px!important;line-height:1.12!important;}
     .artnum{font-size:46px!important;}
@@ -545,11 +546,48 @@ function stripLegeKopstrook(wrap){
   if(bg && !/^#(fff|ffffff)$/i.test(bg.trim())) return;
   r.parentNode.removeChild(r);
 }
+/* Eén declaratie uit een style-attribuut halen, met de waarde zoals hij er
+   staat — dus de hexkleur en de hele fontstapel, niet wat de browser ervan
+   maakt. */
+function stijlWaarde(el,eigenschap){
+  var st=(el&&el.getAttribute('style'))||'';
+  var m=st.match(new RegExp('(?:^|;)\\s*'+eigenschap+'\\s*:([^;]*)'));
+  return m ? m[1].trim() : '';
+}
+/* Het menu rechtsboven stond als losse links in één cel, met een aparte
+   Outlook-kopie eromheen. Word erft geen lettertype in een link, en de
+   uitlijning van die kopie klopte niet — vandaar Times New Roman en een menu
+   dat links plakte. Nu is het een tabel met een cel per link en staat de
+   opmaak op de link zelf. Opgeslagen nieuwsbrieven bouwen we hier om, met
+   behoud van de teksten en de bestemmingen die erin staan. */
+function moderniseerNav(wrap){
+  var links=wrap.querySelectorAll('a.nav-link');
+  if(!links.length || wrap.querySelector('.nav-table')) return;
+  var cel=links[0].closest('td');
+  if(!cel) return;
+  var tekstStijl=['font-family','font-size','font-weight','letter-spacing','text-transform']
+    .map(function(p){ var v=stijlWaarde(cel,p); return v?p+':'+v:null; })
+    .filter(Boolean).join(';');
+  var pad=(stijlWaarde(links[0],'padding').split(/\s+/)[1])||'7px';
+  var cellen=Array.prototype.map.call(links,function(a){
+    var kleur=stijlWaarde(a,'color')||'inherit';
+    return '<td class="nav-item" style="padding:0 '+pad+';'+tekstStijl+';white-space:nowrap;">'+
+      '<a class="nav-link" href="'+esc(a.getAttribute('href')||'')+'" target="_blank" style="color:'+kleur+
+      ';text-decoration:none;'+tekstStijl+';">'+a.innerHTML+'</a></td>';
+  }).join('');
+  cel.innerHTML='<table role="presentation" border="0" cellpadding="0" cellspacing="0" align="right" class="nav-table"><tr>'+cellen+'</tr></table>';
+  ['font-family','font-size','font-weight','letter-spacing','text-transform','white-space'].forEach(function(p){ cel.style.removeProperty(p); });
+  cel.style.setProperty('text-align','right');
+  cel.setAttribute('align','right');
+  cel.setAttribute('width','360');
+  var logoCel=cel.previousElementSibling;
+  if(logoCel && logoCel.tagName==='TD' && logoCel.getAttribute('width')==='190') logoCel.setAttribute('width','240');
+}
 function addBlock(letter, restore){
   var b=byLetter[letter];
   var wrap=document.createElement('div'); wrap.className='pv-block'; wrap.setAttribute('data-letter',letter);
   wrap.innerHTML = restore ? restore.html : wrapHTML(b);
-  if(restore) stripLegeKopstrook(wrap);
+  if(restore){ stripLegeKopstrook(wrap); moderniseerNav(wrap); }
   makeEditable(wrap);
   var tag=document.createElement('div'); tag.className='pv-tag'; tag.textContent=letter+' · '+b.name; wrap.appendChild(tag);
   var tools=document.createElement('div'); tools.className='pv-tools';
