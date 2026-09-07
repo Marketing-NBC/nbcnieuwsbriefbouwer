@@ -47,6 +47,17 @@ merken: **NBC** en **Green Village**. Lees dit eerst.
 - **Richtlijn:** 35 tot 140 tekens. De teller in de bouwer zegt het als het te kort of te lang wordt.
 - **Opslag:** de tekst hoort bij de nieuwsbrief, niet bij een blok, maar reist mee als veld `voorvertoning` op het eerste blok. Zo blijft `blokken` in Supabase een gewone lijst blokken en negeert een versie die het veld niet kent het simpelweg, in plaats van eroverheen te schrijven. Niet omzetten naar een eigen kolom zonder migratie.
 
+## Ruimte tussen blokken (vast)
+- De witruimte tussen twee blokken komt **altijd van de afstandsknop** (`↕ Afstand`) van het blok erbóven. Geen enkel blok heeft nog een vaste witstrook aan zijn bovenkant.
+- Blok E had die wel — 40px wit boven het beeld — waardoor je na een ander blok twee keer ruimte telde. Die strook is uit de bibliotheek gehaald; opgeslagen nieuwsbrieven raken hem bij het openen alsnog kwijt.
+- Een **gekleurd streepje** aan de bovenkant van een blok (de accentlijn van de footer) is opmaak, geen ruimte, en blijft dus staan. Zet nooit een vaste witte spacer-rij bovenin een blok terug.
+
+## Controle bij het exporteren (vast)
+- Het exportvenster meldt wat er nog open staat: lege fotoplekken, links die nog naar de voorbeeldbestemming wijzen, een merkstandaard in de voorvertoningstekst, een te grote mail en foto's die nog niet online staan.
+- **Standaardlinks worden gemeten tegen de blokkenbibliotheek**, niet tegen een opgeslagen attribuut. Dat laatste ging mis: na opslaan en heropenen stond jouw eigen link in dat attribuut, dus werd élke link als "nog standaard" gemeld.
+- In de meldingen en de briefing heet een link naar de tekst van de knop, of naar de `alt` van de afbeelding. De knoppen die de bouwer zelf over een foto legt (Foto, Link, het nummer) tellen niet mee in die tekst.
+- `data-link-editable` en `data-default-href` zijn hulpmiddelen van de bouwer en worden bij het exporteren verwijderd — ze horen niet in de verstuurde mail.
+
 ## Outlook voor Windows (vast — geldt voor beide merken)
 - **Knoppen en beelden hebben een Outlook-kopie** in een `<!--[if mso]>`-commentaar (VML-knop, losse `<img>`). Die kopie ziet de bouwer niet als tekst, dus hij loopt achter zodra je een knoptekst, link of foto aanpast. De export trekt hem automatisch gelijk met het echte element ernaast (tekst, link, breedte, foto, hoogte). Dit was de oorzaak van "Plan jouw zomerevent" bij een collega terwijl er "Reserveer een tafel" stond.
 - **Webfonts staan in een `<!--[if !mso]><!-->`-blok.** Ziet Outlook een `@font-face`, dan negeert het de fallback-fonts en valt álles terug op Times New Roman. Buiten dat blok kiest Outlook netjes Times New Roman voor koppen en Arial voor bodytekst. De export controleert dit ook als vangnet.

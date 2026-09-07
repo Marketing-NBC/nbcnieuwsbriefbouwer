@@ -498,7 +498,6 @@ function makeEditable(node){
     var editable = href.indexOf('http')===0;
     if(!editable) return;
     a.setAttribute('data-link-editable','1');
-    a.setAttribute('data-default-href',href);
     var badge=document.createElement('span');
     badge.className='link-badge';
     badge.title=href;
@@ -525,13 +524,32 @@ function editLink(a,badge){
 function _applyLink(a,badge,val){
   if(val){ a.setAttribute('href',val); }
   badge.title=val||'(geen link)';
-  var def=a.getAttribute('data-default-href')||'';
-  badge.classList.toggle('link-badge-set', !!val && val!==def);
+  var blok=a.closest('.pv-block');
+  badge.classList.toggle('link-badge-set', !!val && !isStandaardLink(blok&&blok.getAttribute('data-letter'), val));
+}
+/* Blok E begon vroeger met een vaste witte strook van 40px boven het beeld.
+   De ruimte bóven een blok hoort van de afstandsknop van het blok erboven te
+   komen, anders tel je die twee keer op. In opgeslagen nieuwsbrieven zit die
+   strook nog; die halen we er bij het openen alsnog uit. Een gekleurd streepje
+   (de accentlijn van de footer) blijft staan — dat is opmaak, geen ruimte. */
+function stripLegeKopstrook(wrap){
+  var t=wrap.querySelector(':scope > table');
+  if(!t || !t.rows.length) return;
+  var r=t.rows[0];
+  if(r.cells.length!==1) return;
+  var td=r.cells[0];
+  if(td.children.length || td.textContent.replace(/[\s\u00a0]/g,'')) return;
+  var st=td.getAttribute('style')||'';
+  if(!/height:\s*\d+px/i.test(st)) return;
+  var bg=(st.match(/background-color:\s*([^;]+)/i)||[])[1];
+  if(bg && !/^#(fff|ffffff)$/i.test(bg.trim())) return;
+  r.parentNode.removeChild(r);
 }
 function addBlock(letter, restore){
   var b=byLetter[letter];
   var wrap=document.createElement('div'); wrap.className='pv-block'; wrap.setAttribute('data-letter',letter);
   wrap.innerHTML = restore ? restore.html : wrapHTML(b);
+  if(restore) stripLegeKopstrook(wrap);
   makeEditable(wrap);
   var tag=document.createElement('div'); tag.className='pv-tag'; tag.textContent=letter+' · '+b.name; wrap.appendChild(tag);
   var tools=document.createElement('div'); tools.className='pv-tools';
@@ -936,10 +954,8 @@ function briefingLines(){
       else { out.push('   [foto '+im.getAttribute('data-photo')+' hier — beschrijf welke foto]'); photoTotal++; }
     });
     w.querySelectorAll('a[data-link-editable]').forEach(function(a){
-      var label=a.textContent.replace(/\s+/g,' ').trim();
-      var href=a.getAttribute('href')||'';
-      var def=a.getAttribute('data-default-href')||'';
-      if(href && href!==def){ out.push('   → link "'+label+'": '+href); }
+      var href=(a.getAttribute('href')||'').trim();
+      if(href && !isStandaardLink(L,href)){ out.push('   → '+linkLabel(a)+': '+href); }
     });
   });
   out.push('──────────────────────────────');
@@ -950,6 +966,35 @@ function briefingLines(){
   out.push('(Aanbevolen formaat: hero ~1200px breed, kolom/ruimtefoto\'s ~530px breed, JPG/PNG.)');
   return out.join('\n');
 }
+/* De links zoals ze in de blokkenbibliotheek staan. Daaraan meten we of een
+   knop nog naar de voorbeeldbestemming wijst. Vergelijken met een opgeslagen
+   attribuut ging mis: na opslaan en heropenen stond jouw eigen link daarin,
+   dus werd alles als "nog standaard" gemeld. */
+var _stdLinks={};
+function blokStandaardLinks(L){
+  if(_stdLinks[L]) return _stdLinks[L];
+  var set={};
+  if(byLetter[L]){
+    var d=document.createElement('div');
+    d.innerHTML=wrapHTML(byLetter[L]);
+    d.querySelectorAll('a[href]').forEach(function(a){ set[a.getAttribute('href')]=1; });
+  }
+  _stdLinks[L]=set;
+  return set;
+}
+function isStandaardLink(L,href){ return !!(L && href && blokStandaardLinks(L)[href]); }
+/* De tekst van een link zonder de knoppen die de bouwer er zelf overheen legt
+   (Foto, Link, het fotonummer) — anders leest een melding als "1FotoLink". */
+function linkLabel(a){
+  var c=a.cloneNode(true);
+  c.querySelectorAll(CHROME_SEL).forEach(function(x){ x.remove(); });
+  var t=(c.textContent||'').replace(/\s+/g,' ').trim();
+  if(t) return 'knop “'+t+'”';
+  var im=a.querySelector('img');
+  var alt=im&&im.getAttribute('alt');
+  return 'afbeelding'+(alt?' “'+alt+'”':'');
+}
+
 function checkReadiness(){
   var missingLinks=[];
   var missingPhotos=[];
@@ -957,8 +1002,8 @@ function checkReadiness(){
     var L=w.getAttribute('data-letter'); var nm=byLetter[L].name;
     if(L==='B'||L==='R') return;
     w.querySelectorAll('a[data-link-editable]').forEach(function(a){
-      var href=a.getAttribute('href')||''; var def=a.getAttribute('data-default-href')||'';
-      if(href===def){ missingLinks.push('Blok '+L+' (“'+nm+'”) — knop “'+a.textContent.replace(/\s+/g,' ').trim()+'”'); }
+      var href=(a.getAttribute('href')||'').trim();
+      if(isStandaardLink(L,href)){ missingLinks.push('Blok '+L+' (“'+nm+'”) — '+linkLabel(a)); }
     });
     w.querySelectorAll('img[data-photo]').forEach(function(im){
       if(im.getAttribute('data-photo-filled')!=='1'){ missingPhotos.push('Foto '+im.getAttribute('data-photo')+' (blok '+L+')'); }
@@ -1814,6 +1859,8 @@ function cleanBlock(wrap,unwrap){
   c.querySelectorAll('.photo-wrap').forEach(function(el){ el.classList.remove('photo-wrap','photo-wrap-klein'); if(!el.getAttribute('class')) el.removeAttribute('class'); });
   c.querySelectorAll('[data-photo-filled]').forEach(function(el){ el.removeAttribute('data-photo-filled'); });
   c.querySelectorAll('[data-photo]').forEach(function(el){ el.removeAttribute('data-photo'); });
+  /* Merktekens van de bouwer horen niet in de verstuurde mail. */
+  c.querySelectorAll('[data-link-editable],[data-default-href]').forEach(function(el){ el.removeAttribute('data-link-editable'); el.removeAttribute('data-default-href'); });
   if(unwrap){
     var t=c.querySelector(':scope > table');
     if(t) return t.innerHTML;
@@ -1875,7 +1922,7 @@ function openExport(){
     var msgs=[];
     var mp=(chk.missingPhotos||[]).length, ml=(chk.missingLinks||[]).length;
     if(mp) msgs.push('<b>'+mp+' fotoplek'+(mp===1?'':'ken')+'</b> '+(mp===1?'is':'zijn')+' nog niet gevuld: '+esc(chk.missingPhotos.join(' · ')));
-    if(ml) msgs.push('<b>'+ml+' knop'+(ml===1?'':'pen')+'</b> '+(ml===1?'heeft':'hebben')+' nog de standaardlink: '+esc(chk.missingLinks.join(' · ')));
+    if(ml) msgs.push('<b>'+ml+' link'+(ml===1?'':'s')+'</b> '+(ml===1?'wijst':'wijzen')+' nog naar de voorbeeldbestemming uit de bibliotheek: '+esc(chk.missingLinks.join(' · ')));
     var kb=Math.round(document.getElementById('exportText').value.length/1024);
     if(kb>100) msgs.push('De HTML is <b>'+kb+' KB</b>. Gmail kapt mails boven 100 KB af — zet foto\'s online (⚙) zodat ze niet in de code zelf zitten.');
     var local=Array.prototype.slice.call(stage.querySelectorAll('img')).filter(function(im){ return /^data:/i.test(im.getAttribute('src')||''); }).length;
