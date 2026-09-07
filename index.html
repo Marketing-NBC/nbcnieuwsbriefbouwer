@@ -99,6 +99,17 @@
   /* canvas */
   .canvaswrap{flex:1;overflow-y:auto;padding:28px 20px 120px;display:flex;flex-direction:column;align-items:center;}
   .hint{max-width:600px;background:#fff;border:1px dashed var(--line);border-radius:14px;padding:22px 24px;color:#596165;font-size:14px;line-height:1.6;text-align:center;}
+  /* Voorvertoningstekst: het regeltje dat de ontvanger in zijn inbox naast
+     het onderwerp ziet. Staat boven de blokken, want zo ziet de lezer het ook. */
+  .ph-card{width:600px;box-sizing:border-box;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px 12px;margin-bottom:18px;}
+  .ph-kop{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .ph-kop label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8a9294;}
+  .ph-uitleg{font-size:12px;color:#8a9294;cursor:help;border:1px solid var(--line);border-radius:999px;width:16px;height:16px;line-height:14px;text-align:center;}
+  .ph-teller{margin-left:auto;font-size:11.5px;color:#8a9294;white-space:nowrap;}
+  .ph-teller.ph-lang{color:#c0492b;}
+  #preheaderInput{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-family:inherit;font-size:14px;color:var(--ink);background:#fff;}
+  #preheaderInput:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(34,157,150,.12);}
+  #preheaderInput::placeholder{color:#a8b0b2;}
   .hint b{color:#0e0e0e;}
   #stage{width:600px;}
   .pv-block{position:relative;outline:1px solid transparent;}
@@ -188,6 +199,14 @@
 <main>
   <aside id="palette"></aside>
   <div class="canvaswrap">
+    <div class="ph-card">
+      <div class="ph-kop">
+        <label for="preheaderInput">Voorvertoningstekst</label>
+        <span class="ph-uitleg" title="Het regeltje dat de ontvanger in zijn inbox achter het onderwerp ziet. Staat niet zichtbaar in de mail zelf.">?</span>
+        <span class="ph-teller" id="preheaderTeller"></span>
+      </div>
+      <input id="preheaderInput" type="text" maxlength="250" autocomplete="off" spellcheck="false">
+    </div>
     <div id="hint" class="hint"><b>Begin met bouwen.</b><br>Klik links op een blok om het toe te voegen. Tip: start met <b>A&nbsp;Webversie-balk</b> en <b>B&nbsp;Header</b>, en eindig met <b>R&nbsp;Donkere footer</b>.</div>
     <div id="stage"></div>
   </div>
@@ -891,6 +910,7 @@ function briefingLines(){
   out.push('NBC NIEUWSBRIEF — BRIEFING');
   out.push('Datum: '+new Date().toLocaleDateString('nl-NL'));
   out.push('Volgorde van blokken: '+Array.prototype.map.call(stage.children,function(w){return w.getAttribute('data-letter');}).join(' → '));
+  out.push('Voorvertoningstekst: '+(preheaderTekst()||'(nog niet ingevuld)'));
   out.push('');
   var photoTotal=0;
   Array.prototype.forEach.call(stage.children,function(w,i){
@@ -1203,7 +1223,16 @@ function serializeStage(){
       html:c.innerHTML
     });
   });
+  /* De voorvertoningstekst hoort bij de hele nieuwsbrief, niet bij een blok.
+     Hij reist mee als extra veld op het eerste blok: de opslag blijft zo een
+     gewone lijst blokken, en een versie die dit veld niet kent negeert het
+     gewoon in plaats van eroverheen te schrijven. */
+  if(blocks.length) blocks[0].voorvertoning=preheaderTekst();
   return blocks;
+}
+function leesVoorvertoning(blocks){
+  var b=(blocks||[])[0];
+  return (b && b.voorvertoning) || '';
 }
 /* Elk merk zijn eigen concept in deze browser. */
 var DB_NAME='nbc_nieuwsbrief_bouwer',STORE='state',KEY='current-'+MERK.id;
@@ -1274,6 +1303,7 @@ function histToepassen(json){
   histBezig=true;
   var blokken=JSON.parse(json);
   stage.innerHTML='';
+  setPreheader(leesVoorvertoning(blokken));
   blokken.forEach(function(bl){ addBlock(bl.letter, bl); });
   renumber();
   histBezig=false;
@@ -1312,9 +1342,58 @@ new MutationObserver(function(){ scheduleSave(); histPlan(); eqhPlan(); })
 window.addEventListener('beforeunload',function(){ if(saveTimer){ clearTimeout(saveTimer); doSave(); } });
 document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='hidden' && saveTimer){ clearTimeout(saveTimer); doSave(); } });
 
+/* ================= VOORVERTONINGSTEKST (preheader) =================
+   Het regeltje dat de inbox achter het onderwerp toont. Het staat in het
+   mail-sjabloon van het merk als verborgen div; hier kun je het per editie
+   overschrijven. Leeg laten houdt de standaard van het merk aan — bij NBC is
+   dat de merge-tag, zodat Mailchimp zijn eigen previewtekst gebruikt. */
+var preheaderInput=document.getElementById('preheaderInput');
+var PREVIEW_SEL=/(<div\b[^>]*class="[^"]*mcnPreviewText[^"]*"[^>]*>)([\s\S]*?)(<\/div>)/i;
+function standaardVoorvertoning(){
+  /* Rechtstreeks uit de merkdefinitie: MAIL_HEAD wordt verderop pas gezet. */
+  var m=(MERK.mailHead||'').match(PREVIEW_SEL);
+  if(!m) return '';
+  return m[2].replace(/&#847;|&zwnj;|&nbsp;/g,' ').replace(/\s+/g,' ').trim();
+}
+function preheaderTekst(){ return (preheaderInput.value||'').trim(); }
+function setPreheader(v){
+  preheaderInput.value=v||'';
+  preheaderMeta();
+}
+/* Teller met een eerlijk advies: onder de 35 tekens blijft er ruimte in de
+   inbox onbenut, boven de 140 kapt vrijwel elke client hem af. */
+function preheaderMeta(){
+  var n=preheaderTekst().length, t=document.getElementById('preheaderTeller');
+  if(!t) return;
+  if(!n){ t.textContent='leeg — standaard van het merk'; t.classList.remove('ph-lang'); return; }
+  t.textContent=n+' tekens'+(n>140?' — wordt afgekapt':(n<35?' — kort':''));
+  t.classList.toggle('ph-lang', n>140);
+}
+function preheaderPlaceholder(){
+  var d=standaardVoorvertoning();
+  preheaderInput.placeholder = !d ? 'Bijvoorbeeld: dit speelt er deze maand bij ons'
+    : (/\*\|/.test(d) ? 'Leeg = Mailchimp vult de previewtekst zelf in'
+                       : 'Leeg = "'+d+'"');
+}
+preheaderPlaceholder();
+preheaderInput.addEventListener('input',function(){ preheaderMeta(); scheduleSave(); histPlan(); });
+/* De tekst in het sjabloon vervangen. De onzichtbare vultekens erachter
+   (&#847;&zwnj;) blijven staan: die duwen de eerste regel van de mail uit de
+   inboxpreview, anders leest de ontvanger daar 'Online lezen'. */
+function zetVoorvertoning(head){
+  var tekst=preheaderTekst();
+  if(!tekst) return head;
+  return head.replace(PREVIEW_SEL,function(m,open,inner,close){
+    var i=inner.search(/&#847;|&zwnj;/);
+    var vul=i>=0 ? inner.slice(i).trim() : '';
+    return open+'\n  '+esc(tekst)+(vul?'\n  '+vul:'')+'\n'+close;
+  });
+}
+
 function buildDefault(){
   restoring=true;
   stage.innerHTML='';
+  setPreheader('');
   addBlock('A'); addBlock('B'); addBlock('R');
   restoring=false;
   pristineJSON=JSON.stringify(serializeStage());
@@ -1324,6 +1403,7 @@ function buildDefault(){
 function restoreState(data){
   restoring=true;
   stage.innerHTML='';
+  setPreheader(leesVoorvertoning(data.blocks));
   (data.blocks||[]).forEach(function(bl){ addBlock(bl.letter, bl); });
   restoring=false;
   renumber();
@@ -1784,7 +1864,7 @@ function guardWebFonts(head){
   var i=out.search(/<style\b/i);
   return i<0 ? out.replace(/<\/head>/i, blok+'</head>') : out.slice(0,i)+blok+out.slice(i);
 }
-function buildMailHTML(){ return guardWebFonts(absolutizeFonts(MAIL_HEAD))+'\n'+buildBodyHTML()+'\n'+MAIL_TAIL; }
+function buildMailHTML(){ return zetVoorvertoning(guardWebFonts(absolutizeFonts(MAIL_HEAD)))+'\n'+buildBodyHTML()+'\n'+MAIL_TAIL; }
 function openExport(){
   if(!stage.children.length){ notify('Nog leeg','Voeg eerst een paar blokken toe.'); return; }
   busy(true,'HTML maken…','');
@@ -1800,6 +1880,8 @@ function openExport(){
     if(kb>100) msgs.push('De HTML is <b>'+kb+' KB</b>. Gmail kapt mails boven 100 KB af — zet foto\'s online (⚙) zodat ze niet in de code zelf zitten.');
     var local=Array.prototype.slice.call(stage.querySelectorAll('img')).filter(function(im){ return /^data:/i.test(im.getAttribute('src')||''); }).length;
     if(local) msgs.push('<b>'+local+' geüploade foto'+(local===1?'':'\'s')+'</b> staat nog niet online — die verschijnt niet in geplakte HTML. Zet cloud-opslag aan (⚙) of gebruik <b>Zip met foto\'s</b>.');
+    var std=standaardVoorvertoning();
+    if(!preheaderTekst() && std && !/\*\|/.test(std)) msgs.push('De <b>voorvertoningstekst</b> is nog die van de blokkenbibliotheek: “'+esc(std)+'”. Dat is de regel die je lezer in zijn inbox ziet.');
     if(!assetsArePublic()) msgs.push('Je opent de bouwer als los bestand, dus de merkafbeeldingen krijgen een <b>file://</b>-adres dat in een mail niet werkt. Gebruik de online bouwer, of exporteer via <b>Zip met foto\'s</b>.');
     var w=document.getElementById('exportWarning');
     if(msgs.length){ w.innerHTML='Let op:<br>'+msgs.join('<br>'); w.style.display='block'; } else { w.style.display='none'; }

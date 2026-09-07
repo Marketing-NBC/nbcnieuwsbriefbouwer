@@ -40,6 +40,13 @@ merken: **NBC** en **Green Village**. Lees dit eerst.
 - Helper: badge = absoluut gepositioneerde pill in de merk-accentkleur, in een `position:relative` wrapper rond de `<img>`. De bouwer stript die wrapper en alle knoppen bij het exporteren.
 - **Kolomfoto naast tekst is even hoog als de tekst** (genummerd artikel met beeld, beeld+tekst). De bouwer meet de tekstkolom en zet die hoogte op de foto (minimaal 150px); typ je meer regels, dan groeit de foto mee. De cropper snijdt daardoor meteen in de juiste verhouding. Bij het exporteren wordt een foto die nog een andere verhouding heeft echt bijgesneden (2x, naar Supabase Storage), zodat ook Outlook geen uitgerekt beeld krijgt.
 
+## Voorvertoningstekst (vast)
+- Boven de blokken staat in de bouwer het veld **Voorvertoningstekst**: de regel die de ontvanger in zijn inbox achter het onderwerp ziet. Hij gaat mee in de geëxporteerde HTML, in de verborgen `.mcnPreviewText`-div van het merksjabloon.
+- **Leeg laten houdt de standaard van het merk aan.** Bij NBC is dat de merge-tag `*|MC_PREVIEW_TEXT|*`, zodat Mailchimp zijn eigen previewtekst gebruikt; bij Green Village de vaste zin uit het sjabloon. Staat er nog een merkstandaard als je exporteert, dan waarschuwt het exportvenster daarvoor.
+- De onzichtbare vultekens (`&#847;&zwnj;`) achter de tekst blijven altijd staan. Zonder die tekens vult de inbox de rest van de previewregel met de eerste zichtbare tekst uit de mail, en dat is "Online lezen".
+- **Richtlijn:** 35 tot 140 tekens. De teller in de bouwer zegt het als het te kort of te lang wordt.
+- **Opslag:** de tekst hoort bij de nieuwsbrief, niet bij een blok, maar reist mee als veld `voorvertoning` op het eerste blok. Zo blijft `blokken` in Supabase een gewone lijst blokken en negeert een versie die het veld niet kent het simpelweg, in plaats van eroverheen te schrijven. Niet omzetten naar een eigen kolom zonder migratie.
+
 ## Outlook voor Windows (vast — geldt voor beide merken)
 - **Knoppen en beelden hebben een Outlook-kopie** in een `<!--[if mso]>`-commentaar (VML-knop, losse `<img>`). Die kopie ziet de bouwer niet als tekst, dus hij loopt achter zodra je een knoptekst, link of foto aanpast. De export trekt hem automatisch gelijk met het echte element ernaast (tekst, link, breedte, foto, hoogte). Dit was de oorzaak van "Plan jouw zomerevent" bij een collega terwijl er "Reserveer een tafel" stond.
 - **Webfonts staan in een `<!--[if !mso]><!-->`-blok.** Ziet Outlook een `@font-face`, dan negeert het de fallback-fonts en valt álles terug op Times New Roman. Buiten dat blok kiest Outlook netjes Times New Roman voor koppen en Arial voor bodytekst. De export controleert dit ook als vangnet.
