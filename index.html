@@ -877,7 +877,7 @@ function laadBeeld(src){
 function ensureCroppedSideImages(){
   syncSideImages();
   var imgs=Array.prototype.slice.call(stage.querySelectorAll('img[data-eqh="1"][data-photo-filled="1"]')).filter(function(im){
-    return parseInt(im.getAttribute('height'),10)>0 && /^(https?:|data:)/i.test(im.getAttribute('src')||'');
+    return parseInt(im.getAttribute('height'),10)>0 && /^(https?:|data:)/i.test(im.getAttribute('src')||'') && !isGif(im.getAttribute('src'));
   });
   return imgs.reduce(function(p,im){
     return p.then(function(){
@@ -1178,11 +1178,39 @@ function openCropper(imgEl){
     cropFileInput.click();
   }
 }
+/* Bewegende GIF's slaan de bijsnijder over: die tekent op een canvas en maakt
+   er een JPG van, en dan staat het beeld stil. De GIF gaat dus ongewijzigd de
+   mail in, op zijn eigen verhouding. Outlook voor Windows toont alleen het
+   eerste beeldje, dus dat moet op zichzelf sterk zijn. */
+var GIF_MAX_KB=1024;
+function isGif(src){ return /^data:image\/gif/i.test(src||'') || /\.gif(\?|#|$)/i.test(src||''); }
+function plaatsGif(t,f,dataUrl){
+  var kb=Math.round(f.size/1024);
+  t.src=dataUrl;
+  t.setAttribute('data-photo-filled','1');
+  t.setAttribute('data-gif-kb',kb);
+  cropOriginals.delete(t);
+  document.getElementById('cropOverlay').classList.remove('on');
+  cropTarget=null; cropImg=null;
+  renumber();
+  if(typeof cloudOn==='function' && cloudOn()){
+    storageUpload('beeld/'+hashStr(dataUrl)+'.gif',f)
+      .then(function(url){ if(t) t.setAttribute('src',url); })
+      .catch(function(e){ console.warn('gif-upload mislukt',e); });
+  }
+  var w=parseInt(t.getAttribute('width'),10)||0;
+  var tips=[];
+  if(kb>GIF_MAX_KB) tips.push('Deze GIF is <b>'+kb+' KB</b>. Boven ongeveer 1 MB laadt hij traag, zeker op mobiel. Minder kleuren, minder beeldjes per seconde of een kortere loop helpen.');
+  if(t.getAttribute('data-eqh')==='1') tips.push('In een kolom naast tekst wordt een GIF niet bijgesneden. Het werkt het mooist als hero of losse afbeelding op volle breedte.');
+  tips.push('Outlook voor Windows toont alleen het <b>eerste beeldje</b>'+(w?'. Lever hem bij voorkeur '+w+' px breed aan':'')+'.');
+  notify('Bewegende GIF geplaatst',tips.join('<br><br>'));
+}
 cropFileInput.addEventListener('change',function(){
   var f=cropFileInput.files && cropFileInput.files[0];
   if(!f) return;
   var reader=new FileReader();
   reader.onload=function(e){
+    if(f.type==='image/gif' && cropTarget){ plaatsGif(cropTarget,f,e.target.result); return; }
     var im=new Image();
     im.onload=function(){
       cropImg=im;
@@ -1897,6 +1925,7 @@ function cleanBlock(wrap,unwrap){
   c.querySelectorAll('.photo-wrap').forEach(function(el){ el.classList.remove('photo-wrap','photo-wrap-klein'); if(!el.getAttribute('class')) el.removeAttribute('class'); });
   c.querySelectorAll('[data-photo-filled]').forEach(function(el){ el.removeAttribute('data-photo-filled'); });
   c.querySelectorAll('[data-photo]').forEach(function(el){ el.removeAttribute('data-photo'); });
+  c.querySelectorAll('[data-gif-kb]').forEach(function(el){ el.removeAttribute('data-gif-kb'); });
   /* Merktekens van de bouwer horen niet in de verstuurde mail. */
   c.querySelectorAll('[data-link-editable],[data-default-href]').forEach(function(el){ el.removeAttribute('data-link-editable'); el.removeAttribute('data-default-href'); });
   if(unwrap){
@@ -1965,6 +1994,8 @@ function openExport(){
     if(kb>100) msgs.push('De HTML is <b>'+kb+' KB</b>. Gmail kapt mails boven 100 KB af — zet foto\'s online (⚙) zodat ze niet in de code zelf zitten.');
     var local=Array.prototype.slice.call(stage.querySelectorAll('img')).filter(function(im){ return /^data:/i.test(im.getAttribute('src')||''); }).length;
     if(local) msgs.push('<b>'+local+' geüploade foto'+(local===1?'':'\'s')+'</b> staat nog niet online — die verschijnt niet in geplakte HTML. Zet cloud-opslag aan (⚙) of gebruik <b>Zip met foto\'s</b>.');
+    var zwaar=Array.prototype.slice.call(stage.querySelectorAll('img[data-gif-kb]')).filter(function(im){ return isGif(im.getAttribute('src')) && parseInt(im.getAttribute('data-gif-kb'),10)>GIF_MAX_KB; });
+    if(zwaar.length) msgs.push('<b>'+zwaar.length+' bewegende GIF'+(zwaar.length===1?' is':'\'s zijn')+'</b> groter dan 1 MB ('+zwaar.map(function(im){ return im.getAttribute('data-gif-kb')+' KB'; }).join(', ')+'). Die laadt traag, zeker op mobiel.');
     var std=standaardVoorvertoning();
     if(!preheaderTekst() && std && !/\*\|/.test(std)) msgs.push('De <b>voorvertoningstekst</b> is nog die van de blokkenbibliotheek: “'+esc(std)+'”. Dat is de regel die je lezer in zijn inbox ziet.');
     if(!assetsArePublic()) msgs.push('Je opent de bouwer als los bestand, dus de merkafbeeldingen krijgen een <b>file://</b>-adres dat in een mail niet werkt. Gebruik de online bouwer, of exporteer via <b>Zip met foto\'s</b>.');

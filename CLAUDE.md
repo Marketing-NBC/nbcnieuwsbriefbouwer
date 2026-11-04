@@ -40,6 +40,12 @@ merken: **NBC** en **Green Village**. Lees dit eerst.
 - Helper: badge = absoluut gepositioneerde pill in de merk-accentkleur, in een `position:relative` wrapper rond de `<img>`. De bouwer stript die wrapper en alle knoppen bij het exporteren.
 - **Kolomfoto naast tekst is even hoog als de tekst** (genummerd artikel met beeld, beeld+tekst). De bouwer meet de tekstkolom en zet die hoogte op de foto (minimaal 150px); typ je meer regels, dan groeit de foto mee. De cropper snijdt daardoor meteen in de juiste verhouding. Bij het exporteren wordt een foto die nog een andere verhouding heeft echt bijgesneden (2x, naar Supabase Storage), zodat ook Outlook geen uitgerekt beeld krijgt.
 
+## Bewegend beeld / video (vast)
+- **Geen echte video in de mail.** Alleen Apple Mail speelt `<video>` af; Gmail en Outlook niet. Wel: een korte bewegende **GIF** (3–5 s loop uit de video) met een play-icoon erin, en via `Link` op de afbeelding door naar de volledige video. De kop blijft live tekst eronder.
+- **Een GIF slaat de bijsnijder over.** De bijsnijder maakt een JPG van een canvas, en dan staat het beeld stil. Een GIF gaat dus ongewijzigd (eigen verhouding) naar Supabase Storage en de mail in, en wordt ook bij kolomfoto's niet bijgesneden. Hij hoort daarom in de hero of een losse afbeelding op volle breedte.
+- **Outlook voor Windows toont alleen het eerste beeldje.** Dat moet op zichzelf een sterke foto zijn, met het play-icoon erop.
+- **Richtlijn:** 600 px breed, ~12 fps, onder 1 MB. Bij plaatsen en bij exporteren waarschuwt de bouwer als een GIF zwaarder is. Het hulpattribuut `data-gif-kb` wordt bij het exporteren verwijderd.
+
 ## Voorvertoningstekst (vast)
 - Boven de blokken staat in de bouwer het veld **Voorvertoningstekst**: de regel die de ontvanger in zijn inbox achter het onderwerp ziet. Hij gaat mee in de geëxporteerde HTML, in de verborgen `.mcnPreviewText`-div van het merksjabloon.
 - **Leeg laten houdt de standaard van het merk aan.** Bij NBC is dat de merge-tag `*|MC_PREVIEW_TEXT|*`, zodat Mailchimp zijn eigen previewtekst gebruikt; bij Green Village de vaste zin uit het sjabloon. Staat er nog een merkstandaard als je exporteert, dan waarschuwt het exportvenster daarvoor.
