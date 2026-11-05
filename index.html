@@ -485,7 +485,7 @@ var hint=document.getElementById('hint');
 
 function wrapHTML(b){
   if(b.type==='table') return b.html;
-  return '<table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0" width="600" class="email-container" style="width:600px;max-width:600px;background-color:#ffffff;border-collapse:collapse;">'+b.html+'</table>';
+  return '<table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#ffffff" class="email-container" style="width:600px;max-width:600px;background-color:#ffffff;border-collapse:collapse;">'+b.html+'</table>';
 }
 function makeEditable(node){
   node.querySelectorAll('h1,h2,h3,p').forEach(function(el){ el.setAttribute('contenteditable','true'); el.spellcheck=false; });
@@ -957,6 +957,63 @@ function kapitalenVastzetten(root){
     var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT,null,false), n, nodes=[];
     while((n=w.nextNode())) nodes.push(n);
     nodes.forEach(function(t){ if(t.nodeValue.indexOf('*|')===-1) t.nodeValue=t.nodeValue.toUpperCase(); });
+  });
+}
+
+/* Knoppen in oude Outlook. Outlook tekent de knop als VML-pil, maar de cel
+   eromheen had dezelfde achtergrond plus mso-padding-alt — dus stond de pil
+   in een groter rechthoekig blok en zag je geen ronde hoeken. De link zelf
+   heeft al achtergrond, padding en ronde hoeken (zo tekent elke andere client
+   de knop), dus de cel heeft die achtergrond niet nodig. */
+function knopCelZonderAchtergrond(root){
+  var w=document.createTreeWalker(root,NodeFilter.SHOW_COMMENT,null,false), c, cellen=[];
+  while((c=w.nextNode())){
+    if(!/<v:roundrect/i.test(c.nodeValue)) continue;
+    var td=c.parentNode;
+    if(!td || td.tagName!=='TD') continue;
+    var a=volgendElement(c);
+    if(!a || a.tagName!=='A' || !kleurAlsHex(a)) continue;
+    cellen.push(td);
+  }
+  cellen.forEach(function(td){
+    td.removeAttribute('bgcolor');
+    td.style.removeProperty('background-color');
+    td.style.removeProperty('background');
+    var st=(td.getAttribute('style')||'').replace(/(^|;)\s*mso-padding-alt\s*:[^;]*/gi,'$1').replace(/;{2,}/g,';').replace(/^;/,'');
+    if(st.trim()) td.setAttribute('style',st); else td.removeAttribute('style');
+  });
+}
+
+/* Oude Outlook (Word) en achtergronden. Word schildert een achtergrond die
+   alleen in CSS staat niet overal: een kier tussen twee rijen, of een lege
+   tussencel met &nbsp;, laat dan de grijze body erdoor zien. Dat gaf een
+   lijn onder de herotekst en een grijs blokje tussen twee kolommen.
+   Daarom krijgt elke cel met een achtergrond ook het bgcolor-attribuut, en
+   een lege tussencel de achtergrond van de cel waar hij in staat. */
+function kleurAlsHex(el){
+  var a=el.getAttribute('bgcolor');
+  if(a) return a;
+  var c=(el.style&&el.style.backgroundColor)||'';
+  if(!c || c==='transparent') return '';
+  if(c.charAt(0)==='#') return c;
+  var m=c.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+)\s*)?\)$/i);
+  if(!m || (m[4]!==undefined && parseFloat(m[4])<1)) return '';
+  return '#'+[m[1],m[2],m[3]].map(function(n){ return ('0'+parseInt(n,10).toString(16)).slice(-2); }).join('');
+}
+function outlookAchtergronden(root){
+  root.querySelectorAll('td,th,table').forEach(function(el){
+    if(el.hasAttribute('bgcolor')) return;
+    var hex=kleurAlsHex(el);
+    if(hex) el.setAttribute('bgcolor',hex);
+  });
+  root.querySelectorAll('td').forEach(function(td){
+    if(td.hasAttribute('bgcolor') || td.children.length) return;
+    if(td.textContent.replace(/[\s ]/g,'')) return;
+    for(var p=td.parentNode; p; p=p.parentNode){
+      if(p.nodeType!==1 || !/^(TD|TH|TABLE)$/.test(p.tagName)) continue;
+      var hex=kleurAlsHex(p);
+      if(hex){ td.setAttribute('bgcolor',hex); return; }
+    }
   });
 }
 
@@ -1921,6 +1978,8 @@ function cleanBlock(wrap,unwrap){
   });
   absolutizeImages(c);
   kapitalenVastzetten(c);
+  knopCelZonderAchtergrond(c);
+  outlookAchtergronden(c);
   c.querySelectorAll('[contenteditable]').forEach(function(el){ el.removeAttribute('contenteditable'); el.removeAttribute('spellcheck'); });
   c.querySelectorAll('.photo-wrap').forEach(function(el){ el.classList.remove('photo-wrap','photo-wrap-klein'); if(!el.getAttribute('class')) el.removeAttribute('class'); });
   c.querySelectorAll('[data-photo-filled]').forEach(function(el){ el.removeAttribute('data-photo-filled'); });
@@ -1941,7 +2000,7 @@ function buildBodyHTML(){
   var out=[], rows=[];
   function flush(){
     if(!rows.length) return;
-    out.push('<table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0" width="600" class="email-container" style="width:600px;max-width:600px;background-color:#ffffff;border-collapse:collapse;">\n'+rows.join('\n')+'\n</table>');
+    out.push('<table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#ffffff" class="email-container" style="width:600px;max-width:600px;background-color:#ffffff;border-collapse:collapse;">\n'+rows.join('\n')+'\n</table>');
     rows=[];
   }
   Array.prototype.forEach.call(stage.children,function(w){
