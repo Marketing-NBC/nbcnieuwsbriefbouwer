@@ -960,6 +960,30 @@ function kapitalenVastzetten(root){
   });
 }
 
+/* Knoppen in oude Outlook. Outlook tekent de knop als VML-pil, maar de cel
+   eromheen had dezelfde achtergrond plus mso-padding-alt — dus stond de pil
+   in een groter rechthoekig blok en zag je geen ronde hoeken. De link zelf
+   heeft al achtergrond, padding en ronde hoeken (zo tekent elke andere client
+   de knop), dus de cel heeft die achtergrond niet nodig. */
+function knopCelZonderAchtergrond(root){
+  var w=document.createTreeWalker(root,NodeFilter.SHOW_COMMENT,null,false), c, cellen=[];
+  while((c=w.nextNode())){
+    if(!/<v:roundrect/i.test(c.nodeValue)) continue;
+    var td=c.parentNode;
+    if(!td || td.tagName!=='TD') continue;
+    var a=volgendElement(c);
+    if(!a || a.tagName!=='A' || !kleurAlsHex(a)) continue;
+    cellen.push(td);
+  }
+  cellen.forEach(function(td){
+    td.removeAttribute('bgcolor');
+    td.style.removeProperty('background-color');
+    td.style.removeProperty('background');
+    var st=(td.getAttribute('style')||'').replace(/(^|;)\s*mso-padding-alt\s*:[^;]*/gi,'$1').replace(/;{2,}/g,';').replace(/^;/,'');
+    if(st.trim()) td.setAttribute('style',st); else td.removeAttribute('style');
+  });
+}
+
 /* Oude Outlook (Word) en achtergronden. Word schildert een achtergrond die
    alleen in CSS staat niet overal: een kier tussen twee rijen, of een lege
    tussencel met &nbsp;, laat dan de grijze body erdoor zien. Dat gaf een
@@ -1954,6 +1978,7 @@ function cleanBlock(wrap,unwrap){
   });
   absolutizeImages(c);
   kapitalenVastzetten(c);
+  knopCelZonderAchtergrond(c);
   outlookAchtergronden(c);
   c.querySelectorAll('[contenteditable]').forEach(function(el){ el.removeAttribute('contenteditable'); el.removeAttribute('spellcheck'); });
   c.querySelectorAll('.photo-wrap').forEach(function(el){ el.classList.remove('photo-wrap','photo-wrap-klein'); if(!el.getAttribute('class')) el.removeAttribute('class'); });
