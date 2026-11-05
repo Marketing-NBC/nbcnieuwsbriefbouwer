@@ -6,10 +6,10 @@ Eén bouwer, twee merken.
 
 | Merk | Link |
 |---|---|
-| NBC | https://digitaldedication.github.io/nbcnieuwsbriefbouwer/?merk=nbc |
-| Green Village | https://digitaldedication.github.io/nbcnieuwsbriefbouwer/?merk=gv |
+| NBC | https://marketing-nbc.github.io/nbcnieuwsbriefbouwer/?merk=nbc |
+| Green Village | https://marketing-nbc.github.io/nbcnieuwsbriefbouwer/?merk=gv |
 
-Open je hem [zonder merk](https://digitaldedication.github.io/nbcnieuwsbriefbouwer/),
+Open je hem [zonder merk](https://marketing-nbc.github.io/nbcnieuwsbriefbouwer/),
 dan vraagt hij eerst voor welk merk je bouwt en onthoudt die keuze. Wisselen kan
 altijd via de merknaam in de balk.
 

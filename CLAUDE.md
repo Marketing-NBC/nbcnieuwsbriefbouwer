@@ -123,7 +123,7 @@ NBC heeft er één extra: **T · alleen tekst + CTA**.
   waarnaar verwezen wordt moet hier staan; de deploy stopt als er iets ontbreekt.
 
 ## Route via de bouwer (standaard)
-De bouwer draait op https://digitaldedication.github.io/nbcnieuwsbriefbouwer/
+De bouwer draait op https://marketing-nbc.github.io/nbcnieuwsbriefbouwer/
 (Green Village: voeg `?merk=gv` toe) en
 levert met **HTML voor Mailchimp** de complete mail in één klik. Afbeeldingen
 krijgen daarbij automatisch hun volledige webadres: merkbeelden vanaf Pages,
